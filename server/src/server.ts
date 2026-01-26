@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import express, { Express } from "express";
+import express from "express";
 import bodyParser from "body-parser";
 import session from "express-session";
 import cookieParser from "cookie-parser";
@@ -7,10 +7,14 @@ import "reflect-metadata";
 import { buildSchemaSync } from "type-graphql";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express5";
-import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import { createServer } from "http";
 import cors from "cors";
 import { log } from "console";
+import { Container } from "typedi";
+import { UserResolver } from "./resolvers/user.resolver";
+import { authChecker } from "./custom/authChecker/authChecker";
+import { RedisStore } from "connect-redis";
+import { redisClient } from "./utils/redis";
+import { ResolveTime } from "./middlewares/resolveTime.middleware";
 
 async function bootstrap() {
   config();
@@ -18,40 +22,57 @@ async function bootstrap() {
   const { PORT, SESSION_SECRET, COOKIES_SECRET } = process.env;
   const port: number = +PORT! || 3000;
 
-  const app: Express = express();
-  const httpServer = createServer(app);
-
+  const app = express();
   const schema = buildSchemaSync({
-    resolvers: []
+    resolvers: [UserResolver],
+    container: Container,
+    authChecker,
+    globalMiddlewares: [ResolveTime]
   });
 
-  const apolloServer = new ApolloServer({
-    schema,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-  });
-
-  await apolloServer.start();
-
+  app.use(bodyParser.json());
+  app.use(cors());
+  app.use(cookieParser(`${COOKIES_SECRET}`));
   app.use(
-    cors(),
-    express.json(),
-    bodyParser.json(),
-    cookieParser(`${COOKIES_SECRET}`),
     session({
+      store: new RedisStore({
+        client: redisClient,
+        prefix: "sess:",
+      }),
       secret: `${SESSION_SECRET}`,
       resave: false,
       saveUninitialized: true,
       cookie: {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: "lax",
         secure: false,
-        maxAge: 1000 * 60 * 60 * 24
-      }
+        maxAge: 1000 * 60 * 60 * 24,
+      },
     }),
-    expressMiddleware(apolloServer),
   );
 
-  httpServer.listen(port, () => log(`http://localhost:${port}`));
+  const server = new ApolloServer({
+    schema,
+  });
+
+  await server.start();
+
+  app.use(
+    "/graphql",
+    express.json(),
+    expressMiddleware(server, {
+      context: async ({ req, res }) => ({
+        req,
+        res,
+        session: req.session,
+        cookies: req.cookies,
+      }),
+    }),
+  );
+
+  app.listen(port, () => {
+    log(`http://localhost:${port}/graphql`);
+  });
 }
 
 bootstrap();
