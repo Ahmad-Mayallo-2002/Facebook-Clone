@@ -11,10 +11,11 @@ import cors from "cors";
 import { log } from "console";
 import { Container } from "typedi";
 import { UserResolver } from "./resolvers/user.resolver";
-import { authChecker } from "./custom/authChecker/authChecker";
+import { authChecker } from "./graphql/authChecker/authChecker";
 import { RedisStore } from "connect-redis";
 import { redisClient } from "./utils/redis";
 import { ResolveTime } from "./middlewares/resolveTime.middleware";
+import './dataSource';
 
 async function bootstrap() {
   config();
