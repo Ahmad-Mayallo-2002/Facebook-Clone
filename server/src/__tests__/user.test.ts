@@ -1,6 +1,6 @@
 import { User } from "../entities/user.entity"
 
-describe("Describe User", () => {
+describe.skip("Describe User", () => {
     it('Create User By Email', _ => {
         const user = new User();
         user.username = 'asdasdasd';

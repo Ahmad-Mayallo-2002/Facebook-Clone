@@ -1,5 +1,5 @@
 import { Field, ObjectType } from "type-graphql";
-import { Column, Entity, OneToMany, Relation } from "typeorm";
+import { BaseEntity, Column, Entity, OneToMany, Relation } from "typeorm";
 import { IdDate } from "../graphql/interfaceTypes/IdDate";
 import { Roles } from "../enums/roles.enum";
 import { MediaObject } from "../interfaces/mediaObject.interface";
@@ -26,8 +26,8 @@ export class User extends IdDate {
   @Column({ type: "varchar", length: 100, default: "" })
   phone!: string;
 
-  @Field({ defaultValue: "Hello, I'm Facebook User" })
-  @Column({ type: "varchar", length: 255, default: "Hello, I'm Facebook User" })
+  @Field({ defaultValue: "Hello, I am Facebook User" })
+  @Column({ type: "varchar", length: 255, default: "Hello, I am Facebook User" })
   description!: string;
 
   @Column({ type: "varchar", length: 100 })

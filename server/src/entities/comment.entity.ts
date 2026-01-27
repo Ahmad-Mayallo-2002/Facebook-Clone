@@ -15,7 +15,7 @@ export class Comment extends IdDate {
   content: string | undefined;
 
   @Field(() => [MediaObjectType])
-  @Column()
+  @Column({type: 'simple-json'})
   media: MediaObject[] | undefined;
 
   @Field()
