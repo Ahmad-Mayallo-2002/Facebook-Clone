@@ -15,7 +15,8 @@ import { authChecker } from "./graphql/authChecker/authChecker";
 import { RedisStore } from "connect-redis";
 import { redisClient } from "./utils/redis";
 import { ResolveTime } from "./middlewares/resolveTime.middleware";
-import './dataSource';
+import "./dataSource";
+import { join } from "path";
 
 async function bootstrap() {
   config();
@@ -28,9 +29,10 @@ async function bootstrap() {
     resolvers: [UserResolver],
     container: Container,
     authChecker,
-    globalMiddlewares: [ResolveTime]
+    globalMiddlewares: [ResolveTime],
   });
 
+  app.use(express.static(join(__dirname, "./public")));
   app.use(bodyParser.json());
   app.use(cors());
   app.use(cookieParser(`${COOKIES_SECRET}`));
