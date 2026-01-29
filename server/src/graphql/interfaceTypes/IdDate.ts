@@ -7,11 +7,11 @@ export abstract class IdDate {
   @Field(() => ID)
   id!: string;
 
-  @Column({ name: "created_at" })
-  @Field(() => Date)
+  @Column({ name: "created_at", default: new Date() })
+  @Field(() => Date, { defaultValue: new Date() })
   createdAt!: Date;
 
-  @Column({ name: "updated_at" })
-  @Field(() => Date)
+  @Column({ name: "updated_at", default: new Date() })
+  @Field(() => Date, { defaultValue: new Date() })
   updatedAt!: Date;
 }

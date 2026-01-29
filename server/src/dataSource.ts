@@ -18,7 +18,8 @@ export const dataSource = new DataSource({
   entities: ['src/entities/**/*.entity.ts'],
 });
 
-async function connect() {
+
+export async function connect() {
   try {
     await dataSource.initialize();
     log("Database connection is done");
@@ -26,5 +27,3 @@ async function connect() {
     log("Error in database connection", err);
   }
 }
-
-connect();

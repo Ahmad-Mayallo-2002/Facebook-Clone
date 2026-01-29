@@ -1,5 +1,5 @@
 import { Field, ObjectType } from "type-graphql";
-import { BaseEntity, Column, Entity, OneToMany, Relation } from "typeorm";
+import { BaseEntity, BeforeInsert, Column, Entity, OneToMany, Relation } from "typeorm";
 import { IdDate } from "../graphql/interfaceTypes/IdDate";
 import { Roles } from "../enums/roles.enum";
 import { MediaObject } from "../interfaces/mediaObject.interface";
@@ -10,6 +10,9 @@ import { React } from "./react.entity";
 import { Page } from "./page.entity";
 import { Notification } from "./notification.entity";
 import { Follow } from "./follow.entity";
+import { Gender } from "../enums/gender.enum";
+
+let defaultValue = { url: '', public_id: '' }
 
 @ObjectType({ implements: IdDate })
 @Entity({ name: "users" })
@@ -18,13 +21,9 @@ export class User extends IdDate {
   @Column({ type: "varchar", length: 100 })
   username!: string;
 
-  @Field({ defaultValue: "" })
-  @Column({ type: "varchar", length: 100, default: "" })
+  @Field()
+  @Column({ type: "varchar", length: 100 })
   email!: string;
-
-  @Field({ defaultValue: "" })
-  @Column({ type: "varchar", length: 100, default: "" })
-  phone!: string;
 
   @Field({ defaultValue: "Hello, I am Facebook User" })
   @Column({ type: "varchar", length: 255, default: "Hello, I am Facebook User" })
@@ -40,13 +39,17 @@ export class User extends IdDate {
   @Column({ type: "enum", enum: Roles, default: Roles.USER })
   role!: Roles;
 
-  @Field(() => MediaObjectType, {defaultValue: {}})
-  @Column({ type: "simple-json", default: {} })
+  @Field(() => MediaObjectType, { defaultValue })
+  @Column({ type: "simple-json", default: defaultValue })
   image!: MediaObject;
 
-  @Field(() => MediaObjectType, {defaultValue: {}})
-  @Column({ type: "simple-json", default: {} })
+  @Field(() => MediaObjectType, { defaultValue })
+  @Column({ type: "simple-json", default: defaultValue })
   banner!: MediaObject;
+
+  @Field(() => Gender)
+  @Column({ type: 'enum', enum: Gender })
+  gender!: Gender;
 
   // Relationships
   @Field(() => [Post])
@@ -76,4 +79,29 @@ export class User extends IdDate {
   @Field(() => [Follow])
   @OneToMany(() => Follow, (follow) => follow.follower)
   followings!: Relation<Follow[]>;
+
+  // Before Insert
+  @BeforeInsert()
+  setDefaultMedia() {
+    if (!this.image || !this.image.url) {
+      if (this.gender === Gender.MALE) {
+        this.image = {
+          url: "/images/default-male",
+          public_id: "default-male",
+        };
+      } else if (this.gender === Gender.FEMALE) {
+        this.image = {
+          url: "/images/default-female",
+          public_id: "default-female",
+        };
+      }
+    }
+
+    if (!this.banner || !this.banner.url) {
+      this.banner = {
+        url: "/images/default-background",
+        public_id: "default-background",
+      };
+    }
+  }
 }

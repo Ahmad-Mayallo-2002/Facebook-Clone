@@ -4,10 +4,8 @@ import { Readable } from "stream";
 import { join } from "path";
 import { CloudinaryUploader } from "../utils/cloudinaryUploader";
 
-jest.setTimeout(20000);
-
-describe.only("Test Uploader", () => {
-    it.skip('Test Local Uploader', async () => {
+describe("Test Uploader", () => {
+    it('Test Local Uploader', async () => {
         const uploader = new LocalUploader();
         // Read the file as buffer
         const fileBuffer = readFileSync(join(__dirname, './user.test.ts'));
