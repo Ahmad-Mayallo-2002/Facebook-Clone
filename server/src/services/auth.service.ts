@@ -7,10 +7,10 @@ import { emailQueue } from '../bullmq/queues/email.queue';
 import { emailWorker } from '../bullmq/worker/email.worker';
 import { Roles } from '../enums/roles.enum';
 import { Gender } from '../enums/gender.enum';
-import { dataSource } from '../dataSource';
 import { Service } from 'typedi';
 import { sign } from 'jsonwebtoken';
 import { queueRedis } from '../redis/queue.redis';
+import { getRepo } from '../utils/getRepo';
 
 config();
 
@@ -18,10 +18,7 @@ const { ACCESS_TOKEN_SECRET, ADMIN_USERNAME, ADMIN_EMAIL, ADMIN_PASSWORD } = pro
 
 @Service()
 export class AuthService {
-    private userRepo: Repository<User>;
-    constructor() {
-        this.userRepo = dataSource.getRepository(User);
-    }
+    private userRepo = getRepo<User>(User);
 
     async register(input: RegisterInput): Promise<User> {
         const existing = await this.userRepo.findOne({ where: { email: input.email } });

@@ -8,17 +8,15 @@ config();
 
 @Service()
 export class CheckToken implements MiddlewareInterface<Context> {
-    async use({ context }: ResolverData<Context>, next: NextFn) {
-        const token = context.req.cookies.accessToken;
+    async use({ context: { req } }: ResolverData<Context>, next: NextFn) {
+        const token = req.cookies.accessToken;
         if (!token) throw new AuthorizationError("No access token provided");
-
         try {
-            const user = verify(token, process.env.ACCESS_TOKEN_SECRET!) as any;
-            (context.req.session as any).user = user;
+            const user = verify(token, process.env.ACCESS_TOKEN_SECRET!);
+            (req.session as any).user = user;
         } catch (err) {
             throw new AuthorizationError("Invalid token");
         }
-
         return next();
     }
 }

@@ -1,5 +1,6 @@
 import { UploadApiResponse } from "cloudinary";
+import { FileUpload } from "graphql-upload-ts";
 
 export interface UploaderStrategy {
-  upload: (file: Express.Multer.File) => Promise<string | UploadApiResponse>;
+  upload: (file: FileUpload) => Promise<string | UploadApiResponse>;
 }

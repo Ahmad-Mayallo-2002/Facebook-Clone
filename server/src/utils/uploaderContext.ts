@@ -1,3 +1,4 @@
+import { FileUpload } from "graphql-upload-ts";
 import { UploaderStrategy } from "../interfaces/uploaderStrategy.interface";
 import { UploadApiResponse } from 'cloudinary';
 
@@ -8,7 +9,7 @@ export class UploaderContext {
     setStrategy(uploaderStrategy: UploaderStrategy) {
         this.uploaderStrategy = uploaderStrategy;
     }
-    async performStrategy(file: Express.Multer.File): Promise<string | UploadApiResponse> {
+    async performStrategy(file: FileUpload): Promise<string | UploadApiResponse> {
         return await this.uploaderStrategy.upload(file);
     }
 }

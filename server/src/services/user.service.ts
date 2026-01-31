@@ -1,11 +1,15 @@
 import { Service } from "typedi";
 import { User } from "../entities/user.entity";
-import { DeepPartial, Repository } from "typeorm";
-import { InjectRepository } from "typeorm-typedi-extensions";
+import { DeepPartial } from "typeorm";
+import { UserInput } from "../graphql/inputs/user.input";
+import { UploaderContext } from "../utils/uploaderContext";
+import { CloudinaryUploader } from "../utils/cloudinaryUploader";
+import { UploadApiResponse, v2 } from "cloudinary";
+import { getRepo } from "../utils/getRepo";
 
 @Service()
 export class UserService {
-  constructor(@InjectRepository(User) private readonly userRepo: Repository<User>) {}
+  private userRepo = getRepo<User>(User);
 
   async getAll(): Promise<User[]> {
     const users = await this.userRepo.find();
@@ -23,12 +27,33 @@ export class UserService {
 
   async updateUser(
     id: string,
-    data: DeepPartial<User>
+    input: Partial<UserInput>
   ): Promise<User> {
     const user = await this.userRepo.findOne({
       where: { id },
     });
     if (!user) throw new Error("User not found");
+
+    const { image, banner, ...rest } = input;
+    const data: DeepPartial<User> = { ...rest };
+
+
+    if (image) {
+      await v2.api.delete_all_resources([user.image.public_id]);
+      const file = await image;
+      const uploader = new UploaderContext(new CloudinaryUploader());
+      const { secure_url: url, public_id, ...rest } = await uploader.performStrategy(file) as UploadApiResponse;
+      data.image = { url, public_id };
+    }
+
+    if (banner) {
+      await v2.api.delete_all_resources([user.banner.public_id]);
+      const file = await banner;
+      const uploader = new UploaderContext(new CloudinaryUploader());
+      const { secure_url: url, public_id } = await uploader.performStrategy(file) as UploadApiResponse;
+      data.banner = { url, public_id };
+    }
+
     Object.assign(user, data);
     return await this.userRepo.save(user);
   }

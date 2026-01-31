@@ -13,10 +13,11 @@ import { authChecker } from "./graphql/authChecker/authChecker";
 import { join } from "path";
 import { globalMiddlewares, resolvers } from "./utils/buildSchema";
 import { connect } from "./dataSource";
-import Container from "typedi";
 import './bullmq/worker/email.worker'
 import { ValidationError } from "class-validator";
 import { sessionStore } from "./redis/session.redis";
+import { graphqlUploadExpress } from 'graphql-upload-ts';
+import Container from "typedi";
 
 async function bootstrap() {
   config();
@@ -36,6 +37,7 @@ async function bootstrap() {
   });
 
   app.use(express.static(join(__dirname, "./public")));
+  app.use(graphqlUploadExpress({ maxFileSize: 1000_000_000, maxFiles: 20 }))
   app.use(bodyParser.json());
   app.use(cors());
   app.use(cookieParser(`${COOKIES_SECRET}`));
