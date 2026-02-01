@@ -10,16 +10,16 @@ import { React } from "./react.entity";
 @ObjectType({ implements: IdDate })
 @Entity({ name: "posts" })
 export class Post extends IdDate {
-  @Field(() => String, {defaultValue: ''})
+  @Field(() => String, { defaultValue: '' })
   @Column({ type: "text", default: '' })
   content!: string;
 
-  @Field(() => [MediaObjectType], {defaultValue: []})
-  @Column({type: 'simple-array', default: []})
+  @Field(() => [MediaObjectType], { defaultValue: [] })
+  @Column({ type: 'jsonb', default: [] })
   media!: MediaObject[];
 
-  @Field(() => Boolean, {defaultValue: true})
-  @Column({ type: 'boolean' ,default: true })
+  @Field(() => Boolean, { defaultValue: true })
+  @Column({ type: 'boolean', default: true })
   isVisible!: boolean;
 
   @Field(() => ID)
@@ -31,11 +31,11 @@ export class Post extends IdDate {
   @JoinColumn()
   @ManyToOne(() => User, (user) => user.posts)
   user!: Relation<User>;
-  
+
   @Field(() => [Comment])
   @OneToMany(() => Comment, (comment) => comment.post)
   comments!: Relation<Comment[]>;
-  
+
   @Field(() => [React])
   @OneToMany(() => React, (react) => react.post)
   reacts!: Relation<React[]>;

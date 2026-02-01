@@ -9,7 +9,6 @@ import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express5";
 import cors from "cors";
 import { log } from "console";
-import { authChecker } from "./graphql/authChecker/authChecker";
 import { join } from "path";
 import { globalMiddlewares, resolvers } from "./utils/buildSchema";
 import { connect } from "./dataSource";
@@ -18,6 +17,7 @@ import { ValidationError } from "class-validator";
 import { sessionStore } from "./redis/session.redis";
 import { graphqlUploadExpress } from 'graphql-upload-ts';
 import Container from "typedi";
+import { AuthChecker } from "./graphql/authChecker/authChecker";
 
 async function bootstrap() {
   config();
@@ -30,7 +30,7 @@ async function bootstrap() {
   const app = express();
   const schema = buildSchemaSync({
     resolvers,
-    authChecker,
+    authChecker: AuthChecker,
     globalMiddlewares,
     container: Container,
     validate: true,

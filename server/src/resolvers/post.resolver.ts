@@ -1,9 +1,12 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import { Service } from "typedi";
 import { Post } from "../entities/post.entity";
 import { PostService } from "../services/post.service";
 import { CreatePostInput } from "../graphql/inputs/post.input";
+import { CheckToken } from "../middlewares/checkToken.middleware";
+import { Roles } from "../enums/roles.enum";
 
+@UseMiddleware(CheckToken)
 @Service()
 @Resolver()
 export class PostResolver {
@@ -24,12 +27,6 @@ export class PostResolver {
     return await this.postService.getUserPosts(userId);
   }
 
-  @Query(() => [Post])
-  async getPagePosts() {
-    const [skip, take] = [0, 0];
-    return (await this.postService.getPagePosts(skip, take)).posts;
-  }
-
   @Mutation(() => Post)
   async createPost(
     @Arg("userId") userId: string,
@@ -46,6 +43,7 @@ export class PostResolver {
     return await this.postService.updatePost(id, input);
   }
 
+  @Authorized(Roles.ADMIN)
   @Mutation(() => Post)
   async hidePost(@Arg("id") id: string, @Arg("visibleStatus") visibleStatus: boolean) {
     return await this.postService.hidePost(id, visibleStatus);
