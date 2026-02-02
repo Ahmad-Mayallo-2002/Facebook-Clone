@@ -9,12 +9,15 @@ import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express5";
 import cors from "cors";
 import { log } from "console";
-import { Container } from "typedi";
-import { UserResolver } from "./resolvers/user.resolver";
-import { authChecker } from "./custom/authChecker/authChecker";
-import { RedisStore } from "connect-redis";
-import { redisClient } from "./utils/redis";
-import { ResolveTime } from "./middlewares/resolveTime.middleware";
+import { join } from "path";
+import { globalMiddlewares, resolvers } from "./utils/buildSchema";
+import { connect } from "./dataSource";
+import './bullmq/worker/email.worker'
+import { ValidationError } from "class-validator";
+import { sessionStore } from "./redis/session.redis";
+import { graphqlUploadExpress } from 'graphql-upload-ts';
+import Container from "typedi";
+import { AuthChecker } from "./graphql/authChecker/authChecker";
 
 async function bootstrap() {
   config();
@@ -22,23 +25,25 @@ async function bootstrap() {
   const { PORT, SESSION_SECRET, COOKIES_SECRET } = process.env;
   const port: number = +PORT! || 3000;
 
+  await connect();
+
   const app = express();
   const schema = buildSchemaSync({
-    resolvers: [UserResolver],
+    resolvers,
+    authChecker: AuthChecker,
+    globalMiddlewares,
     container: Container,
-    authChecker,
-    globalMiddlewares: [ResolveTime]
+    validate: true,
   });
 
+  app.use(express.static(join(__dirname, "./public")));
+  app.use(graphqlUploadExpress({ maxFileSize: 1000_000_000, maxFiles: 20 }))
   app.use(bodyParser.json());
   app.use(cors());
   app.use(cookieParser(`${COOKIES_SECRET}`));
   app.use(
     session({
-      store: new RedisStore({
-        client: redisClient,
-        prefix: "sess:",
-      }),
+      store: sessionStore,
       secret: `${SESSION_SECRET}`,
       resave: false,
       saveUninitialized: true,
@@ -53,6 +58,15 @@ async function bootstrap() {
 
   const server = new ApolloServer({
     schema,
+    formatError(formattedError, error) {
+      const validationErrors = formattedError?.extensions?.validationErrors as ValidationError[];
+      const errors = (validationErrors) ? validationErrors.map(error => ({ constraints: error.constraints })) : []
+      return {
+        message: formattedError.message,
+        code: formattedError.extensions?.code,
+        validationErrors: errors
+      };
+    },
   });
 
   await server.start();

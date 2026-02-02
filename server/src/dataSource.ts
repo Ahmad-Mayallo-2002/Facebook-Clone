@@ -1,6 +1,7 @@
 import { log } from "console";
 import { config } from "dotenv";
 import { DataSource } from "typeorm";
+import 'reflect-metadata';
 
 config();
 
@@ -14,9 +15,11 @@ export const dataSource = new DataSource({
   host: "localhost",
   type: `postgres`,
   synchronize: true,
+  entities: ['src/entities/**/*.entity.ts'],
 });
 
-async function connect() {
+
+export async function connect() {
   try {
     await dataSource.initialize();
     log("Database connection is done");
@@ -24,5 +27,3 @@ async function connect() {
     log("Error in database connection", err);
   }
 }
-
-connect();

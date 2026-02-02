@@ -1,4 +1,4 @@
-import { Pagination } from "../interfaces/pagination";
+import { Pagination } from "../interfaces/pagination.interface";
 
 interface calculationProps {
   counts: number;
