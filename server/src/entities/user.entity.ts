@@ -73,7 +73,7 @@ export class User extends IdDate {
   notifications!: Relation<Notification[]>;
 
   @Field(() => [Follow])
-  @OneToMany(() => Follow, follow => follow.following)
+  @OneToMany(() => Follow, follow => follow.followingUser)
   followers!: Relation<Follow[]>;
 
   @Field(() => [Follow])

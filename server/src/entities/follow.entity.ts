@@ -2,6 +2,7 @@ import { Field, ID, ObjectType } from "type-graphql";
 import { IdDate } from "../graphql/interfaceTypes/IdDate";
 import { Column, Entity, JoinColumn, ManyToOne, Relation } from "typeorm";
 import { User } from "./user.entity";
+import { Page } from "./page.entity";
 
 @ObjectType({implements: IdDate})
 @Entity({name: 'follows'})
@@ -10,15 +11,25 @@ export class Follow extends IdDate {
     @Column({type: 'varchar', length: 100, name: 'follower_id'})
     followerId!: string;
     
-    @Field(() => ID)
-    @Column({type: 'varchar', length: 100, name: 'following_id'})
-    followingId!: string;
+    @Field(() => ID, { nullable: true })
+    @Column({type: 'varchar', length: 100, name: 'following_user_id'})
+    followingUserId?: string;
+
+
+    @Field(() => ID, {nullable: true})
+    @Column({ type: 'varchar', length: 100, name: 'following_page_id' })
+    followingPageId?: string;
 
     // Relationships
     @Field(() => User)
-    @JoinColumn()
+    @JoinColumn({name: 'following_user'})
     @ManyToOne(() => User, user => user.followers)
-    following!: Relation<User>;
+    followingUser!: Relation<User>;
+
+    @Field(() => Page)
+    @JoinColumn({ name: 'following_page' })
+    @ManyToOne(() => Page, page => page.followers)
+    followingPage!: Relation<Page>;
     
     @Field(() => User)
     @JoinColumn()
