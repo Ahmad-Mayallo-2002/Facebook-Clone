@@ -4,25 +4,24 @@ import { Column, Entity, JoinColumn, ManyToOne, Relation } from "typeorm";
 import { User } from "./user.entity";
 import { Page } from "./page.entity";
 
-@ObjectType({implements: IdDate})
-@Entity({name: 'follows'})
+@ObjectType({ implements: IdDate })
+@Entity({ name: 'follows' })
 export class Follow extends IdDate {
     @Field(() => ID)
-    @Column({type: 'varchar', length: 100, name: 'follower_id'})
+    @Column({ type: 'varchar', length: 100, name: 'follower_id' })
     followerId!: string;
-    
-    @Field(() => ID, { nullable: true })
-    @Column({type: 'varchar', length: 100, name: 'following_user_id'})
-    followingUserId?: string;
 
+    @Field(() => ID)
+    @Column({ type: 'varchar', length: 100, name: 'following_user_id' })
+    followingUserId!: string;
 
-    @Field(() => ID, {nullable: true})
+    @Field(() => ID)
     @Column({ type: 'varchar', length: 100, name: 'following_page_id' })
-    followingPageId?: string;
+    followingPageId!: string;
 
     // Relationships
     @Field(() => User)
-    @JoinColumn({name: 'following_user'})
+    @JoinColumn({ name: 'following_user' })
     @ManyToOne(() => User, user => user.followers)
     followingUser!: Relation<User>;
 
@@ -30,7 +29,7 @@ export class Follow extends IdDate {
     @JoinColumn({ name: 'following_page' })
     @ManyToOne(() => Page, page => page.followers)
     followingPage!: Relation<Page>;
-    
+
     @Field(() => User)
     @JoinColumn()
     @ManyToOne(() => User, user => user.followings)
