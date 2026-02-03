@@ -11,12 +11,12 @@ export class Follow extends IdDate {
     @Column({ type: 'varchar', length: 100, name: 'follower_id' })
     followerId!: string;
 
-    @Field(() => ID)
-    @Column({ type: 'varchar', length: 100, name: 'following_user_id' })
+    @Field(() => ID, { nullable: true })
+    @Column({ type: 'varchar', length: 100, name: 'following_user_id', nullable: true })
     followingUserId!: string;
 
-    @Field(() => ID)
-    @Column({ type: 'varchar', length: 100, name: 'following_page_id' })
+    @Field(() => ID, { nullable: true })
+    @Column({ type: 'varchar', length: 100, name: 'following_page_id', nullable: true })
     followingPageId!: string;
 
     // Relationships

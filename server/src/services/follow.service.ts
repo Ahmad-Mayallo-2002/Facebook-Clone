@@ -72,6 +72,7 @@ export class FollowService {
 
     async addUserFollowing(userId: string, targetId: string): Promise<Follow> {
         await this.userService.getById(targetId);
+        if (userId === targetId) throw new Error('You cannot follow yourself');
         const newFollowing = this.followRepo.create({
             followerId: userId,
             follower: { id: userId },
@@ -82,7 +83,8 @@ export class FollowService {
     }
 
     async addPageFollowing(userId: string, pageId: string): Promise<Follow> {
-        await this.pageService.getById(pageId);
+        const page = await this.pageService.getById(pageId);
+        if (page.userId === userId) throw new Error('You cannot follow your page');
         const newFollowing = this.followRepo.create({
             followerId: userId,
             follower: { id: userId },

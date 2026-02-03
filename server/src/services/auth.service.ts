@@ -11,6 +11,7 @@ import { Service } from 'typedi';
 import { sign } from 'jsonwebtoken';
 import { queueRedis } from '../redis/queue.redis';
 import { getRepo } from '../utils/getRepo';
+import { Payload } from '../interfaces/payload.interface';
 
 config();
 
@@ -36,7 +37,7 @@ export class AuthService {
         return await this.userRepo.save(user);
     }
 
-    async login(input: AuthInput): Promise<string> {
+    async login(input: AuthInput): Promise<Payload> {
         const user = await this.userRepo.findOne({ where: { email: input.email } });
         if (!user) throw new Error('Invalid email');
 
@@ -49,7 +50,10 @@ export class AuthService {
         };
 
         const accessToken = sign(payload, `${ACCESS_TOKEN_SECRET}`, { expiresIn: '1h' });
-        return accessToken;
+        return {
+            token: accessToken,
+            ...payload
+        };
     }
 
     async forgotPassword(email: string): Promise<string> {

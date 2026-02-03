@@ -30,10 +30,6 @@ export class Comment extends IdDate {
   @Column({ type: "varchar", length: 100, name: "post_id" })
   postId!: string;
 
-  @Field(() => ID)
-  @Column({ type: "varchar", length: 100, name: "comment_id" })
-  commentId!: string;
-
   // Relationships
   @Field(() => User)
   @JoinColumn()

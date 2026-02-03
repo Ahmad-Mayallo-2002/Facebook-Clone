@@ -1,10 +1,12 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import { Service } from "typedi";
 import { User } from "../entities/user.entity";
 import { UserService } from "../services/user.service";
 import { UserInput } from "../graphql/inputs/user.input";
+import { CheckToken } from "../middlewares/checkToken.middleware";
+import { Roles } from "../enums/roles.enum";
 
-
+@UseMiddleware(CheckToken)
 @Service()
 @Resolver()
 export class UserResolver {
@@ -30,6 +32,7 @@ export class UserResolver {
     return await this.userService.deleteUser(id);
   }
 
+  @Authorized(Roles.ADMIN)
   @Mutation(() => String)
   async activeUser(@Arg('id') id: string, @Arg('status') status: boolean) {
     return await this.userService.activeUser(id, status);

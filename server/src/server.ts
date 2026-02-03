@@ -22,7 +22,7 @@ import { AuthChecker } from "./graphql/authChecker/authChecker";
 async function bootstrap() {
   config();
 
-  const { PORT, SESSION_SECRET, COOKIES_SECRET } = process.env;
+  const { PORT, SESSION_SECRET } = process.env;
   const port: number = +PORT! || 3000;
 
   await connect();
@@ -39,14 +39,18 @@ async function bootstrap() {
   app.use(express.static(join(__dirname, "./public")));
   app.use(graphqlUploadExpress({ maxFileSize: 1000_000_000, maxFiles: 20 }))
   app.use(bodyParser.json());
-  app.use(cors());
-  app.use(cookieParser(`${COOKIES_SECRET}`));
+  app.use(cors({
+    credentials: true,
+    maxAge: 1000 * 60 * 60 * 24,
+    origin: "http://localhost:3000",
+  }));
   app.use(
     session({
       store: sessionStore,
       secret: `${SESSION_SECRET}`,
       resave: false,
-      saveUninitialized: true,
+      saveUninitialized: false,
+      name: 'session',
       cookie: {
         httpOnly: true,
         sameSite: "lax",
@@ -67,6 +71,7 @@ async function bootstrap() {
         validationErrors: errors
       };
     },
+    
   });
 
   await server.start();

@@ -17,6 +17,7 @@ export class FollowResolver {
         return await this.followService.getAllFollows();
     }
 
+    @Authorized(Roles.ADMIN)
     @Query(() => Follow)
     async getFollow(@Arg("id") id: string) {
         return await this.followService.getById(id);
@@ -40,6 +41,16 @@ export class FollowResolver {
     @Query(() => [Follow])
     async getPageFollowings(@Arg("userId") userId: string) {
         return await this.followService.getPageFollowings(userId);
+    }
+
+    @Mutation(() => Follow)
+    async addUserFollowing(@Arg('userId') userId: string, @Arg('targetId') targetId: string): Promise<Follow> {
+        return await this.followService.addUserFollowing(userId, targetId);
+    }
+
+    @Mutation(() => Follow)
+    async addPageFollowing(@Arg('userId') userId: string, @Arg('pageId') pageId: string): Promise<Follow> {
+        return await this.followService.addPageFollowing(userId, pageId);
     }
 
     @Mutation(() => Boolean)
