@@ -1,0 +1,74 @@
+import { lazy, Suspense } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Loading from "@/pages/Loading";
+import NotFound from "@/pages/NotFound";
+
+// Lazy load all pages
+const Landing = lazy(() => import("@/pages/Landing"));
+const Login = lazy(() => import("@/pages/Login"));
+const Signup = lazy(() => import("@/pages/Signup"));
+const Feed = lazy(() => import("@/pages/Feed"));
+const Profile = lazy(() => import("@/pages/Profile"));
+const Notifications = lazy(() => import("@/pages/Notifications"));
+const Saved = lazy(() => import("@/pages/Saved"));
+const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+const UpdatePassword = lazy(() => import("@/pages/UpdatePassword"));
+const VerifyCode = lazy(() => import("@/pages/VerifyCode"));
+
+// Routes configuration
+const routes = [
+  {
+    path: "/",
+    element: <Landing />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
+  },
+  {
+    path: "/feed",
+    element: <Feed />,
+  },
+  {
+    path: "/profile/:id",
+    element: <Profile />,
+  },
+  {
+    path: "/notifications",
+    element: <Notifications />,
+  },
+  {
+    path: "/saved",
+    element: <Saved />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/update-password",
+    element: <UpdatePassword />,
+  },
+  {
+    path: "/verify-code",
+    element: <VerifyCode />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
+  },
+];
+
+const router = createBrowserRouter(routes);
+
+export function Router() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <RouterProvider router={router} />
+    </Suspense>
+  );
+}
