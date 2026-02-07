@@ -15,3 +15,15 @@ export const SIGNUP = gql`
     }
   }
 `;
+
+export const FORGOT_PASSWORD = gql`
+  mutation ($email: String!) {
+    forgotPassword(email: $email)
+  }
+`;
+
+export const VERIFY_CODE = gql`
+  mutation ($code: String!) {
+    verifyCode(code: $code)
+  }
+`;

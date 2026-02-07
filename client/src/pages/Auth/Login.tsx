@@ -1,5 +1,5 @@
 import Logo from "@/components/logos/Logo";
-import "./authStyle.css";
+import "@/styles/authStyle.css";
 import { MdMail } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client/react";
@@ -9,6 +9,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import type { LoginRes } from "@/interface/response";
 import Password from "@/components/ui/Password";
 import InputIcon from "@/components/ui/InputIcon";
+import { Link } from "react-router-dom";
 
 interface ILogin {
   email: string;
@@ -50,7 +51,6 @@ export default function Login() {
             <label htmlFor="email" className="auth-label">
               Email Address
             </label>
-            {/* Input and Icons */}
             <InputIcon
               icon={
                 <MdMail className="absolute text-blue-500 left-4 text-2xl" />
@@ -74,7 +74,6 @@ export default function Login() {
             <label htmlFor="password" className="auth-label">
               Password
             </label>
-            {/* Input and Icons */}
             <Password
               id="password"
               placeholder="Enter Password"
@@ -101,6 +100,12 @@ export default function Login() {
             )}
           </button>
         </form>
+        <p className="text-center text-gray-500 mt-4">
+          Don't have an account?{" "}
+          <Link to="/signup" className="text-blue-600 hover:underline">
+            Sign Up
+          </Link>
+        </p>
       </section>
     </div>
   );

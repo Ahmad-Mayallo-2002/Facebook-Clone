@@ -1,5 +1,9 @@
 import { lazy, Suspense } from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  type RouteObject,
+} from "react-router-dom";
 import Loading from "@/pages/Loading";
 import NotFound from "@/pages/NotFound";
 
@@ -11,12 +15,12 @@ const Feed = lazy(() => import("@/pages/Feed"));
 const Profile = lazy(() => import("@/pages/Profile"));
 const Notifications = lazy(() => import("@/pages/Notifications"));
 const Saved = lazy(() => import("@/pages/Saved"));
-const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+const ForgotPassword = lazy(() => import("@/pages/Auth/ForgotPassword"));
 const UpdatePassword = lazy(() => import("@/pages/Auth/UpdatePassword"));
 const VerifyCode = lazy(() => import("@/pages/Auth/VerifyCode"));
 
 // Routes configuration
-const routes = [
+const routes: RouteObject[] = [
   {
     path: "/",
     element: <Landing />,

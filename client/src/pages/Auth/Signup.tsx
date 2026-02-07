@@ -1,5 +1,5 @@
 import Logo from "@/components/logos/Logo";
-import "./authStyle.css";
+import "@/styles/authStyle.css";
 import { Gender } from "@/enums/gender";
 import Password from "@/components/ui/Password";
 import { useForm } from "react-hook-form";
@@ -9,7 +9,7 @@ import { useMutation } from "@apollo/client/react";
 import { SIGNUP } from "@/graphql/mutations";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface ISignUp {
   username: string;
@@ -84,7 +84,7 @@ export default function Signup() {
         {/* Email */}
         <div className="email">
           <label htmlFor="email" className="auth-label">
-            Email Address
+            Email Address <span>*</span>
           </label>
           <InputIcon
             icon={<MdMail className="absolute text-blue-500 left-4 text-2xl" />}
@@ -187,6 +187,13 @@ export default function Signup() {
             "Sign Up"
           )}
         </button>
+
+        <p className="text-center text-gray-500">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-600 hover:underline">
+            Log In
+          </Link>
+        </p>
       </form>
     </div>
   );
