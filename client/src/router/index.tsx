@@ -5,15 +5,15 @@ import NotFound from "@/pages/NotFound";
 
 // Lazy load all pages
 const Landing = lazy(() => import("@/pages/Landing"));
-const Login = lazy(() => import("@/pages/Login"));
-const Signup = lazy(() => import("@/pages/Signup"));
+const Login = lazy(() => import("@/pages/Auth/Login"));
+const Signup = lazy(() => import("@/pages/Auth/Signup"));
 const Feed = lazy(() => import("@/pages/Feed"));
 const Profile = lazy(() => import("@/pages/Profile"));
 const Notifications = lazy(() => import("@/pages/Notifications"));
 const Saved = lazy(() => import("@/pages/Saved"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
-const UpdatePassword = lazy(() => import("@/pages/UpdatePassword"));
-const VerifyCode = lazy(() => import("@/pages/VerifyCode"));
+const UpdatePassword = lazy(() => import("@/pages/Auth/UpdatePassword"));
+const VerifyCode = lazy(() => import("@/pages/Auth/VerifyCode"));
 
 // Routes configuration
 const routes = [

@@ -37,7 +37,7 @@ export function FooterLanding() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 flex flex-col gap-4 pt-6 text-sm  md:flex-row md:items-center md:justify-between text-gray-500">
+        <div className="text-center md:text-start mt-12 flex flex-col gap-4 pt-6 text-sm  md:flex-row md:items-center md:justify-between text-gray-500">
           <p>&copy; 2025 Facebook Clone. All rights reserved.</p>
           <p>
             Powered by <span className="font-medium">Ahmad Mayallo</span>
