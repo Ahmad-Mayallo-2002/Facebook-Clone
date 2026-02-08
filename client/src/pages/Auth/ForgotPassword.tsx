@@ -15,7 +15,6 @@ export default function ForgotPassword() {
     handleSubmit,
     formState: { errors },
   } = useForm<{ email: string }>();
-
   const navigate = useNavigate();
 
   const [forgot, { loading }] = useMutation(FORGOT_PASSWORD);
@@ -74,6 +73,9 @@ export default function ForgotPassword() {
             </Link>
           </p>
         </form>
+        <Link to="/" className="mt-4 text-gray-600 hover:underline">
+          Back To Home
+        </Link>
       </div>
     </>
   );

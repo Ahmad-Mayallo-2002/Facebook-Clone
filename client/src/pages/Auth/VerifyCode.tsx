@@ -1,16 +1,21 @@
 import Logo from "@/components/logos/Logo";
 import { PinInput } from "react-input-pin-code";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client/react";
 import { VERIFY_CODE } from "@/graphql/mutations";
 import { toast } from "react-toastify";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import "@/styles/authStyle.css";
 import { useForm, Controller } from "react-hook-form";
+import { FaArrowLeft } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { setEmail } from "@/redux/slices/emailSlice";
+import type { VerifyCodeRes } from "@/interface/response";
 
 export default function VerifyCode() {
   const navigate = useNavigate();
-  const [verify, { loading }] = useMutation(VERIFY_CODE);
+  const dispatch = useDispatch();
+  const [verify, { loading }] = useMutation<VerifyCodeRes>(VERIFY_CODE);
   const {
     control,
     handleSubmit,
@@ -27,7 +32,10 @@ export default function VerifyCode() {
         code: data.code,
       },
     })
-      .then(() => navigate("/update-password"))
+      .then((e) => {
+        dispatch(setEmail(`${e.data?.verifyCode}`));
+        navigate("/update-password");
+      })
       .catch((reason) => toast(reason.message, { type: "error" }));
 
   return (
@@ -48,14 +56,14 @@ export default function VerifyCode() {
           rules={{
             required: "Verification code is required",
             minLength: {
-              value: 6,
-              message: "Code must be 6 digits",
+              value: 4,
+              message: "Code must be 4 digits",
             },
           }}
           render={({ field: { value, onChange } }) => (
             <PinInput
               inputClassName="grow"
-              values={value ? value.split("") : Array.from("      ")}
+              values={value ? value.split("") : Array.from("    ")}
               inputStyle={{
                 borderColor: "black",
                 backgroundColor: "white",
@@ -89,6 +97,12 @@ export default function VerifyCode() {
           </button>
         </p>
       </form>
+      <Link
+        to="/forgot-password"
+        className="mt-4 text-gray-600 center-y hover:underline"
+      >
+        <FaArrowLeft className="me-1 text-sm" /> Back
+      </Link>
     </div>
   );
 }

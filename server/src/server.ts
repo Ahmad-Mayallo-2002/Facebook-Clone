@@ -12,12 +12,13 @@ import { log } from "console";
 import { join } from "path";
 import { globalMiddlewares, resolvers } from "./utils/buildSchema";
 import { connect } from "./dataSource";
-import './bullmq/worker/email.worker'
+import "./bullmq/worker/email.worker";
 import { ValidationError } from "class-validator";
 import { sessionStore } from "./redis/session.redis";
-import { graphqlUploadExpress } from 'graphql-upload-ts';
+import { graphqlUploadExpress } from "graphql-upload-ts";
 import Container from "typedi";
 import { AuthChecker } from "./graphql/authChecker/authChecker";
+import './bullmq/worker/email.worker';
 
 async function bootstrap() {
   config();
@@ -37,20 +38,22 @@ async function bootstrap() {
   });
 
   app.use(express.static(join(__dirname, "./public")));
-  app.use(graphqlUploadExpress({ maxFileSize: 1000_000_000, maxFiles: 20 }))
+  app.use(graphqlUploadExpress({ maxFileSize: 1000_000_000, maxFiles: 20 }));
   app.use(bodyParser.json());
-  app.use(cors({
-    credentials: true,
-    maxAge: 1000 * 60 * 60 * 24,
-    origin: "http://localhost:3000",
-  }));
+  app.use(
+    cors({
+      credentials: true,
+      maxAge: 1000 * 60 * 60 * 24,
+      origin: "http://localhost:5173",
+    }),
+  );
   app.use(
     session({
       store: sessionStore,
       secret: `${SESSION_SECRET}`,
       resave: false,
       saveUninitialized: false,
-      name: 'session',
+      name: "session",
       cookie: {
         httpOnly: true,
         sameSite: "lax",
@@ -63,15 +66,17 @@ async function bootstrap() {
   const server = new ApolloServer({
     schema,
     formatError(formattedError, error) {
-      const validationErrors = formattedError?.extensions?.validationErrors as ValidationError[];
-      const errors = (validationErrors) ? validationErrors.map(error => ({ constraints: error.constraints })) : []
+      const validationErrors = formattedError?.extensions
+        ?.validationErrors as ValidationError[];
+      const errors = validationErrors
+        ? validationErrors.map((error) => ({ constraints: error.constraints }))
+        : [];
       return {
         message: formattedError.message,
         code: formattedError.extensions?.code,
-        validationErrors: errors
+        validationErrors: errors,
       };
     },
-    
   });
 
   await server.start();

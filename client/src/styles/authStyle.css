@@ -67,4 +67,5 @@
 
 button:disabled {
   background-color: #8ec5ff !important;
+  cursor: not-allowed;
 }

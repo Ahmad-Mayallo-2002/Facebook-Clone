@@ -27,3 +27,13 @@ export const VERIFY_CODE = gql`
     verifyCode(code: $code)
   }
 `;
+
+export const RESET_PASSWORD = gql`
+  mutation ($confirmPassword: String!, $newPassword: String!, $email: String!) {
+    resetPassword(
+      confirmPassword: $confirmPassword
+      newPassword: $newPassword
+      email: $email
+    )
+  }
+`;

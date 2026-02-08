@@ -89,6 +89,12 @@ export default function Login() {
               <p className="auth-error-text">{errors.password.message}</p>
             )}
           </div>
+          <Link
+            to="/forgot-password"
+            className="text-blue-600 hover:text-blue-700"
+          >
+            Forgot Password?
+          </Link>
           <button
             disabled={loading}
             className={`main-button bg-blue-600 hover:bg-blue-700 text-white duration-200 ${loading ? "cursor-not-allowed" : "cursor-pointer"}`}
