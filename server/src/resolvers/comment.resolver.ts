@@ -17,6 +17,7 @@ import { CheckToken } from "../middlewares/checkToken.middleware";
 import { Roles } from "../enums/roles.enum";
 import { User } from "../entities/user.entity";
 import { Context } from "../interfaces/context.interface";
+import { React } from "../entities/react.entity";
 
 @Service()
 @Resolver(() => Comment)
@@ -75,10 +76,12 @@ export class CommentResolver {
 
   // Field Resolver for Data Loader
   @FieldResolver(() => User)
-  async user(
-    @Root() comment: Comment,
-    @Ctx() { idByUserLoader }: Context,
-  ) {
+  async user(@Root() comment: Comment, @Ctx() { idByUserLoader }: Context) {
     return await idByUserLoader.load(comment.userId);
+  }
+
+  @FieldResolver(() => React)
+  async reacts(@Root() comment: Comment, @Ctx() { reactsByPostLoader }: Context) {
+    return await reactsByPostLoader.load(comment.id);
   }
 }

@@ -52,6 +52,9 @@ export class PostService {
   async getById(id: string): Promise<Post> {
     const post = await this.postRepo.findOne({
       where: { id },
+      relations: {
+        reacts: true,
+      },
     });
     if (!post) throw new Error("Post not found");
     return post;

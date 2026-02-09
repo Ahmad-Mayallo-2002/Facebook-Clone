@@ -1,4 +1,14 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+  UseMiddleware,
+} from "type-graphql";
 import { Service } from "typedi";
 import { React } from "../entities/react.entity";
 import { ReactService } from "../services/react.service";
@@ -6,71 +16,86 @@ import { Emotions } from "../enums/emotions.enum";
 import { CheckToken } from "../middlewares/checkToken.middleware";
 import { Context } from "../interfaces/context.interface";
 import { Roles } from "../enums/roles.enum";
+import { User } from "../entities/user.entity";
 
-@UseMiddleware(CheckToken)
 @Service()
-@Resolver()
+@Resolver(() => React)
+@UseMiddleware(CheckToken)
 export class ReactResolver {
-    constructor(private readonly reactService: ReactService) { }
+  constructor(private readonly reactService: ReactService) {}
 
-    @Authorized(Roles.ADMIN)
-    @Query(() => [React])
-    async getAllReacts() {
-        return await this.reactService.getAllReacts();
-    }
+  // @Authorized(Roles.ADMIN)
+  @Query(() => [React])
+  async getAllReacts() {
+    return await this.reactService.getAllReacts();
+  }
 
-    @Authorized(Roles.ADMIN)
-    @Query(() => React)
-    async getReact(@Arg("id") id: string) {
-        return await this.reactService.getById(id);
-    }
+  // @Authorized(Roles.ADMIN)
+  @Query(() => React)
+  async getReact(@Arg("id") id: string) {
+    return await this.reactService.getById(id);
+  }
 
-    @Query(() => [React])
-    async getUserReacts(@Arg("userId") userId: string) {
-        return await this.reactService.getUserReacts(userId);
-    }
+  @Query(() => [React])
+  async getUserReacts(@Arg("userId") userId: string) {
+    return await this.reactService.getUserReacts(userId);
+  }
 
-    @Query(() => [React])
-    async getPostReacts(@Arg("postId") postId: string) {
-        return await this.reactService.getPostReacts(postId);
-    }
+  @Query(() => [React])
+  async getPostReacts(@Arg("postId") postId: string) {
+    return await this.reactService.getPostReacts(postId);
+  }
 
-    @Query(() => [React])
-    async getCommentReacts(@Arg("commentId") commentId: string) {
-        return await this.reactService.getCommentReacts(commentId);
-    }
+  @Query(() => [React])
+  async getCommentReacts(@Arg("commentId") commentId: string) {
+    return await this.reactService.getCommentReacts(commentId);
+  }
 
-    @Mutation(() => String)
-    async addOrRemovePostReact(
-        @Ctx() { req: { session } }: Context,
-        @Arg("postId") postId: string,
-        @Arg("value", () => Emotions) value: Emotions
-    ) {
-        const userId = (session as any).user.id;
-        return await this.reactService.addOrRemoveOrPostReact(userId, value, postId);
-    }
+  @Mutation(() => String)
+  async addOrRemovePostReact(
+    @Ctx() { req: { session } }: Context,
+    @Arg("postId") postId: string,
+    @Arg("value", () => Emotions) value: Emotions,
+  ) {
+    const userId = (session as any).user.id;
+    return await this.reactService.addOrRemoveOrPostReact(
+      userId,
+      value,
+      postId,
+    );
+  }
 
-    @Mutation(() => String)
-    async addOrRemoveCommentReact(
-        @Ctx() { req: { session } }: Context,
-        @Arg("commentId") commentId: string,
-        @Arg("value", () => Emotions) value: Emotions
-    ) {
-        const userId = (session as any).user.id;
-        return await this.reactService.addOrRemoveOrCommentReact(userId, value, commentId);
-    }
+  @Mutation(() => String)
+  async addOrRemoveCommentReact(
+    @Ctx() { req: { session } }: Context,
+    @Arg("commentId") commentId: string,
+    @Arg("value", () => Emotions) value: Emotions,
+  ) {
+    const userId = (session as any).user.id;
+    return await this.reactService.addOrRemoveOrCommentReact(
+      userId,
+      value,
+      commentId,
+    );
+  }
 
-    @Mutation(() => React)
-    async updateReact(
-        @Arg("id") id: string,
-        @Arg("value", () => Emotions) value: Emotions
-    ) {
-        return await this.reactService.updateReact(id, value);
-    }
+  @Mutation(() => React)
+  async updateReact(
+    @Arg("id") id: string,
+    @Arg("value", () => Emotions) value: Emotions,
+  ) {
+    return await this.reactService.updateReact(id, value);
+  }
 
-    @Authorized(Roles.ADMIN)
-    @Mutation(() => Boolean)
-    async deleteReact(@Arg("id") id: string) {
-        return await this.reactService.deleteReact(id);
-    }
+  @Authorized(Roles.ADMIN)
+  @Mutation(() => Boolean)
+  async deleteReact(@Arg("id") id: string) {
+    return await this.reactService.deleteReact(id);
+  }
+
+  // Field Resolver for Data Loader
+  @FieldResolver(() => User)
+  async user(@Root() react: React, @Ctx() { idByUserLoader }: Context) {
+    return await idByUserLoader.load(react.userId);
+  }
 }
