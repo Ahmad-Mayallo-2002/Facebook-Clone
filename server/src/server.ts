@@ -2,8 +2,6 @@ import { config } from "dotenv";
 import express from "express";
 import bodyParser from "body-parser";
 import session from "express-session";
-import cookieParser from "cookie-parser";
-import "reflect-metadata";
 import { buildSchemaSync } from "type-graphql";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express5";
@@ -12,13 +10,14 @@ import { log } from "console";
 import { join } from "path";
 import { globalMiddlewares, resolvers } from "./utils/buildSchema";
 import { connect } from "./dataSource";
-import "./bullmq/worker/email.worker";
 import { ValidationError } from "class-validator";
 import { sessionStore } from "./redis/session.redis";
 import { graphqlUploadExpress } from "graphql-upload-ts";
-import Container from "typedi";
+import { Container } from "typedi";
 import { AuthChecker } from "./graphql/authChecker/authChecker";
-import './bullmq/worker/email.worker';
+import "reflect-metadata";
+import "./bullmq/worker/email.worker";
+import { commentLoader, postLoader, userLoader } from "./interfaces/loader.interface";
 
 async function bootstrap() {
   config();
@@ -90,6 +89,12 @@ async function bootstrap() {
         res,
         session: req.session,
         cookies: req.cookies,
+        // User Loader
+        ...userLoader,
+        // Post Loader
+        ...postLoader,
+        // Comment Loader
+        ...commentLoader,
       }),
     }),
   );

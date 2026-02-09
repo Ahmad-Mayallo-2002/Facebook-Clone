@@ -7,8 +7,8 @@ import { User } from "./user.entity";
 import { Post } from "./post.entity";
 import { Comment } from "./comment.entity";
 
-@ObjectType({implements: IdDate})
-@Entity({name: 'reacts'})
+@ObjectType({ implements: IdDate })
+@Entity({ name: "reacts" })
 export class React extends IdDate {
   @Field(() => Emotions)
   @Column({ type: "enum", enum: Emotions })
@@ -19,30 +19,30 @@ export class React extends IdDate {
   type!: ReactType;
 
   @Field()
-  @Column({type: 'varchar', length: 100, name: 'user_id'})
+  @Column({ type: "varchar", length: 100, name: "user_id" })
   userId!: string;
 
-  @Field(() => ID,{nullable: true})
-  @Column({type: 'varchar', length: 100, name: 'post_id', nullable: true})
-  postId: string | undefined;
+  @Field(() => ID, { nullable: true })
+  @Column({ type: "varchar", length: 100, name: "post_id", nullable: true })
+  postId!: string;
 
-  @Field(() => ID, {nullable: true})
-  @Column({type: 'varchar', length: 100, name: 'comment_id', nullable: true})
-  commentId: string | undefined;
+  @Field(() => ID, { nullable: true })
+  @Column({ type: "varchar", length: 100, name: "comment_id", nullable: true })
+  commentId!: string;
 
   // Relationships
   @Field(() => User)
-  @JoinColumn()
-  @ManyToOne(() => User, user => user.reacts)
+  @JoinColumn({ name: "user" })
+  @ManyToOne(() => User, (user) => user.reacts)
   user!: Relation<User>;
-  
+
   @Field(() => Post)
-  @JoinColumn()
-  @ManyToOne(() => Post, post => post.reacts)
+  @JoinColumn({ name: "post" })
+  @ManyToOne(() => Post, (post) => post.reacts)
   post!: Relation<Post>;
-  
+
   @Field(() => Comment)
-  @JoinColumn()
-  @ManyToOne(() => Comment, comment => comment.reacts)
+  @JoinColumn({ name: "comment" })
+  @ManyToOne(() => Comment, (comment) => comment.reacts)
   comment!: Relation<Comment>;
 }

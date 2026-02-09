@@ -1,14 +1,26 @@
-import { Arg, Authorized, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+  UseMiddleware,
+} from "type-graphql";
 import { Service } from "typedi";
 import { Comment } from "../entities/comment.entity";
 import { CommentService } from "../services/comment.service";
 import { CommentInput } from "../graphql/inputs/comment.input";
 import { CheckToken } from "../middlewares/checkToken.middleware";
 import { Roles } from "../enums/roles.enum";
+import { User } from "../entities/user.entity";
+import { Context } from "../interfaces/context.interface";
 
-@UseMiddleware(CheckToken)
 @Service()
-@Resolver()
+@Resolver(() => Comment)
+@UseMiddleware(CheckToken)
 export class CommentResolver {
   constructor(private readonly commentService: CommentService) {}
 
@@ -37,7 +49,7 @@ export class CommentResolver {
   async createComment(
     @Arg("userId") userId: string,
     @Arg("postId") postId: string,
-    @Arg("input", () => CommentInput) input: CommentInput
+    @Arg("input", () => CommentInput) input: CommentInput,
   ) {
     return await this.commentService.createComment(userId, postId, input);
   }
@@ -45,7 +57,7 @@ export class CommentResolver {
   @Mutation(() => Comment)
   async updateComment(
     @Arg("id") id: string,
-    @Arg("input", () => CommentInput) input: CommentInput
+    @Arg("input", () => CommentInput) input: CommentInput,
   ) {
     return await this.commentService.updateComment(id, input);
   }
@@ -59,5 +71,14 @@ export class CommentResolver {
   @Mutation(() => Boolean)
   async deleteComment(@Arg("id") id: string) {
     return await this.commentService.deleteComment(id);
+  }
+
+  // Field Resolver for Data Loader
+  @FieldResolver(() => User)
+  async user(
+    @Root() comment: Comment,
+    @Ctx() { idByUserLoader }: Context,
+  ) {
+    return await idByUserLoader.load(comment.userId);
   }
 }
