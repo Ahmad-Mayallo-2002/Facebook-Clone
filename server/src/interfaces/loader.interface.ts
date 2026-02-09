@@ -1,3 +1,4 @@
+import { createReactsByCommentLoader } from "../loader/commentLoader/react.loader";
 import { createCommentsByPostLoader } from "../loader/postLoader/comment.loader";
 import { createReactsByPostLoader } from "../loader/postLoader/react.loader";
 import { createCommentByUserLoader } from "../loader/userLoader/comment.loader";
@@ -26,6 +27,10 @@ export const postLoader: PostLoader = {
   reactsByPostLoader: createReactsByPostLoader(),
 };
 
-export interface CommentLoader {}
+export interface CommentLoader {
+  reactsByCommentLoader: ReturnType<typeof createReactsByCommentLoader>;
+}
 
-export const commentLoader: CommentLoader = {};
+export const commentLoader: CommentLoader = {
+  reactsByCommentLoader: createReactsByCommentLoader(),
+};

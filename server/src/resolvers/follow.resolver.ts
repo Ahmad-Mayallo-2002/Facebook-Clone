@@ -1,60 +1,93 @@
-import { Arg, Authorized, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
 import { Service } from "typedi";
 import { Follow } from "../entities/follow.entity";
 import { FollowService } from "../services/follow.service";
 import { CheckToken } from "../middlewares/checkToken.middleware";
 import { Roles } from "../enums/roles.enum";
+import { FollowPaginated } from "../graphql/objectTypes/followPaginated";
 
 @UseMiddleware(CheckToken)
 @Service()
 @Resolver()
 export class FollowResolver {
-    constructor(private readonly followService: FollowService) { }
+  constructor(private readonly followService: FollowService) {}
 
-    @Authorized(Roles.ADMIN)
-    @Query(() => [Follow])
-    async getAllFollows() {
-        return await this.followService.getAllFollows();
-    }
+  @Authorized(Roles.ADMIN)
+  @Query(() => FollowPaginated)
+  async getAllFollows(@Arg("take") take: number, @Arg("skip") skip: number) {
+    return await this.followService.getAllFollows(take, skip);
+  }
 
-    @Authorized(Roles.ADMIN)
-    @Query(() => Follow)
-    async getFollow(@Arg("id") id: string) {
-        return await this.followService.getById(id);
-    }
+  @Authorized(Roles.ADMIN)
+  @Query(() => Follow)
+  async getFollow(@Arg("id") id: string) {
+    return await this.followService.getById(id);
+  }
 
-    @Query(() => [Follow])
-    async getUserFollowers(@Arg("userId") userId: string) {
-        return await this.followService.getUserFollowers(userId);
-    }
+  @Query(() => FollowPaginated)
+  async getUserFollowers(
+    @Arg("userId") userId: string,
+    @Arg("take") take: number,
+    @Arg("skip") skip: number,
+  ) {
+    return await this.followService.getUserFollowers(userId, take, skip);
+  }
 
-    @Query(() => [Follow])
-    async getUserFollowings(@Arg("userId") userId: string) {
-        return await this.followService.getUserFollowings(userId);
-    }
+  @Query(() => FollowPaginated)
+  async getUserFollowings(
+    @Arg("userId") userId: string,
+    @Arg("take") take: number,
+    @Arg("skip") skip: number,
+  ) {
+    return await this.followService.getUserFollowings(userId, take, skip);
+  }
 
-    @Query(() => [Follow])
-    async getPageFollowers(@Arg("pageId") pageId: string) {
-        return await this.followService.getPageFollowers(pageId);
-    }
+  @Query(() => FollowPaginated)
+  async getPageFollowers(
+    @Arg("pageId") pageId: string,
+    @Arg("take") take: number,
+    @Arg("skip") skip: number,
+  ) {
+    return await this.followService.getPageFollowers(pageId, take, skip);
+  }
 
-    @Query(() => [Follow])
-    async getPageFollowings(@Arg("userId") userId: string) {
-        return await this.followService.getPageFollowings(userId);
-    }
+  @Query(() => FollowPaginated)
+  async getPageFollowings(
+    @Arg("userId") userId: string,
+    @Arg("take") take: number,
+    @Arg("skip") skip: number,
+  ) {
+    return await this.followService.getPageFollowings(userId, take, skip);
+  }
 
-    @Mutation(() => Follow)
-    async addUserFollowing(@Arg('userId') userId: string, @Arg('targetId') targetId: string): Promise<Follow> {
-        return await this.followService.addUserFollowing(userId, targetId);
-    }
+  @Mutation(() => Follow)
+  async addUserFollowing(
+    @Arg("userId") userId: string,
+    @Arg("targetId") targetId: string,
+  ): Promise<Follow> {
+    return await this.followService.addUserFollowing(userId, targetId);
+  }
 
-    @Mutation(() => Follow)
-    async addPageFollowing(@Arg('userId') userId: string, @Arg('pageId') pageId: string): Promise<Follow> {
-        return await this.followService.addPageFollowing(userId, pageId);
-    }
+  @Mutation(() => Follow)
+  async addPageFollowing(
+    @Arg("userId") userId: string,
+    @Arg("pageId") pageId: string,
+  ): Promise<Follow> {
+    return await this.followService.addPageFollowing(userId, pageId);
+  }
 
-    @Mutation(() => Boolean)
-    async cancelFollowing(@Arg('userId') userId: string, @Arg('targetId') targetId: string) {
-        return await this.followService.cancelFollowing(userId, targetId);
-    }
+  @Mutation(() => Boolean)
+  async cancelFollowing(
+    @Arg("userId") userId: string,
+    @Arg("targetId") targetId: string,
+  ) {
+    return await this.followService.cancelFollowing(userId, targetId);
+  }
 }

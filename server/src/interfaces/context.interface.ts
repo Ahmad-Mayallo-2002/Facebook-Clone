@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { UserLoader, PostLoader } from "./loader.interface";
+import { UserLoader, PostLoader, CommentLoader } from "./loader.interface";
 
-export interface Context extends UserLoader, PostLoader {
+export interface Context extends UserLoader, PostLoader, CommentLoader {
   user: any;
   req: Request;
   res: Response;

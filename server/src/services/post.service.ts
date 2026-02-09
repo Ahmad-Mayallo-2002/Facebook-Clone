@@ -7,6 +7,8 @@ import { CloudinaryUploader } from "../utils/cloudinaryUploader";
 import { MediaObject } from "../interfaces/mediaObject.interface";
 import { UploadApiResponse, v2 } from "cloudinary";
 import { getRepo } from "../utils/getRepo";
+import { PaginatedData } from "../interfaces/pagination.interface";
+import { paginationCalculation } from "../utils/paginationCalculation";
 
 @Service()
 export class PostService {
@@ -40,13 +42,16 @@ export class PostService {
     return await this.postRepo.save(post);
   }
 
-  async getPosts(): Promise<Post[]> {
-    const posts = await this.postRepo.find({
+  async getPosts(take: number, skip: number): Promise<PaginatedData<Post>> {
+    const [posts, counts] = await this.postRepo.findAndCount({
       where: { isVisible: true },
       order: { createdAt: "DESC" },
+      take,
+      skip,
     });
     if (!posts.length) throw new Error("No posts found");
-    return posts;
+    const pagination = paginationCalculation({ counts, take, skip });
+    return { data: posts, pagination };
   }
 
   async getById(id: string): Promise<Post> {
@@ -60,13 +65,20 @@ export class PostService {
     return post;
   }
 
-  async getUserPosts(userId: string): Promise<Post[]> {
-    const posts = await this.postRepo.find({
+  async getUserPosts(
+    userId: string,
+    take: number,
+    skip: number,
+  ): Promise<PaginatedData<Post>> {
+    const [posts, counts] = await this.postRepo.findAndCount({
       where: { userId, isVisible: true },
       order: { createdAt: "DESC" },
+      take,
+      skip,
     });
     if (!posts.length) throw new Error("No posts found for this user");
-    return posts;
+    const pagination = paginationCalculation({ counts, take, skip });
+    return { data: posts, pagination };
   }
 
   async updatePost(id: string, input: Partial<CreatePostInput>): Promise<Post> {
@@ -105,9 +117,9 @@ export class PostService {
     return true;
   }
 
-  async deleteUserPosts(userId: string): Promise<boolean> {
-    const posts = await this.getUserPosts(userId);
-    await this.postRepo.remove(posts);
-    return true;
-  }
+  // async deleteUserPosts(userId: string): Promise<boolean> {
+  //   const {data} = await this.getUserPosts(userId);
+  //   await this.postRepo.remove(data);
+  //   return true;
+  // }
 }

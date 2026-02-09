@@ -18,6 +18,7 @@ import { Roles } from "../enums/roles.enum";
 import { User } from "../entities/user.entity";
 import { Context } from "../interfaces/context.interface";
 import { React } from "../entities/react.entity";
+import { CommentPaginated } from "../graphql/objectTypes/commentPaginated";
 
 @Service()
 @Resolver(() => Comment)
@@ -26,9 +27,9 @@ export class CommentResolver {
   constructor(private readonly commentService: CommentService) {}
 
   @Authorized(Roles.ADMIN)
-  @Query(() => [Comment])
-  async getAllComments() {
-    return await this.commentService.getAllComments();
+  @Query(() => CommentPaginated)
+  async getAllComments(@Arg("take") take: number, @Arg("skip") skip: number) {
+    return await this.commentService.getAllComments(take, skip);
   }
 
   @Query(() => Comment)
@@ -36,14 +37,22 @@ export class CommentResolver {
     return await this.commentService.getById(id);
   }
 
-  @Query(() => [Comment])
-  async getPostComments(@Arg("postId") postId: string) {
-    return await this.commentService.getPostComments(postId);
+  @Query(() => CommentPaginated)
+  async getPostComments(
+    @Arg("postId") postId: string,
+    @Arg("take") take: number,
+    @Arg("skip") skip: number,
+  ) {
+    return await this.commentService.getPostComments(postId, take, skip);
   }
 
-  @Query(() => [Comment])
-  async getUserComments(@Arg("userId") userId: string) {
-    return await this.commentService.getUserComments(userId);
+  @Query(() => CommentPaginated)
+  async getUserComments(
+    @Arg("userId") userId: string,
+    @Arg("take") take: number,
+    @Arg("skip") skip: number,
+  ) {
+    return await this.commentService.getUserComments(userId, take, skip);
   }
 
   @Mutation(() => Comment)
@@ -80,8 +89,11 @@ export class CommentResolver {
     return await idByUserLoader.load(comment.userId);
   }
 
-  @FieldResolver(() => React)
-  async reacts(@Root() comment: Comment, @Ctx() { reactsByPostLoader }: Context) {
-    return await reactsByPostLoader.load(comment.id);
+  @FieldResolver(() => [React])
+  async reacts(
+    @Root() comment: Comment,
+    @Ctx() { reactsByCommentLoader }: Context,
+  ) {
+    return await reactsByCommentLoader.load(comment.id);
   }
 }

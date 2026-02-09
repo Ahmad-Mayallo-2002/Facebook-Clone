@@ -17,6 +17,7 @@ import { CheckToken } from "../middlewares/checkToken.middleware";
 import { Context } from "../interfaces/context.interface";
 import { Roles } from "../enums/roles.enum";
 import { User } from "../entities/user.entity";
+import { ReactPaginated } from "../graphql/objectTypes/reactPaginated";
 
 @Service()
 @Resolver(() => React)
@@ -25,9 +26,9 @@ export class ReactResolver {
   constructor(private readonly reactService: ReactService) {}
 
   // @Authorized(Roles.ADMIN)
-  @Query(() => [React])
-  async getAllReacts() {
-    return await this.reactService.getAllReacts();
+  @Query(() => ReactPaginated)
+  async getAllReacts(@Arg("take") take: number, @Arg("skip") skip: number) {
+    return await this.reactService.getAllReacts(take, skip);
   }
 
   // @Authorized(Roles.ADMIN)
@@ -36,19 +37,31 @@ export class ReactResolver {
     return await this.reactService.getById(id);
   }
 
-  @Query(() => [React])
-  async getUserReacts(@Arg("userId") userId: string) {
-    return await this.reactService.getUserReacts(userId);
+  @Query(() => ReactPaginated)
+  async getUserReacts(
+    @Arg("userId") userId: string,
+    @Arg("take") take: number,
+    @Arg("skip") skip: number,
+  ) {
+    return await this.reactService.getUserReacts(userId, take, skip);
   }
 
-  @Query(() => [React])
-  async getPostReacts(@Arg("postId") postId: string) {
-    return await this.reactService.getPostReacts(postId);
+  @Query(() => ReactPaginated)
+  async getPostReacts(
+    @Arg("postId") postId: string,
+    @Arg("take") take: number,
+    @Arg("skip") skip: number,
+  ) {
+    return await this.reactService.getPostReacts(postId, take, skip);
   }
 
-  @Query(() => [React])
-  async getCommentReacts(@Arg("commentId") commentId: string) {
-    return await this.reactService.getCommentReacts(commentId);
+  @Query(() => ReactPaginated)
+  async getCommentReacts(
+    @Arg("commentId") commentId: string,
+    @Arg("take") take: number,
+    @Arg("skip") skip: number,
+  ) {
+    return await this.reactService.getCommentReacts(commentId, take, skip);
   }
 
   @Mutation(() => String)

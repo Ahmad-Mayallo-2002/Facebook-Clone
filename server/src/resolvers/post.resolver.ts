@@ -18,6 +18,7 @@ import { Roles } from "../enums/roles.enum";
 import { Context } from "../interfaces/context.interface";
 import { React } from "../entities/react.entity";
 import { User } from "../entities/user.entity";
+import { PostPaginated } from "../graphql/objectTypes/postPaginated";
 
 @UseMiddleware(CheckToken)
 @Service()
@@ -25,9 +26,9 @@ import { User } from "../entities/user.entity";
 export class PostResolver {
   constructor(private readonly postService: PostService) {}
 
-  @Query(() => [Post])
-  async getPosts() {
-    return await this.postService.getPosts();
+  @Query(() => PostPaginated)
+  async getPosts(@Arg("take") take: number, @Arg("skip") skip: number) {
+    return await this.postService.getPosts(take, skip);
   }
 
   @Query(() => Post)
@@ -35,9 +36,13 @@ export class PostResolver {
     return await this.postService.getById(id);
   }
 
-  @Query(() => [Post])
-  async getUserPosts(@Arg("userId") userId: string) {
-    return await this.postService.getUserPosts(userId);
+  @Query(() => PostPaginated)
+  async getUserPosts(
+    @Arg("userId") userId: string,
+    @Arg("take") take: number,
+    @Arg("skip") skip: number,
+  ) {
+    return await this.postService.getUserPosts(userId, take, skip);
   }
 
   @Mutation(() => Post)

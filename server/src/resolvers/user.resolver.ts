@@ -18,6 +18,7 @@ import { Roles } from "../enums/roles.enum";
 import { Post } from "../entities/post.entity";
 import { Context } from "../interfaces/context.interface";
 import { Comment } from "../entities/comment.entity";
+import { UserPaginated } from "../graphql/objectTypes/userPaginated";
 
 @UseMiddleware(CheckToken)
 @Service()
@@ -25,9 +26,9 @@ import { Comment } from "../entities/comment.entity";
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Query(() => [User])
-  async getAllUsers() {
-    return await this.userService.getAll();
+  @Query(() => UserPaginated)
+  async getAllUsers(@Arg("take") take: number, @Arg("skip") skip: number) {
+    return await this.userService.getAll(take, skip);
   }
 
   @Query(() => User)
