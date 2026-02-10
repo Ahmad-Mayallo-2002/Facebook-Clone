@@ -6,15 +6,21 @@ import { UploaderContext } from "../utils/uploaderContext";
 import { CloudinaryUploader } from "../utils/cloudinaryUploader";
 import { UploadApiResponse, v2 } from "cloudinary";
 import { getRepo } from "../utils/getRepo";
+import { PaginatedData } from "../interfaces/pagination.interface";
+import { paginationCalculation } from "../utils/paginationCalculation";
 
 @Service()
 export class UserService {
   private userRepo = getRepo<User>(User);
 
-  async getAll(): Promise<User[]> {
-    const users = await this.userRepo.find();
+  async getAll(take: number, skip: number): Promise<PaginatedData<User>> {
+    const [users, counts] = await this.userRepo.findAndCount({
+      take,
+      skip,
+    });
     if (!users.length) throw new Error("No users found");
-    return users;
+    const pagination = paginationCalculation({ counts, take, skip });
+    return { data: users, pagination };
   }
 
   async getById(id: string): Promise<User> {
@@ -25,10 +31,7 @@ export class UserService {
     return user;
   }
 
-  async updateUser(
-    id: string,
-    input: Partial<UserInput>
-  ): Promise<User> {
+  async updateUser(id: string, input: Partial<UserInput>): Promise<User> {
     const user = await this.userRepo.findOne({
       where: { id },
     });
@@ -37,12 +40,15 @@ export class UserService {
     const { image, banner, ...rest } = input;
     const data: DeepPartial<User> = { ...rest };
 
-
     if (image) {
       await v2.api.delete_all_resources([user.image.public_id]);
       const file = await image;
       const uploader = new UploaderContext(new CloudinaryUploader());
-      const { secure_url: url, public_id, ...rest } = await uploader.performStrategy(file) as UploadApiResponse;
+      const {
+        secure_url: url,
+        public_id,
+        ...rest
+      } = (await uploader.performStrategy(file)) as UploadApiResponse;
       data.image = { url, public_id };
     }
 
@@ -50,7 +56,9 @@ export class UserService {
       await v2.api.delete_all_resources([user.banner.public_id]);
       const file = await banner;
       const uploader = new UploaderContext(new CloudinaryUploader());
-      const { secure_url: url, public_id } = await uploader.performStrategy(file) as UploadApiResponse;
+      const { secure_url: url, public_id } = (await uploader.performStrategy(
+        file,
+      )) as UploadApiResponse;
       data.banner = { url, public_id };
     }
 
@@ -74,6 +82,6 @@ export class UserService {
     if (!user) throw new Error("User not found");
     user.isActive = status;
     await this.userRepo.save(user);
-    return `This user is ${status ? 'active' : 'unactive'}`
+    return `This user is ${status ? "active" : "unactive"}`;
   }
 }

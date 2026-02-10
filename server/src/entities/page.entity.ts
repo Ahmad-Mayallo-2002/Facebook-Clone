@@ -1,9 +1,10 @@
 import { Field, ID, ObjectType } from "type-graphql";
-import { Column, Entity, JoinColumn, ManyToOne, Relation } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, Relation } from "typeorm";
 import { IdDate } from "../graphql/interfaceTypes/IdDate";
 import { MediaObjectType } from "../graphql/objectTypes/mediaObject";
 import { MediaObject } from "../interfaces/mediaObject.interface";
 import { User } from "./user.entity";
+import { Follow } from "./follow.entity";
 
 @ObjectType({ implements: IdDate })
 @Entity({ name: "pages" })
@@ -29,4 +30,8 @@ export class Page extends IdDate {
   @JoinColumn()
   @ManyToOne(() => User, user => user.pages)
   user!: Relation<User>;
+
+  @Field(() => [Follow])
+  @OneToMany(() => Follow, follow => follow.followingPage)
+  followers!: Relation<Follow[]>;
 }

@@ -11,5 +11,4 @@ export const emailWorker = new Worker('email-queue', async (job) => {
 }, {
     connection: connectionOptions,
     concurrency: 5,
-    autorun: false
 });

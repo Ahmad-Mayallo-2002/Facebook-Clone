@@ -1,5 +1,5 @@
 import { Field, ObjectType } from "type-graphql";
-import { BaseEntity, BeforeInsert, Column, Entity, OneToMany, Relation } from "typeorm";
+import { BeforeInsert, Column, Entity, OneToMany, Relation } from "typeorm";
 import { IdDate } from "../graphql/interfaceTypes/IdDate";
 import { Roles } from "../enums/roles.enum";
 import { MediaObject } from "../interfaces/mediaObject.interface";
@@ -73,7 +73,7 @@ export class User extends IdDate {
   notifications!: Relation<Notification[]>;
 
   @Field(() => [Follow])
-  @OneToMany(() => Follow, follow => follow.following)
+  @OneToMany(() => Follow, follow => follow.followingUser)
   followers!: Relation<Follow[]>;
 
   @Field(() => [Follow])

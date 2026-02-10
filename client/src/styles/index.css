@@ -1,0 +1,84 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+body {
+  background-color: #f9fafb;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+}
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.main-button {
+  padding: 10px 20px;
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.center-x {
+  display: flex;
+  justify-content: center;
+}
+
+.center-y {
+  display: flex;
+  align-items: center;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+.panel {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.center-absolute {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #000;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  opacity: 0.25;
+}
+
+.dialog-content {
+  max-width: 400px;
+  width: 100%;
+  position: absolute;
+  background-color: #fff;
+  z-index: 5555;
+}

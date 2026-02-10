@@ -1,5 +1,12 @@
 import { Field, ID, ObjectType } from "type-graphql";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, Relation } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  Relation,
+} from "typeorm";
 import { IdDate } from "../graphql/interfaceTypes/IdDate";
 import { MediaObject } from "../interfaces/mediaObject.interface";
 import { MediaObjectType } from "../graphql/objectTypes/mediaObject";
@@ -10,16 +17,16 @@ import { React } from "./react.entity";
 @ObjectType({ implements: IdDate })
 @Entity({ name: "posts" })
 export class Post extends IdDate {
-  @Field(() => String, { defaultValue: '' })
-  @Column({ type: "text", default: '' })
+  @Field(() => String, { defaultValue: "" })
+  @Column({ type: "text", default: "" })
   content!: string;
 
   @Field(() => [MediaObjectType], { defaultValue: [] })
-  @Column({ type: 'jsonb', default: [] })
+  @Column({ type: "jsonb", default: [] })
   media!: MediaObject[];
 
   @Field(() => Boolean, { defaultValue: true })
-  @Column({ type: 'boolean', default: true })
+  @Column({ type: "boolean", default: true })
   isVisible!: boolean;
 
   @Field(() => ID)
@@ -28,7 +35,7 @@ export class Post extends IdDate {
 
   // Relationships
   @Field(() => User)
-  @JoinColumn()
+  @JoinColumn({ name: "user" })
   @ManyToOne(() => User, (user) => user.posts)
   user!: Relation<User>;
 

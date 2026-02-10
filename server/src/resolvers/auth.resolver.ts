@@ -4,32 +4,27 @@ import { AuthInput, RegisterInput } from "../graphql/inputs/auth.input";
 import { User } from "../entities/user.entity";
 import { Context } from "../interfaces/context.interface";
 import { Service } from "typedi";
+import { Payload } from "../interfaces/payload.interface";
+import { PayloadType } from "../graphql/objectTypes/payload";
 
 @Service()
 @Resolver()
 export class AuthResolver {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Mutation(() => User)
   async register(@Arg("input") input: RegisterInput): Promise<User> {
     return this.authService.register(input);
   }
 
-  @Mutation(() => String)
+  @Mutation(() => PayloadType)
   async login(
     @Arg("input") input: AuthInput,
-    @Ctx() { res }: Context,
-  ): Promise<string> {
-    const token = await this.authService.login(input);
-
-    res.cookie("accessToken", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-      maxAge: 1000 * 60 * 60
-    });
-
-    return token;
+    @Ctx() { session }: Context,
+  ): Promise<Payload> {
+    const payload = await this.authService.login(input);
+    session.user = payload;
+    return payload;
   }
 
   @Mutation(() => String)
@@ -61,4 +56,3 @@ export class AuthResolver {
     return this.authService.seedAdmin();
   }
 }
-

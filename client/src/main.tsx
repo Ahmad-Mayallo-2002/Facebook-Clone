@@ -1,15 +1,24 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
+import "./styles/index.css";
 import App from "./App.tsx";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-export const queryClient = new QueryClient();
+import { ApolloProvider } from "@apollo/client/react";
+import { client } from "./graphql/apolloClient.ts";
+import { ToastContainer } from "react-toastify";
+import { store } from "./redux/store.ts";
+import { Provider } from "react-redux";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
+    <ApolloProvider client={client}>
+      <Provider store={store}>
+        <App />
+      </Provider>
+      <ToastContainer
+        pauseOnFocusLoss={false}
+        pauseOnHover={false}
+        position="top-right"
+      />
+    </ApolloProvider>
   </StrictMode>,
 );
