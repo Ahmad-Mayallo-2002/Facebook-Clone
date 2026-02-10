@@ -1,17 +1,15 @@
 import { User } from "../entities/user.entity";
-import { Repository } from "typeorm";
 import { AuthInput, RegisterInput } from "../graphql/inputs/auth.input";
 import { config } from "dotenv";
 import { compare, hash } from "bcryptjs";
 import { emailQueue } from "../bullmq/queues/email.queue";
-import { emailWorker } from "../bullmq/worker/email.worker";
 import { Roles } from "../enums/roles.enum";
 import { Gender } from "../enums/gender.enum";
 import { Service } from "typedi";
 import { sign } from "jsonwebtoken";
 import { queueRedis } from "../redis/queue.redis";
 import { getRepo } from "../utils/getRepo";
-import { Payload } from "../interfaces/payload.interface";
+import { LoginResponse, Payload } from "../interfaces/payload.interface";
 
 config();
 
@@ -60,7 +58,7 @@ export class AuthService {
     });
     return {
       token: accessToken,
-      ...payload,
+      ...payload
     };
   }
 

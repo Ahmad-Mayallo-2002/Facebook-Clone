@@ -9,7 +9,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import type { LoginRes } from "@/interface/response";
 import Password from "@/components/ui/Password";
 import InputIcon from "@/components/ui/InputIcon";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface ILogin {
   email: string;
@@ -22,17 +22,18 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm<ILogin>();
-
+  const navigate = useNavigate();
   const [login, { loading }] = useMutation<LoginRes>(LOGIN);
 
-  const onSubmit = async (data: ILogin) =>
-    await login({
-      variables: {
-        input: data,
-      },
-    }).catch((reason) => {
-      toast(reason.message, { type: "error" });
-    });
+  const onSubmit = async (input: ILogin) =>
+    await login({ variables: { input } })
+      .then(() => {
+        navigate("/feed");
+      })
+      .catch((reason) => {
+        toast(reason.message, { type: "error" });
+        console.log(reason);
+      });
 
   return (
     <div className="center w-screen h-screen">

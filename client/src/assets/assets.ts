@@ -105,3 +105,5 @@ export const footerSections: FooterSection[] = [
     ],
   },
 ];
+
+export const mainEndPoint = 'http://localhost:3000';

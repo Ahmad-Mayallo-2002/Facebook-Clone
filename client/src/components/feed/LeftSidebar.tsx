@@ -1,17 +1,17 @@
 import logo from "@/assets/facebook.png";
-import { FaSave } from "react-icons/fa";
+import { FaBookmark } from "react-icons/fa";
 import { HiOutlineUsers } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 
 const links = [
   { icon: HiOutlineUsers, path: "/feed/friends", title: "Friends" },
-  { icon: FaSave, path: "/feed/saved", title: "Saved" },
+  { icon: FaBookmark, path: "/feed/saved", title: "Saved" },
 ];
 
 export default function LeftSidebar() {
   return (
-    <aside className="left-sidebar lg:block hidden h-full">
-      <ul className="grid gap-4">
+    <aside className="left-sidebar lg:block hidden">
+      <ul className="grid gap-4 panel">
         <li className="hover:bg-gray-100 p-2 rounded-md">
           <Link to="/profile" className="center-y gap-x-3">
             <img src={logo} className="w-8" />

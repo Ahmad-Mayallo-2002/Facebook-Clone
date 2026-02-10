@@ -17,7 +17,11 @@ import { Container } from "typedi";
 import { AuthChecker } from "./graphql/authChecker/authChecker";
 import "reflect-metadata";
 import "./bullmq/worker/email.worker";
-import { commentLoader, postLoader, userLoader } from "./interfaces/loader.interface";
+import {
+  commentLoader,
+  postLoader,
+  userLoader,
+} from "./interfaces/loader.interface";
 
 async function bootstrap() {
   config();

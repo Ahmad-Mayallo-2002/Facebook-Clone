@@ -10,7 +10,7 @@ import { PayloadType } from "../graphql/objectTypes/payload";
 @Service()
 @Resolver()
 export class AuthResolver {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Mutation(() => User)
   async register(@Arg("input") input: RegisterInput): Promise<User> {
@@ -20,7 +20,7 @@ export class AuthResolver {
   @Mutation(() => PayloadType)
   async login(
     @Arg("input") input: AuthInput,
-    @Ctx() {session}: Context
+    @Ctx() { session }: Context,
   ): Promise<Payload> {
     const payload = await this.authService.login(input);
     session.user = payload;
@@ -56,4 +56,3 @@ export class AuthResolver {
     return this.authService.seedAdmin();
   }
 }
-

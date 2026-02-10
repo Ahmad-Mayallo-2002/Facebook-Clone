@@ -36,6 +36,12 @@ export class UserResolver {
     return await this.userService.getById(id);
   }
 
+  @Query(() => User, { name: "me" })
+  async me(@Ctx() { session }: Context): Promise<User> {
+    if (!session.user) throw new Error("You are not login");
+    return await this.userService.getById(session.user.id);
+  }
+
   @Mutation(() => User)
   async updateUser(
     @Arg("id") id: string,

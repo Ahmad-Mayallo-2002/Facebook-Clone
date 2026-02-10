@@ -6,5 +6,4 @@ export interface Context extends UserLoader, PostLoader, CommentLoader {
   req: Request;
   res: Response;
   session: any;
-  cookies: any;
 }
