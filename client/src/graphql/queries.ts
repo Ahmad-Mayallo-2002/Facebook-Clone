@@ -37,6 +37,7 @@ export const GET_POSTS = gql`
         }
         createdAt
         updatedAt
+        # Author
         user {
           id
           username
@@ -45,6 +46,7 @@ export const GET_POSTS = gql`
             public_id
           }
         }
+        # Users Reacts
         reacts {
           id
           value
@@ -54,6 +56,29 @@ export const GET_POSTS = gql`
               url
               public_id
             }
+          }
+        }
+        # Users Comments
+        comments {
+          id
+          content
+          createdAt
+          media {
+            url
+            public_id
+          }
+          # Comments Reacts
+          reacts {
+            id
+            value
+          }
+          user {
+            id
+            image {
+              url
+              public_id
+            }
+            username
           }
         }
       }

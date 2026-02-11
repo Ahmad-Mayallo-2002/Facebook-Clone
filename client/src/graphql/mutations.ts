@@ -39,3 +39,11 @@ export const RESET_PASSWORD = gql`
     )
   }
 `;
+
+export const CREATE_COMMENT = gql`
+  mutation ($input: CommentInput!, $postId: String!) {
+    createComment(input: $input, postId: $postId) {
+      id
+    }
+  }
+`;

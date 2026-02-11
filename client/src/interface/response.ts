@@ -25,3 +25,7 @@ export interface GetPosts {
     pagination: Pagination;
   };
 }
+
+export interface CreateCommentRes {
+  createComment: Post;
+}

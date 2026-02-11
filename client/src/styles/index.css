@@ -67,7 +67,7 @@ select:focus {
 .backdrop {
   position: absolute;
   top: 0;
-  left: 0;
+  left: -1rem;
   background: #000;
   width: 100vw;
   height: 100vh;
@@ -76,7 +76,7 @@ select:focus {
 }
 
 .dialog-content {
-  max-width: 400px;
+  max-width: 500px;
   width: 100%;
   position: absolute;
   background-color: #fff;

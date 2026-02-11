@@ -28,9 +28,9 @@ export default function CreatePost() {
         <>
           <span
             onClick={() => setShow(false)}
-            className="absolute bg-black opacity-25 w-screen h-screen top-[0px] left-0"
+            className="absolute bg-black opacity-25 w-screen h-screen top-[0px] -left-4 z-[1]"
           ></span>
-          <form className="dialog panel absolute max-w-100 w-full top-1/2 left-1/2 translate-[-50%]">
+          <form className="dialog panel absolute max-w-100 w-full top-1/2 left-1/2 translate-[-50%] z-[2]">
             <header className="center-y mb-2 justify-between">
               <h3 className="text-xl text-gray-900">Create Post</h3>
               <button

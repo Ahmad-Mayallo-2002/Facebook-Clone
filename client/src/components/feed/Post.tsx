@@ -5,6 +5,8 @@ import { BiLike } from "react-icons/bi";
 import { FaRegComment, FaShare } from "react-icons/fa";
 import EmotionsDialog from "./post/EmotionsDialog";
 import type { Post } from "@/interface/post";
+import CommentsDialog from "./post/CommentsDialog";
+import CreateComment from "./post/CreateComment";
 
 export default function Post({
   user,
@@ -12,11 +14,14 @@ export default function Post({
   content,
   media,
   reacts,
+  comments,
+  id,
 }: Post) {
   const created = new Date(createdAt);
   const diff = new Date().getTime() - created.getTime();
   const [showEmotions, setShowEmotions] = useState(false);
   const [chosenEmotion, setChosenEmotion] = useState<Emotions | null>(null);
+  const [showComment, setShowComment] = useState(false);
 
   const handleLikeClick = () =>
     chosenEmotion ? setChosenEmotion(null) : setShowEmotions(!showEmotions);
@@ -25,9 +30,10 @@ export default function Post({
     setChosenEmotion(emotion);
     setShowEmotions(false);
   };
+
   return (
     <div className="post bg-white rounded-lg mt-4 shadow-sm">
-      <header className="p-3 sm:p-4">
+      <header className="p-3 sm:p-4 post-author">
         <div className="user center-y gap-x-2">
           <img
             src={
@@ -47,29 +53,29 @@ export default function Post({
         </div>
       </header>
 
-      <section className="content">
+      <section className="post-content">
         {content ? <p className="p-3 pt-0">{content}</p> : ""}
         {media && media.length
           ? media.map((m, i) => <img key={i} src={m.url} alt="Image" />)
           : null}
       </section>
 
-      <footer>
+      <footer className="post-actions">
         <div className="counts p-3 pt-0 center-y justify-between text-gray-400">
           <EmotionsDialog reacts={reacts} />
-          <span>45 comments</span>
+          <CommentsDialog comments={comments} />
         </div>
 
-        <hr className="border-gray-200" />
-
-        <div className="grid grid-cols-3 text-gray-600">
+        <div
+          className={`grid grid-cols-3 text-gray-600 border-gray-200 border-t ${!showComment ? "border-b" : ""}`}
+        >
           <div className="emotions-box relative">
             <button
               onClick={handleLikeClick}
               disabled={showEmotions}
               className={`center gap-x-1 p-3 w-full ${
                 showEmotions
-                  ? "cursor-not-allowed opacity-50"
+                  ? "cursor-not-allowed"
                   : "cursor-pointer hover:bg-gray-100"
               }`}
             >
@@ -101,7 +107,10 @@ export default function Post({
               </div>
             )}
           </div>
-          <button className="center gap-x-1 p-3 cursor-pointer hover:bg-gray-100">
+          <button
+            onClick={() => setShowComment(!showComment)}
+            className="center gap-x-1 p-3 cursor-pointer hover:bg-gray-100"
+          >
             <FaRegComment />
             <span>Comment</span>
           </button>
@@ -110,6 +119,12 @@ export default function Post({
             <span>Share</span>
           </button>
         </div>
+
+        <CreateComment
+          setShowComment={setShowComment}
+          postId={id}
+          showComment={showComment}
+        />
       </footer>
     </div>
   );
