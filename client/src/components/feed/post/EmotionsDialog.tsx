@@ -60,7 +60,13 @@ export default function EmotionsDialog({ postId }: { postId: string }) {
 
           {error && <h3>{error.message}</h3>}
 
-          {loading && <div>Loading...</div>}
+          {loading && (
+            <>
+              <div className="h-75 w-full center">
+                <div className="animate-spin border-4 border-t-transparent border-blue-500 w-16 h-16 rounded-full"></div>
+              </div>
+            </>
+          )}
 
           {data && (
             <ul className="p-4 pt-0 space-y-6 max-h-[300px] overflow-y-auto">

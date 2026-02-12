@@ -92,6 +92,38 @@ export class ReactService {
     return react;
   }
 
+  async getUserReactOnPost(userId: string, postId: string) {
+    const react = await this.reactRepo.findOne({ where: { postId, userId } });
+    if (!react) throw new Error("No user react on this post");
+    return react;
+  }
+
+  async getUserReactOnComment(userId: string, commentId: string) {
+    const react = await this.reactRepo.findOne({
+      where: { commentId, userId },
+    });
+    if (!react) throw new Error("No user react on this post");
+    return react;
+  }
+
+  async addRreact(
+    userId: string,
+    value: Emotions,
+    type: ReactType,
+    postId: string,
+  ): Promise<string> {
+    const newReact = this.reactRepo.create({
+      type,
+      value,
+      postId,
+      userId,
+      post: { id: postId },
+      user: { id: userId },
+    });
+    await this.reactRepo.save(newReact);
+    return "New react added";
+  }
+
   async updateReact(id: string, value: Emotions): Promise<React> {
     const react = await this.getById(id);
     react.value = value;
@@ -102,54 +134,5 @@ export class ReactService {
     const react = await this.getById(id);
     await this.reactRepo.remove(react);
     return true;
-  }
-
-  async addOrRemoveOrPostReact(
-    userId: string,
-    value: Emotions,
-    postId: string,
-  ): Promise<string> {
-    const react = await this.reactRepo.findOne({ where: { userId, postId } });
-    if (!react) {
-      const newReact = this.reactRepo.create({
-        type: ReactType.POST,
-        value,
-        userId,
-        user: { id: userId },
-        postId,
-        post: { id: postId },
-      });
-      await this.reactRepo.save(newReact);
-      return `New react added to post`;
-    } else {
-      await this.reactRepo.remove(react);
-      return `React deleted`;
-    }
-  }
-
-  async addOrRemoveOrCommentReact(
-    userId: string,
-    value: Emotions,
-    commentId: string,
-  ): Promise<string> {
-    const react = await this.reactRepo.findOne({
-      where: { userId, commentId },
-    });
-    console.log(react);
-    if (!react) {
-      const newReact = this.reactRepo.create({
-        type: ReactType.COMMENT,
-        value,
-        userId,
-        user: { id: userId },
-        commentId,
-        comment: { id: commentId },
-      });
-      await this.reactRepo.save(newReact);
-      return `New react added to comment`;
-    } else {
-      await this.reactRepo.remove(react);
-      return `Comment deleted`;
-    }
   }
 }

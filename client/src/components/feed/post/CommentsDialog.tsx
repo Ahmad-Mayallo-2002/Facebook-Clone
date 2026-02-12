@@ -40,7 +40,7 @@ export default function CommentsDialog({ postId }: { postId: string }) {
       ></div>
       {/* Content */}
       <div
-        className="content dialog-content rounded-lg center-absolute max-h-[300px] overflow-y-auto"
+        className="content dialog-content rounded-lg center-absolute"
         hidden={!show}
       >
         <header className="center-y justify-between p-3 border-b border-gray-400">
@@ -54,7 +54,7 @@ export default function CommentsDialog({ postId }: { postId: string }) {
         </header>
 
         {data && (
-          <ul className="p-3 space-y-4">
+          <ul className="p-3 space-y-4 max-h-[300px] overflow-y-auto">
             {data?.getPostComments.data.map((comment) => (
               <li key={comment.id}>
                 <CommentBox comment={comment} />
@@ -63,13 +63,17 @@ export default function CommentsDialog({ postId }: { postId: string }) {
           </ul>
         )}
 
+        {loading && (
+          <div className="h-75 w-full center">
+            <div className="animate-spin border-4 border-t-transparent border-blue-500 w-16 h-16 rounded-full"></div>
+          </div>
+        )}
+
         {error && (
           <div className="w-full h-50 center">
             <h4>No Comments Yet.</h4>
           </div>
         )}
-
-        {loading && <div>Loading...</div>}
       </div>
     </div>
   );

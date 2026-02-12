@@ -48,9 +48,15 @@ export const CREATE_COMMENT = gql`
   }
 `;
 
-export const ADD_OR_REMOVE_POST_REACT = gql`
-  mutation ($value: Emotions!, $postId: String!) {
-    addOrRemovePostReact(value: $value, postId: $postId)
+export const ADD_REACT = gql`
+  mutation ($postId: String!, $type: ReactType!, $value: Emotions!) {
+    addReact(postId: $postId, type: $type, value: $value)
+  }
+`;
+
+export const DELETE_REACT = gql`
+  mutation ($reactId: String!) {
+    deleteReact(id: $reactId)
   }
 `;
 

@@ -1,25 +1,14 @@
 import { mainEndPoint, timeAgo } from "@/assets/assets";
-import { emotionList, Emotions } from "@/enums/emotions";
 import { useState } from "react";
-import { BiLike } from "react-icons/bi";
 import { FaRegComment, FaShare } from "react-icons/fa";
 import EmotionsDialog from "./post/EmotionsDialog";
 import type { Post } from "@/interface/post";
 import CommentsDialog from "./post/CommentsDialog";
 import CreateComment from "./post/CreateComment";
+import EmotionsBox from "./post/EmotionsBox";
 
 export default function Post({ user, createdAt, content, media, id }: Post) {
-  const [showEmotions, setShowEmotions] = useState(false);
-  const [chosenEmotion, setChosenEmotion] = useState<Emotions | null>(null);
   const [showComment, setShowComment] = useState(false);
-
-  const handleLikeClick = () =>
-    chosenEmotion ? setChosenEmotion(null) : setShowEmotions(!showEmotions);
-
-  const handleEmotionSelect = (emotion: Emotions) => {
-    setChosenEmotion(emotion);
-    setShowEmotions(false);
-  };
 
   return (
     <div className="post bg-white rounded-lg mt-4 shadow-sm">
@@ -59,44 +48,7 @@ export default function Post({ user, createdAt, content, media, id }: Post) {
         <div
           className={`grid grid-cols-3 text-gray-600 border-gray-200 border-t ${!showComment ? "border-b" : ""}`}
         >
-          <div className="emotions-box relative">
-            <button
-              onClick={handleLikeClick}
-              disabled={showEmotions}
-              className={`center gap-x-1 p-3 w-full ${
-                showEmotions
-                  ? "cursor-not-allowed"
-                  : "cursor-pointer hover:bg-gray-100"
-              }`}
-            >
-              {chosenEmotion ? (
-                <img
-                  src={
-                    emotionList.find((e) => e.name === chosenEmotion)?.icon ||
-                    ""
-                  }
-                  alt={chosenEmotion}
-                  className="w-5 h-5"
-                />
-              ) : (
-                <BiLike />
-              )}
-              <span>{chosenEmotion || "Like"}</span>
-            </button>
-            {showEmotions && (
-              <div className="flex w-fit h-fit gap-3 absolute bg-white p-3 rounded-full top-[-50%] translate-x-[20%]">
-                {emotionList.map(({ name, icon }) => (
-                  <button
-                    className="cursor-pointer"
-                    key={name}
-                    onClick={() => handleEmotionSelect(name)}
-                  >
-                    <img src={icon} alt={name} className="w-5 h-5 mx-auto" />
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <EmotionsBox postId={id} />
           <button
             onClick={() => setShowComment(!showComment)}
             className="center gap-x-1 p-3 cursor-pointer hover:bg-gray-100"

@@ -86,9 +86,19 @@ export const GET_POST_REACTS = gql`
           username
           image {
             url
+            public_id
           }
         }
       }
+    }
+  }
+`;
+
+export const GET_USER_REACT_ON_POST = gql`
+  query ($postId: String!) {
+    getUserReactOnPost(postId: $postId) {
+      id
+      value
     }
   }
 `;
