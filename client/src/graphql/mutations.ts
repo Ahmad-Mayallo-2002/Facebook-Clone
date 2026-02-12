@@ -47,3 +47,17 @@ export const CREATE_COMMENT = gql`
     }
   }
 `;
+
+export const ADD_OR_REMOVE_POST_REACT = gql`
+  mutation ($value: Emotions!, $postId: String!) {
+    addOrRemovePostReact(value: $value, postId: $postId)
+  }
+`;
+
+export const UPDATE_REACT = gql`
+  mutation ($value: Emotions!, $reactId: String!) {
+    updateReact(value: $value, id: $reactId) {
+      id
+    }
+  }
+`;

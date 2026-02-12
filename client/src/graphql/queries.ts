@@ -46,39 +46,46 @@ export const GET_POSTS = gql`
             public_id
           }
         }
-        # Users Reacts
-        reacts {
-          id
-          value
-          user {
-            id
-            image {
-              url
-              public_id
-            }
-          }
+      }
+    }
+  }
+`;
+
+export const GET_POST_COMMENTS = gql`
+  query ($skip: Float!, $take: Float!, $postId: String!) {
+    getPostComments(skip: $skip, take: $take, postId: $postId) {
+      data {
+        id
+        content
+        media {
+          url
+          public_id
         }
-        # Users Comments
-        comments {
+        createdAt
+        user {
           id
-          content
-          createdAt
-          media {
+          username
+          image {
             url
             public_id
           }
-          # Comments Reacts
-          reacts {
-            id
-            value
-          }
-          user {
-            id
-            image {
-              url
-              public_id
-            }
-            username
+        }
+      }
+    }
+  }
+`;
+
+export const GET_POST_REACTS = gql`
+  query ($skip: Float!, $take: Float!, $postId: String!) {
+    getPostReacts(skip: $skip, take: $take, postId: $postId) {
+      data {
+        id
+        value
+        user {
+          id
+          username
+          image {
+            url
           }
         }
       }

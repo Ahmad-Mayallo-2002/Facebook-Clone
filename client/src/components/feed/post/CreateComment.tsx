@@ -1,8 +1,10 @@
 import { CREATE_COMMENT } from "@/graphql/mutations";
 import type { CreateCommentRes } from "@/interface/response";
+import { useMeQuery } from "@/utils/user";
 import { useMutation } from "@apollo/client/react";
 import type { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
+import { IoSend } from "react-icons/io5";
 
 type FormValues = {
   content: string;
@@ -22,11 +24,13 @@ export default function CreateComment({
   const [createComment, { loading }] =
     useMutation<CreateCommentRes>(CREATE_COMMENT);
 
+  const { user } = useMeQuery();
+
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isValid },
+    formState: { isValid },
   } = useForm<FormValues>({
     mode: "onChange", // updates isValid on change
     defaultValues: {
@@ -44,23 +48,22 @@ export default function CreateComment({
           postId,
         },
       });
-
-        reset(); // clear input after success
-        setShowComment(true);
+      reset();
+      setShowComment(true);
     } catch (error) {
       console.error("Failed to create comment:", error);
     }
   };
 
   return (
-    <div hidden={!showComment} className="write-comment m-3 pb-3">
+    <div hidden={!showComment} className="write-comment p-3">
       <form onSubmit={handleSubmit(onSubmit)} className="center-y gap-x-2">
         <div className="author">
-          {/* <img
-            src={data?.me.image.url}
-            className="w-14 h-10 rounded-full"
+          <img
+            src={user?.image.url}
+            className="w-12 h-10 rounded-full"
             alt=""
-          /> */}
+          />
         </div>
 
         <div className="w-full">
@@ -73,19 +76,14 @@ export default function CreateComment({
                 value.trim() !== "" || "Comment cannot be empty",
             })}
           />
-          {errors.content && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.content.message}
-            </p>
-          )}
         </div>
 
         <button
           type="submit"
           disabled={!isValid || loading}
-          className="main-button blue-button !py-2 !px-3 !rounded-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="main-button blue-button !p-3 !rounded-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? "Submitting..." : "Submit"}
+          <IoSend />
         </button>
       </form>
     </div>

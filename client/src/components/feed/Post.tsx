@@ -1,4 +1,4 @@
-import { mainEndPoint } from "@/assets/assets";
+import { mainEndPoint, timeAgo } from "@/assets/assets";
 import { emotionList, Emotions } from "@/enums/emotions";
 import { useState } from "react";
 import { BiLike } from "react-icons/bi";
@@ -8,17 +8,7 @@ import type { Post } from "@/interface/post";
 import CommentsDialog from "./post/CommentsDialog";
 import CreateComment from "./post/CreateComment";
 
-export default function Post({
-  user,
-  createdAt,
-  content,
-  media,
-  reacts,
-  comments,
-  id,
-}: Post) {
-  const created = new Date(createdAt);
-  const diff = new Date().getTime() - created.getTime();
+export default function Post({ user, createdAt, content, media, id }: Post) {
   const [showEmotions, setShowEmotions] = useState(false);
   const [chosenEmotion, setChosenEmotion] = useState<Emotions | null>(null);
   const [showComment, setShowComment] = useState(false);
@@ -47,7 +37,7 @@ export default function Post({
           <div className="username-date">
             <h4 className="text-gray-900 text-sm">{user.username}</h4>
             <small className="text-gray-500 text-xs">
-              {new Date(diff).getHours() + "h"} ago
+              {timeAgo(createdAt)}
             </small>
           </div>
         </div>
@@ -61,9 +51,9 @@ export default function Post({
       </section>
 
       <footer className="post-actions">
-        <div className="counts p-3 pt-0 center-y justify-between text-gray-400">
-          <EmotionsDialog reacts={reacts} />
-          <CommentsDialog comments={comments} />
+        <div className="counts p-3 pt-0 center-y justify-between">
+          <EmotionsDialog postId={id} />
+          <CommentsDialog postId={id} />
         </div>
 
         <div

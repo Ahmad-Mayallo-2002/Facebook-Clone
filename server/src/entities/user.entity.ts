@@ -86,21 +86,21 @@ export class User extends IdDate {
     if (!this.image || !this.image.url) {
       if (this.gender === Gender.MALE) {
         this.image = {
-          url: "/images/default-male",
-          public_id: "default-male",
+          url: "/images/default-male-image.jpg",
+          public_id: "",
         };
       } else if (this.gender === Gender.FEMALE) {
         this.image = {
-          url: "/images/default-female",
-          public_id: "default-female",
+          url: "/images/default-female-image.jpg",
+          public_id: "",
         };
       }
     }
 
     if (!this.banner || !this.banner.url) {
       this.banner = {
-        url: "/images/default-background",
-        public_id: "default-background",
+        url: "/images/default-background.jpeg",
+        public_id: "",
       };
     }
   }
