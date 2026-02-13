@@ -67,3 +67,11 @@ export const UPDATE_REACT = gql`
     }
   }
 `;
+
+export const CREATE_POST = gql`
+  mutation ($input: CreatePostInput!, $userId: String!) {
+    createPost(input: $input, userId: $userId) {
+      id
+    }
+  }
+`;

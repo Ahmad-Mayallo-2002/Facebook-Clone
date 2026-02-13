@@ -35,6 +35,7 @@ export const GET_POSTS = gql`
           url
           public_id
         }
+        userId
         createdAt
         updatedAt
         # Author

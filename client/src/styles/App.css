@@ -18,3 +18,7 @@
   background-color: oklch(54.6% 0.245 262.881);
   color: #fff;
 }
+
+.menu-actions ul {
+  left: -120px;
+}

@@ -40,7 +40,7 @@ export default function CommentsDialog({ postId }: { postId: string }) {
       ></div>
       {/* Content */}
       <div
-        className="content dialog-content rounded-lg center-absolute"
+        className="content dialog-content rounded-lg center-position"
         hidden={!show}
       >
         <header className="center-y justify-between p-3 border-b border-gray-400">
@@ -71,7 +71,7 @@ export default function CommentsDialog({ postId }: { postId: string }) {
 
         {error && (
           <div className="w-full h-50 center">
-            <h4>No Comments Yet.</h4>
+            <h4>{error.message}</h4>
           </div>
         )}
       </div>

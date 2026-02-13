@@ -36,3 +36,7 @@ export interface GetPostComments {
 export interface GetPostReacts {
   getPostReacts: PaginatedData<React>;
 }
+
+export interface CreatePostRes {
+  createPost: Post;
+}

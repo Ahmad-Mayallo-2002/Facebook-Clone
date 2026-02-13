@@ -46,7 +46,7 @@ export default function EmotionsDialog({ postId }: { postId: string }) {
         {/* Content */}
         <div
           hidden={!show}
-          className="content dialog-content rounded-lg center-absolute"
+          className="content dialog-content rounded-lg center-position"
         >
           <header className="center-y justify-between p-3 border-b border-gray-400 mb-3">
             <h4 className="text-black">All Emotions</h4>
@@ -58,7 +58,11 @@ export default function EmotionsDialog({ postId }: { postId: string }) {
             </button>
           </header>
 
-          {error && <h3>{error.message}</h3>}
+          {error && (
+            <div className="w-full h-50 center">
+              <h4>{error.message}</h4>
+            </div>
+          )}
 
           {loading && (
             <>
