@@ -1,7 +1,9 @@
 import type { Roles } from "@/enums/roles";
 import type { User } from "./user";
 import type { Post } from "./post";
-import type { Pagination } from "./pagination";
+import type { PaginatedData } from "./pagination";
+import type { Comment } from "./comment";
+import type { React } from "./react";
 
 export interface LoginRes {
   login: {
@@ -20,8 +22,21 @@ export interface Me {
 }
 
 export interface GetPosts {
-  getPosts: {
-    data: Post[];
-    pagination: Pagination;
-  };
+  getPosts: PaginatedData<Post>;
+}
+
+export interface CreateCommentRes {
+  createComment: Post;
+}
+
+export interface GetPostComments {
+  getPostComments: PaginatedData<Comment>;
+}
+
+export interface GetPostReacts {
+  getPostReacts: PaginatedData<React>;
+}
+
+export interface CreatePostRes {
+  createPost: Post;
 }

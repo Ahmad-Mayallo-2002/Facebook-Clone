@@ -1,21 +1,53 @@
-import { ME } from "@/graphql/queries";
-import type { Me } from "@/interface/response";
-import { useQuery } from "@apollo/client/react";
+import { CREATE_POST } from "@/graphql/mutations";
+import type { CreatePostRes } from "@/interface/response";
+import { useMeQuery } from "@/utils/user";
+import { useMutation } from "@apollo/client/react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { FaImage } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 import { toast } from "react-toastify";
 
+interface FormProps {
+  content?: string;
+  media?: FileList;
+}
+
 export default function CreatePost() {
   const [show, setShow] = useState(false);
-  const { data, error } = useQuery<Me>(ME);
+  const { user, error } = useMeQuery();
+  const { register, handleSubmit } = useForm<FormProps>();
 
   if (error) toast(error.message, { type: "error" });
+
+  const [createPost, { loading, error: errPost }] =
+    useMutation<CreatePostRes>(CREATE_POST);
+
+  const onSubmit = (input: FormProps) => {
+    if (!input.content && (!input.media || !input.media.length)) {
+      toast("Cannot create empty post", { type: "error" });
+      return;
+    }
+
+    const media = input.media ? Array.from(input?.media) : [];
+
+    createPost({
+      variables: {
+        input: {
+          content: input.content ?? undefined,
+          media,
+        },
+        userId: user?.id,
+      },
+    });
+  };
+
+  if (errPost) console.log(errPost);
 
   return (
     <>
       <div className="panel center-y gap-x-3">
-        <img src={data?.me.image.url} className="w-10 h-10 rounded-full" />
+        <img src={user?.image.url} className="w-10 h-10 rounded-full" />
         <button
           onClick={() => setShow(true)}
           className="trigger text-start text-gray-500 cursor-pointer bg-gray-100 hover:bg-gray-200 py-2 px-4 w-full rounded-full"
@@ -28,9 +60,13 @@ export default function CreatePost() {
         <>
           <span
             onClick={() => setShow(false)}
-            className="absolute bg-black opacity-25 w-screen h-screen top-[0px] left-0"
+            className="fixed bg-black opacity-25 w-screen h-screen top-0 left-0 z-[1]"
           ></span>
-          <form className="dialog panel absolute max-w-100 w-full top-1/2 left-1/2 translate-[-50%]">
+
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="dialog panel fixed max-w-100 w-full top-1/2 left-1/2 translate-[-50%] z-[2]"
+          >
             <header className="center-y mb-2 justify-between">
               <h3 className="text-xl text-gray-900">Create Post</h3>
               <button
@@ -44,6 +80,16 @@ export default function CreatePost() {
             <textarea
               placeholder="What's on your mind?"
               className="h-48 w-full"
+              {...register("content", {
+                maxLength: {
+                  value: 5000,
+                  message: "Maximum character is 5000",
+                },
+                minLength: {
+                  value: 1,
+                  message: "Minimum character is 1",
+                },
+              })}
             ></textarea>
 
             <footer className="border rounded-lg border-gray-300 p-3 center-y justify-between">
@@ -51,12 +97,19 @@ export default function CreatePost() {
               <label htmlFor="post-media" className="cursor-pointer">
                 <FaImage className="text-2xl text-green-500" />
               </label>
-              <input multiple={true} type="file" hidden id="post-media" />
+              <input
+                multiple
+                {...register("media")}
+                type="file"
+                hidden
+                id="post-media"
+              />
             </footer>
 
             <button
               type="submit"
-              className="blue-button main-button w-full mt-3"
+              disabled={loading}
+              className={`blue-button main-button w-full mt-3 ${loading ? "cursor-not-allowed" : "cursor-pointer"}`}
             >
               Create Post
             </button>

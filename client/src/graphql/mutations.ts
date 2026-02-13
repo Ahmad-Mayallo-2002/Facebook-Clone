@@ -39,3 +39,39 @@ export const RESET_PASSWORD = gql`
     )
   }
 `;
+
+export const CREATE_COMMENT = gql`
+  mutation ($input: CommentInput!, $postId: String!) {
+    createComment(input: $input, postId: $postId) {
+      id
+    }
+  }
+`;
+
+export const ADD_REACT = gql`
+  mutation ($postId: String!, $type: ReactType!, $value: Emotions!) {
+    addReact(postId: $postId, type: $type, value: $value)
+  }
+`;
+
+export const DELETE_REACT = gql`
+  mutation ($reactId: String!) {
+    deleteReact(id: $reactId)
+  }
+`;
+
+export const UPDATE_REACT = gql`
+  mutation ($value: Emotions!, $reactId: String!) {
+    updateReact(value: $value, id: $reactId) {
+      id
+    }
+  }
+`;
+
+export const CREATE_POST = gql`
+  mutation ($input: CreatePostInput!, $userId: String!) {
+    createPost(input: $input, userId: $userId) {
+      id
+    }
+  }
+`;

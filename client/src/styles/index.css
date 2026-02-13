@@ -58,16 +58,16 @@ select:focus {
     0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
-.center-absolute {
+.center-position {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
 .backdrop {
-  position: absolute;
+  position: fixed;
   top: 0;
-  left: 0;
+  left: -1rem;
   background: #000;
   width: 100vw;
   height: 100vh;
@@ -76,9 +76,9 @@ select:focus {
 }
 
 .dialog-content {
-  max-width: 400px;
+  max-width: 500px;
   width: 100%;
-  position: absolute;
+  position: fixed;
   background-color: #fff;
   z-index: 5555;
 }

@@ -1,7 +1,80 @@
-export default function CommentsDialog() {
+import { useState } from "react";
+import { FaX } from "react-icons/fa6";
+import CommentBox from "./CommentBox";
+import { useLazyQuery } from "@apollo/client/react";
+import { GET_POST_COMMENTS } from "@/graphql/queries";
+import type { GetPostComments } from "@/interface/response";
+
+export default function CommentsDialog({ postId }: { postId: string }) {
+  const [show, setShow] = useState(false);
+
+  const [getComments, { data, error, loading }] =
+    useLazyQuery<GetPostComments>(GET_POST_COMMENTS);
+
+  const handleOpen = () => {
+    setShow(true);
+
+    getComments({
+      variables: {
+        postId,
+        take: 20,
+        skip: 0,
+      },
+    });
+  };
+
   return (
-    <div>
-      
+    <div className="comments-dialog">
+      {/* Trigger */}
+      <button
+        className="trigger cursor-pointer text-gray-400"
+        onClick={handleOpen}
+      >
+        45 Comments
+      </button>
+      {/* Backdrop */}
+      <div
+        className="backdrop"
+        hidden={!show}
+        onClick={() => setShow(false)}
+      ></div>
+      {/* Content */}
+      <div
+        className="content dialog-content rounded-lg center-position"
+        hidden={!show}
+      >
+        <header className="center-y justify-between p-3 border-b border-gray-400">
+          <h4 className="text-black">All Comments</h4>
+          <button
+            onClick={() => setShow(false)}
+            className="rounded-full p-3 cursor-pointer hover:bg-gray-100 text-black"
+          >
+            <FaX />
+          </button>
+        </header>
+
+        {data && (
+          <ul className="p-3 space-y-4 max-h-[300px] overflow-y-auto">
+            {data?.getPostComments.data.map((comment) => (
+              <li key={comment.id}>
+                <CommentBox comment={comment} />
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {loading && (
+          <div className="h-75 w-full center">
+            <div className="animate-spin border-4 border-t-transparent border-blue-500 w-16 h-16 rounded-full"></div>
+          </div>
+        )}
+
+        {error && (
+          <div className="w-full h-50 center">
+            <h4>{error.message}</h4>
+          </div>
+        )}
+      </div>
     </div>
-  )
+  );
 }

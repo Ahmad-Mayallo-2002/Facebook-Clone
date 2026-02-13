@@ -35,8 +35,10 @@ export const GET_POSTS = gql`
           url
           public_id
         }
+        userId
         createdAt
         updatedAt
+        # Author
         user {
           id
           username
@@ -45,18 +47,59 @@ export const GET_POSTS = gql`
             public_id
           }
         }
-        reacts {
+      }
+    }
+  }
+`;
+
+export const GET_POST_COMMENTS = gql`
+  query ($skip: Float!, $take: Float!, $postId: String!) {
+    getPostComments(skip: $skip, take: $take, postId: $postId) {
+      data {
+        id
+        content
+        media {
+          url
+          public_id
+        }
+        createdAt
+        user {
           id
-          value
-          user {
-            id
-            image {
-              url
-              public_id
-            }
+          username
+          image {
+            url
+            public_id
           }
         }
       }
+    }
+  }
+`;
+
+export const GET_POST_REACTS = gql`
+  query ($skip: Float!, $take: Float!, $postId: String!) {
+    getPostReacts(skip: $skip, take: $take, postId: $postId) {
+      data {
+        id
+        value
+        user {
+          id
+          username
+          image {
+            url
+            public_id
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_USER_REACT_ON_POST = gql`
+  query ($postId: String!) {
+    getUserReactOnPost(postId: $postId) {
+      id
+      value
     }
   }
 `;

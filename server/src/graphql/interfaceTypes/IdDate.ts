@@ -1,5 +1,9 @@
 import { Field, ID, InterfaceType } from "type-graphql";
-import { Column, PrimaryGeneratedColumn } from "typeorm";
+import {
+  CreateDateColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
 @InterfaceType()
 export abstract class IdDate {
@@ -7,11 +11,11 @@ export abstract class IdDate {
   @Field(() => ID)
   id!: string;
 
-  @Column({ name: "created_at", default: new Date() })
-  @Field(() => Date, { defaultValue: new Date() })
+  @CreateDateColumn({ name: "created_at" })
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Column({ name: "updated_at", default: new Date() })
-  @Field(() => Date, { defaultValue: new Date() })
+  @UpdateDateColumn({ name: "updated_at" })
+  @Field(() => Date)
   updatedAt!: Date;
 }

@@ -47,7 +47,7 @@ export class CommentService {
     await this.postService.getById(postId);
     const [data, counts] = await this.commentRepo.findAndCount({
       where: { postId, isVisible: true },
-      order: { createdAt: "DESC" },
+      order: { createdAt: "desc" },
       take,
       skip,
     });
