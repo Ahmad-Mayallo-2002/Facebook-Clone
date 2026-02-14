@@ -39,6 +39,7 @@ export default function CreatePost() {
         },
         userId: user?.id,
       },
+      refetchQueries: ["GetPosts"],
     });
   };
 

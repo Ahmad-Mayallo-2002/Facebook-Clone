@@ -25,9 +25,15 @@ export default function EmotionsBox({ postId }: { postId: string }) {
     userReact?.getUserReactOnPost.value ?? null,
   );
 
-  const [addReact] = useMutation<{ addReact: string }>(ADD_REACT);
-  const [updateReact] = useMutation<{ updateReact: string }>(UPDATE_REACT);
-  const [deleteReact] = useMutation<{ deleteReact: string }>(DELETE_REACT);
+  const [addReact] = useMutation<{ addReact: string }>(ADD_REACT, {
+    refetchQueries: ["GetPostReacts"],
+  });
+  const [updateReact] = useMutation<{ updateReact: string }>(UPDATE_REACT, {
+    refetchQueries: ["GetPostReacts"],
+  });
+  const [deleteReact] = useMutation<{ deleteReact: string }>(DELETE_REACT, {
+    refetchQueries: ["GetPostReacts"],
+  });
 
   const handleLikeClick = () => {
     if (chosenEmotion) {
@@ -36,6 +42,7 @@ export default function EmotionsBox({ postId }: { postId: string }) {
         variables: {
           reactId: userReact?.getUserReactOnPost.id,
         },
+        refetchQueries: ["GetPostReacts"],
       });
     } else {
       setShowEmotions(!showEmotions);

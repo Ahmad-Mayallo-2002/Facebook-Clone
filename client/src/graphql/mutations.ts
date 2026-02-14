@@ -75,3 +75,17 @@ export const CREATE_POST = gql`
     }
   }
 `;
+
+export const DELETE_POST = gql`
+  mutation ($id: String!) {
+    deletePost(id: $id)
+  }
+`;
+
+export const UPDATE_POST = gql`
+  mutation ($input: CreatePostInput!, $id: String!) {
+    updatePost(input: $input, id: $id) {
+      id
+    }
+  }
+`;

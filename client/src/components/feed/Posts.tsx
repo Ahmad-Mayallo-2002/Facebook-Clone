@@ -9,7 +9,7 @@ export default function Posts() {
   const { user } = useMeQuery();
   const { data } = useQuery<GetPosts>(GET_POSTS, {
     variables: {
-      take: 20,
+      take: 40,
       skip: 0,
     },
   });

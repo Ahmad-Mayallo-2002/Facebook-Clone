@@ -53,7 +53,7 @@ export const GET_POSTS = gql`
 `;
 
 export const GET_POST_COMMENTS = gql`
-  query ($skip: Float!, $take: Float!, $postId: String!) {
+  query GetPostComments($skip: Float!, $take: Float!, $postId: String!) {
     getPostComments(skip: $skip, take: $take, postId: $postId) {
       data {
         id
@@ -77,7 +77,7 @@ export const GET_POST_COMMENTS = gql`
 `;
 
 export const GET_POST_REACTS = gql`
-  query ($skip: Float!, $take: Float!, $postId: String!) {
+  query GetPostReacts($skip: Float!, $take: Float!, $postId: String!) {
     getPostReacts(skip: $skip, take: $take, postId: $postId) {
       data {
         id
