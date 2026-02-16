@@ -1,14 +1,18 @@
 import { mainEndPoint, timeAgo } from "@/assets/assets";
 import { useState } from "react";
 import { FaRegComment, FaShare } from "react-icons/fa";
-import EmotionsDialog from "./post/EmotionsDialog";
+import EmotionsDialog from "../react/EmotionsDialog";
 import type { Post } from "@/interface/post";
-import CommentsDialog from "./post/CommentsDialog";
-import CreateComment from "./post/CreateComment";
-import EmotionsBox from "./post/EmotionsBox";
+import CommentsDialog from "../comment/CommentsDialog";
+import CreateComment from "../comment/CreateComment";
+import EmotionsBox from "../react/EmotionsBox";
 import { Menu, MenuItem } from "@szhsin/react-menu";
 import { HiDotsVertical } from "react-icons/hi";
 import type { User } from "@/interface/user";
+import { useMutation } from "@apollo/client/react";
+import { toast } from "react-toastify";
+import UpdatePost from "./UpdatePost";
+import { DELETE_POST } from "@/graphql/mutations/post";
 
 interface PostProps {
   post: Post;
@@ -17,6 +21,20 @@ interface PostProps {
 
 export default function Post({ post, user }: PostProps) {
   const [showComment, setShowComment] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const [deletePost, { error }] = useMutation(DELETE_POST);
+
+  const handleDeletePost = () => {
+    deletePost({
+      variables: {
+        id: post.id,
+      },
+      refetchQueries: ["GetPosts"],
+    });
+  };
+
+  if (error) toast.error(error.message);
 
   return (
     <div className="post bg-white rounded-lg mt-4 shadow-sm">
@@ -24,15 +42,15 @@ export default function Post({ post, user }: PostProps) {
         <div className="user center-y gap-x-2">
           <img
             src={
-              user.image.public_id
-                ? user.image.url
-                : mainEndPoint + user.image.url
+              post.user.image.public_id
+                ? post.user.image.url
+                : mainEndPoint + post.user.image.url
             }
-            alt={user.username}
+            alt={post.user.username}
             className="w-10 h-10 rounded-full"
           />
           <div className="username-date">
-            <h4 className="text-gray-900 text-sm">{user.username}</h4>
+            <h4 className="text-gray-900 text-sm">{post.user.username}</h4>
             <small className="text-gray-500 text-xs">
               {timeAgo(post.createdAt)}
             </small>
@@ -49,16 +67,24 @@ export default function Post({ post, user }: PostProps) {
               }
               menuClassName="bg-white rounded-lg min-w-40 z-1 !left-[-120px]"
             >
-              <MenuItem className="p-2 cursor-pointer hover:bg-gray-100 rounded-t-lg">
+              <MenuItem
+                onClick={handleDeletePost}
+                className="p-3 text-red-500 cursor-pointer hover:bg-gray-100 rounded-t-lg"
+              >
                 Delete
               </MenuItem>
-              <MenuItem className="p-2 cursor-pointer hover:bg-gray-100 rounded-b-lg">
+              <MenuItem
+                onClick={() => setOpen(true)}
+                className="p-3 cursor-pointer hover:bg-gray-100 rounded-b-lg"
+              >
                 Update
               </MenuItem>
             </Menu>
           </div>
         )}
       </header>
+
+      {open && <UpdatePost setOpen={setOpen} postId={post.id} />}
 
       <section className="post-content">
         {post.content ? <p className="p-3 pt-0">{post.content}</p> : ""}
@@ -70,7 +96,7 @@ export default function Post({ post, user }: PostProps) {
       <footer className="post-actions mt-3">
         <div className="counts p-3 pt-0 center-y justify-between">
           <EmotionsDialog postId={post.id} />
-          <CommentsDialog postId={post.id} />
+          <CommentsDialog postId={post.id} authorId={user?.id} />
         </div>
 
         <div

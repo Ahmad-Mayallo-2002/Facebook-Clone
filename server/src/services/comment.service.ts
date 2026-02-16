@@ -123,10 +123,11 @@ export class CommentService {
       }
     }
 
-    const data: DeepPartial<Comment> = {
-      content: input.content,
-      media,
-    };
+    const data: DeepPartial<Comment> = {};
+
+    if (input.content) data.content = input.content;
+    if (media.length) data.media = media;
+
     Object.assign(comment, data);
     return await this.commentRepo.save(comment);
   }

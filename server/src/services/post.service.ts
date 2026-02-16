@@ -83,9 +83,7 @@ export class PostService {
 
   async updatePost(id: string, input: Partial<CreatePostInput>): Promise<Post> {
     const post = await this.getById(id);
-
     const files = input.media;
-
     const media: MediaObject[] = [];
 
     if (files && files.length) {
@@ -98,7 +96,11 @@ export class PostService {
       }
     }
 
-    const data: DeepPartial<Post> = { ...input, media };
+    const data: DeepPartial<Post> = {};
+
+    if (input.content) data.content = input.content;
+    if (media.length) data.media = media;
+
     Object.assign(post, data);
     return await this.postRepo.save(post);
   }

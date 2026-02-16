@@ -1,6 +1,6 @@
-import CreatePost from "@/components/feed/CreatePost";
+import CreatePost from "@/components/feed/post/CreatePost";
 import LeftSidebar from "@/components/feed/LeftSidebar";
-import Posts from "@/components/feed/Posts";
+import Posts from "@/components/feed/post/Posts";
 import RightSidebar from "@/components/feed/RightSidebar";
 import HeaderFeed from "@/components/headers/HeaderFeed";
 

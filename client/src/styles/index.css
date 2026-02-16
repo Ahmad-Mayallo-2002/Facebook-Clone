@@ -82,3 +82,8 @@ select:focus {
   background-color: #fff;
   z-index: 5555;
 }
+
+button:disabled {
+  background-color: #8ec5ff !important;
+  cursor: not-allowed;
+}

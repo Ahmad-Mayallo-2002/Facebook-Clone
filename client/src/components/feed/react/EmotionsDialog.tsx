@@ -1,6 +1,6 @@
 import { mainEndPoint } from "@/assets/assets";
 import { emotionList } from "@/enums/emotions";
-import { GET_POST_REACTS } from "@/graphql/queries";
+import { GET_POST_REACTS } from "@/graphql/queries/react";
 import type { GetPostReacts } from "@/interface/response";
 import { useLazyQuery } from "@apollo/client/react";
 import { useState } from "react";
@@ -9,10 +9,9 @@ import { FaX } from "react-icons/fa6";
 export default function EmotionsDialog({ postId }: { postId: string }) {
   const [show, setShow] = useState(false);
   const handleOpenClose = () => {
-    const newState = !show;
-    setShow(newState);
+    setShow(!show);
 
-    if (newState) {
+    if (!show) {
       getReacts({
         variables: {
           postId,
