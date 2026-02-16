@@ -1,9 +1,9 @@
-import { GET_POSTS } from "@/graphql/queries";
 import type { GetPosts } from "@/interface/response";
 import { useQuery } from "@apollo/client/react";
 import Post from "./Post";
 import { useMeQuery } from "@/utils/user";
 import type { User } from "@/interface/user";
+import { GET_POSTS } from "@/graphql/queries/post";
 
 export default function Posts() {
   const { user } = useMeQuery();

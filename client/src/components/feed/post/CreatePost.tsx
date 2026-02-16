@@ -1,4 +1,4 @@
-import { CREATE_POST } from "@/graphql/mutations";
+import { CREATE_POST } from "@/graphql/mutations/post";
 import type { CreatePostRes } from "@/interface/response";
 import { useMeQuery } from "@/utils/user";
 import { useMutation } from "@apollo/client/react";

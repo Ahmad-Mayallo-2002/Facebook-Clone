@@ -1,63 +1,50 @@
-import { UPDATE_POST } from "@/graphql/mutations/post";
-import type { CreatePostRes } from "@/interface/response";
+import { UPDATE_COMMENT } from "@/graphql/mutations/comment";
+import { setOpenUpdateDialog } from "@/redux/slices/commentSlice";
 import { useMutation } from "@apollo/client/react";
-import { type Dispatch, type SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import { FaImage } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
-import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
 
-interface FormProps {
-  content?: string;
-  media?: FileList;
+interface UpdateCommentProps {
+  id: string;
 }
 
-export default function UpdatePost({
-  setOpen,
-  postId,
-}: {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  postId: string;
-}) {
-  const { register, handleSubmit } = useForm<FormProps>();
+type UpdateCommentForm = {
+  content?: string;
+  media?: FileList;
+};
 
-  const [createPost, { loading, error: errPost }] =
-    useMutation<CreatePostRes>(UPDATE_POST);
+export default function UpdateComment({ id }: UpdateCommentProps) {
+  const { register, handleSubmit } = useForm();
+  const dispatch = useDispatch();
+  const [updateComment, { loading }] = useMutation(UPDATE_COMMENT);
 
-  const onSubmit = (input: FormProps) => {
-    if (!input.content && (!input.media || !input.media.length)) {
-      toast("Cannot create empty post", { type: "error" });
-      return;
-    }
+  const onSubmit = async (input: UpdateCommentForm) => {
+    const media = input?.media ? Array.from(input?.media) : [];
 
-    const media = input.media ? Array.from(input?.media) : [];
-
-    createPost({
+    await updateComment({
       variables: {
         input: {
-          content: input.content ?? undefined,
+          content: input.content,
           media,
         },
-        id: postId,
+        id,
       },
-      refetchQueries: ["GetPosts"],
+      refetchQueries: ["GetPostComments"],
     });
   };
 
-  if (errPost) console.log(errPost);
-
   return (
     <>
-      <div onClick={() => setOpen(false)} className="backdrop"></div>
-
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="dialog panel fixed max-w-100 w-full top-1/2 left-1/2 translate-[-50%] z-[2]"
       >
         <header className="center-y mb-2 justify-between">
-          <h3 className="text-xl text-gray-900">Update Post</h3>
+          <h3 className="text-xl text-gray-900">Update Comment</h3>
           <button
-            onClick={() => setOpen(false)}
+            onClick={() => dispatch(setOpenUpdateDialog(false))}
             className="cursor-pointer hover:bg-gray-200 p-2 rounded-full duration-200"
           >
             <FaX />
@@ -80,7 +67,7 @@ export default function UpdatePost({
         ></textarea>
 
         <footer className="border rounded-lg border-gray-300 p-3 center-y justify-between">
-          <h3 className="text-sm text-gray-900">Add To Your Post</h3>
+          <h3 className="text-sm text-gray-900">Add To Your Comment</h3>
           <label htmlFor="post-media" className="cursor-pointer">
             <FaImage className="text-2xl text-green-500" />
           </label>

@@ -1,18 +1,18 @@
 import { mainEndPoint, timeAgo } from "@/assets/assets";
 import { useState } from "react";
 import { FaRegComment, FaShare } from "react-icons/fa";
-import EmotionsDialog from "./post/EmotionsDialog";
+import EmotionsDialog from "../react/EmotionsDialog";
 import type { Post } from "@/interface/post";
-import CommentsDialog from "./post/CommentsDialog";
-import CreateComment from "./post/CreateComment";
-import EmotionsBox from "./post/EmotionsBox";
+import CommentsDialog from "../comment/CommentsDialog";
+import CreateComment from "../comment/CreateComment";
+import EmotionsBox from "../react/EmotionsBox";
 import { Menu, MenuItem } from "@szhsin/react-menu";
 import { HiDotsVertical } from "react-icons/hi";
 import type { User } from "@/interface/user";
 import { useMutation } from "@apollo/client/react";
-import { DELETE_POST } from "@/graphql/mutations";
 import { toast } from "react-toastify";
-import UpdatePost from "./post/UpdatePost";
+import UpdatePost from "./UpdatePost";
+import { DELETE_POST } from "@/graphql/mutations/post";
 
 interface PostProps {
   post: Post;
@@ -96,7 +96,7 @@ export default function Post({ post, user }: PostProps) {
       <footer className="post-actions mt-3">
         <div className="counts p-3 pt-0 center-y justify-between">
           <EmotionsDialog postId={post.id} />
-          <CommentsDialog postId={post.id} />
+          <CommentsDialog postId={post.id} authorId={user?.id} />
         </div>
 
         <div

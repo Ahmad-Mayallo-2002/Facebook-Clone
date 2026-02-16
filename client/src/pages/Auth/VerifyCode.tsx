@@ -2,7 +2,7 @@ import Logo from "@/components/logos/Logo";
 import { PinInput } from "react-input-pin-code";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client/react";
-import { VERIFY_CODE } from "@/graphql/mutations";
+import { VERIFY_CODE } from "@/graphql/mutations/auth";
 import { toast } from "react-toastify";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import "@/styles/authStyle.css";
