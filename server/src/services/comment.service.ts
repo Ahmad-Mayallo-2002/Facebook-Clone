@@ -10,6 +10,7 @@ import { CloudinaryUploader } from "../utils/cloudinaryUploader";
 import { UploadApiResponse } from "cloudinary";
 import { PaginatedData } from "../interfaces/pagination.interface";
 import { paginationCalculation } from "../utils/paginationCalculation";
+import { v2 } from "cloudinary";
 
 @Service()
 export class CommentService {
@@ -141,6 +142,7 @@ export class CommentService {
 
   async deleteComment(id: string): Promise<boolean> {
     const comment = await this.getById(id);
+    if (comment.media.length) comment.media.forEach(async (m) => await v2.uploader.destroy(m.public_id));
     await this.commentRepo.remove(comment);
     return true;
   }

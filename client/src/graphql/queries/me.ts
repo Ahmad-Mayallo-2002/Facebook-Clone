@@ -15,6 +15,7 @@ export const ME = gql`
       username
       email
       gender
+      description
     }
   }
 `;
