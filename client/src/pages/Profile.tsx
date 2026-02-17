@@ -1,5 +1,11 @@
-import React from "react";
+import HeaderFeed from "@/components/headers/HeaderFeed";
+import UserProfileHeader from "@/components/profile/UserProfileHeader";
 
 export default function Profile() {
-  return <div></div>;
+  return (
+    <>
+      <HeaderFeed />
+      <UserProfileHeader />
+    </>
+  );
 }

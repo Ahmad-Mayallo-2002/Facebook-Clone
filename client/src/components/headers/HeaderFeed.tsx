@@ -3,6 +3,8 @@ import { FaSearch, FaFacebookMessenger, FaBell } from "react-icons/fa";
 import { RiHome5Fill } from "react-icons/ri";
 import { HiOutlineUsers } from "react-icons/hi2";
 import { Link, useLocation } from "react-router-dom";
+import { useMeQuery } from "@/utils/user";
+import { mainEndPoint } from "@/assets/assets";
 
 const iconsLinks = [
   { icon: RiHome5Fill, path: "/feed" },
@@ -11,6 +13,7 @@ const iconsLinks = [
 
 export default function HeaderFeed() {
   const { pathname } = useLocation();
+  const { user } = useMeQuery();
   return (
     <header className="bg-white shadow-md p-4 z-[9999] fixed top-0 left-0 w-full h-fit">
       <div className="container center-y">
@@ -60,7 +63,15 @@ export default function HeaderFeed() {
             <FaBell className="text-gray-700 text-xl" />
           </Link>
           <Link to="/profile">
-            <img src={logo} className="w-8" />
+            <img
+              src={
+                user?.image.public_id
+                  ? user?.image.url
+                  : mainEndPoint + user?.image.url
+              }
+              className="w-8 h-8 rounded-full"
+              alt={user?.username}
+            />
           </Link>
         </div>
       </div>
