@@ -18,4 +18,8 @@ export class UserInput {
 
     @Field(() => GraphQLUpload, { nullable: true })
     banner!: Promise<FileUpload>;
+
+    @Field({ nullable: true })
+    @MaxLength(255)
+    description!: string;
 }
