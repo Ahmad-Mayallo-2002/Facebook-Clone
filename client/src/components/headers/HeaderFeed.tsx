@@ -15,12 +15,12 @@ export default function HeaderFeed() {
   const { pathname } = useLocation();
   const { user } = useMeQuery();
   return (
-    <header className="bg-white shadow-md p-4 z-[9999] fixed top-0 left-0 w-full h-fit">
+    <header className="bg-white shadow-md p-4 z-9999 fixed top-0 left-0 w-full h-fit">
       <div className="container center-y">
         <Link to="/feed" className="logo">
-          <img src={logo} alt="Facebook Logo" className="w-10" />
+          <img src={logo} alt="Facebook Logo" className="w-10 h-10" />
         </Link>
-        <div className="ml-6 md:flex hidden search relative flex items-center justify-center">
+        <div className="ml-6 md:flex hidden search relative items-center justify-center">
           <FaSearch className="absolute left-4 text-gray-500" />
           <input
             type="text"
@@ -49,13 +49,13 @@ export default function HeaderFeed() {
         <div className="user-actions center-y gap-x-3">
           <Link
             to="/feed/messenger"
-            className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full"
+            className="bg-gray-100 hover:bg-gray-200 p-3 rounded-full"
           >
             <FaFacebookMessenger className="text-gray-700 text-xl" />
           </Link>
           <Link
             to="/feed/notifications"
-            className="relative bg-gray-100 hover:bg-gray-200 p-2 rounded-full"
+            className="relative bg-gray-100 hover:bg-gray-200 p-3 rounded-full"
           >
             <span className="absolute bg-red-500 text-white w-4 h-4 center rounded-full text-sm -top-1 -right-1">
               0
@@ -69,7 +69,7 @@ export default function HeaderFeed() {
                   ? user?.image.url
                   : mainEndPoint + user?.image.url
               }
-              className="w-8 h-8 rounded-full"
+              className="w-10 h-10 rounded-full"
               alt={user?.username}
             />
           </Link>
