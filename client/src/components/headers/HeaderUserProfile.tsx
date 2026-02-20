@@ -1,20 +1,16 @@
-import { mainEndPoint } from "@/assets/assets";
 import { useMeQuery } from "@/utils/user";
-import EditProfileDialog from "./EditProfileDialog";
+import EditProfileDialog from "../profile/EditProfileDialog";
+import { getUrl } from "@/utils/getImageUrl";
 
-export default function UserProfileHeader() {
+export default function HeaderUserProfile() {
   const { user } = useMeQuery();
 
   return (
-    <section className="profile mt-18">
+    <header className="profile mt-18">
       <div className="container">
         <div className="profile-banner">
           <img
-            src={
-              user?.banner?.public_id
-                ? user?.banner?.url
-                : mainEndPoint + user?.banner?.url
-            }
+            src={user ? getUrl(user?.banner) : ""}
             alt="User Banner"
             className="profile-banner-image w-full h-90"
           />
@@ -23,11 +19,7 @@ export default function UserProfileHeader() {
         <div className="profile-header p-4 center-y flex-col md:flex-row justify-between flex-wrap">
           <div className="profile-identity flex items-center md:items-start gap-x-4 flex-col md:flex-row">
             <img
-              src={
-                user?.image?.public_id
-                  ? user?.image?.url
-                  : mainEndPoint + user?.image?.url
-              }
+              src={user ? getUrl(user?.image) : ""}
               className="profile-details w-40 h-40 rounded-full -translate-y-16 border-2 border-white"
               alt={user?.username}
             />
@@ -45,6 +37,6 @@ export default function UserProfileHeader() {
           <EditProfileDialog />
         </div>
       </div>
-    </section>
+    </header>
   );
 }

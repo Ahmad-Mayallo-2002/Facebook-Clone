@@ -6,9 +6,9 @@ export interface Follow {
   createdAt: Date;
   updatedAt: Date;
   followerId: string;
-  followingUserId?: string;
-  followingPageId?: string;
-  followingUser?: User;
-  followingPage?: Page;
-  follower?: User;
+  followingUserId: string;
+  followingPageId: string;
+  followingUser: User;
+  followingPage: Page;
+  follower: User;
 }
