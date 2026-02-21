@@ -1,6 +1,7 @@
 import {
   Arg,
   Authorized,
+  Int,
   Mutation,
   Query,
   Resolver,
@@ -11,7 +12,6 @@ import { Page } from "../entities/page.entity";
 import { PageService } from "../services/page.service";
 import { PageInput } from "../graphql/inputs/page.input";
 import { CheckToken } from "../middlewares/checkToken.middleware";
-import { Roles } from "../enums/roles.enum";
 import { PagePaginated } from "../graphql/objectTypes/pagePaginated";
 
 @UseMiddleware(CheckToken)
@@ -21,7 +21,10 @@ export class PageResolver {
   constructor(private readonly pageService: PageService) {}
 
   @Query(() => PagePaginated)
-  async getAllPages(@Arg("take") take: number, @Arg("skip") skip: number) {
+  async getAllPages(
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
+  ) {
     return await this.pageService.getAllPages(take, skip);
   }
 
@@ -33,8 +36,8 @@ export class PageResolver {
   @Query(() => PagePaginated)
   async getUserPages(
     @Arg("userId") userId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.pageService.getUserPages(userId, take, skip);
   }

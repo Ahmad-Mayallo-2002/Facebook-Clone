@@ -1,20 +1,19 @@
 import { GET_USER_FOLLOWERS } from "@/graphql/queries/follow";
 import type { Follow } from "@/interface/follow";
 import type { PaginatedData } from "@/interface/pagination";
-import type { User } from "@/interface/user";
 import { getUrl } from "@/utils/getImageUrl";
 import { useQuery } from "@apollo/client/react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Link } from "react-router-dom";
 
-export default function UserFollowers({ user }: { user: User | null }) {
+export default function UserFollowers({ userId }: { userId: string }) {
   const { data, error, loading } = useQuery<PaginatedData<Follow>>(
     GET_USER_FOLLOWERS,
     {
       variables: {
         take: 20,
         skip: 0,
-        userId: user?.id,
+        userId,
       },
     },
   );

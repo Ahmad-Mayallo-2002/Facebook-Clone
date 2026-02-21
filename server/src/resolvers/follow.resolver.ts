@@ -1,6 +1,7 @@
 import {
   Arg,
   Authorized,
+  Int,
   Mutation,
   Query,
   Resolver,
@@ -34,8 +35,8 @@ export class FollowResolver {
   @Query(() => FollowPaginated)
   async getUserFollowers(
     @Arg("userId") userId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.followService.getUserFollowers(userId, take, skip);
   }
@@ -43,8 +44,8 @@ export class FollowResolver {
   @Query(() => FollowPaginated)
   async getUserFollowings(
     @Arg("userId") userId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.followService.getUserFollowings(userId, take, skip);
   }
@@ -52,8 +53,8 @@ export class FollowResolver {
   @Query(() => FollowPaginated)
   async getPageFollowers(
     @Arg("pageId") pageId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.followService.getPageFollowers(pageId, take, skip);
   }
@@ -61,8 +62,8 @@ export class FollowResolver {
   @Query(() => FollowPaginated)
   async getPageFollowings(
     @Arg("userId") userId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.followService.getPageFollowings(userId, take, skip);
   }

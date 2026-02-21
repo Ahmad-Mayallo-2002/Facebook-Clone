@@ -11,7 +11,7 @@ export default function Feed() {
       <div className="mt-[calc(12*4px+72px)]">
         <div className="container grid gap-4 lg:grid-cols-[300px_1fr_300px] grid-cols-1">
           <LeftSidebar />
-          <main className="main-content">
+          <main className="main-content space-y-4">
             <CreatePost />
             <Posts />
           </main>

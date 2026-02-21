@@ -8,18 +8,18 @@ import CreateComment from "../comment/CreateComment";
 import EmotionsBox from "../react/EmotionsBox";
 import { Menu, MenuItem } from "@szhsin/react-menu";
 import { HiDotsVertical } from "react-icons/hi";
-import type { User } from "@/interface/user";
 import { useMutation } from "@apollo/client/react";
 import { toast } from "react-toastify";
 import UpdatePost from "./UpdatePost";
 import { DELETE_POST } from "@/graphql/mutations/post";
+import { Link } from "react-router-dom";
 
 interface PostProps {
   post: Post;
-  user: User;
+  userId: string;
 }
 
-export default function Post({ post, user }: PostProps) {
+export default function Post({ post, userId }: PostProps) {
   const [showComment, setShowComment] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -37,27 +37,31 @@ export default function Post({ post, user }: PostProps) {
   if (error) toast.error(error.message);
 
   return (
-    <div className="post bg-white rounded-lg mt-4 shadow-sm">
+    <div className="post bg-white rounded-lg shadow-sm">
       <header className="p-3 sm:p-4 post-author center-y justify-between">
         <div className="user center-y gap-x-2">
-          <img
-            src={
-              post.user.image.public_id
-                ? post.user.image.url
-                : mainEndPoint + post.user.image.url
-            }
-            alt={post.user.username}
-            className="w-10 h-10 rounded-full"
-          />
+          <Link to={`/profile/${post.userId}`}>
+            <img
+              src={
+                post.user.image.public_id
+                  ? post.user.image.url
+                  : mainEndPoint + post.user.image.url
+              }
+              alt={post.user.username}
+              className="w-10 h-10 rounded-full"
+            />
+          </Link>
           <div className="username-date">
-            <h4 className="text-gray-900 text-sm">{post.user.username}</h4>
+            <Link to={`/profile/${post.userId}`}>
+              <h4 className="text-gray-900 text-sm">{post.user.username}</h4>
+            </Link>
             <small className="text-gray-500 text-xs">
               {timeAgo(post.createdAt)}
             </small>
           </div>
         </div>
 
-        {post.userId === user?.id && (
+        {post.userId === userId && (
           <div className="menu-actions relative w-10 h-10">
             <Menu
               menuButton={
@@ -96,7 +100,7 @@ export default function Post({ post, user }: PostProps) {
       <footer className="post-actions mt-3">
         <div className="counts p-3 pt-0 center-y justify-between">
           <EmotionsDialog postId={post.id} />
-          <CommentsDialog postId={post.id} authorId={user?.id} />
+          <CommentsDialog postId={post.id} authorId={userId} />
         </div>
 
         <div

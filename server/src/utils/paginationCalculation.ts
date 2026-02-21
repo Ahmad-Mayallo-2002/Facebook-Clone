@@ -12,8 +12,8 @@ export function paginationCalculation({
   skip,
 }: calculationProps): Pagination {
   const totalPages = Math.ceil(counts / take);
-  const currentPage = Math.floor(skip * take) + 1;
-
+  const currentPage = Math.floor(skip / take) + 1;
+  
   if (currentPage > totalPages || skip === counts)
     throw new Error("Page not found");
 

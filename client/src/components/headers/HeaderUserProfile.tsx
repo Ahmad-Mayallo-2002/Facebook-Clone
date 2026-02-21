@@ -1,9 +1,19 @@
-import { useMeQuery } from "@/utils/user";
 import EditProfileDialog from "../profile/EditProfileDialog";
 import { getUrl } from "@/utils/getImageUrl";
+import { useQuery } from "@apollo/client/react";
+import { GET_USER } from "@/graphql/queries/user";
+import type { User } from "@/interface/user";
+import { useMeQuery } from "@/utils/user";
 
-export default function HeaderUserProfile() {
-  const { user } = useMeQuery();
+export default function HeaderUserProfile({ userId }: { userId: string }) {
+  const { data } = useQuery<{ getUser: User }>(GET_USER, {
+    variables: {
+      id: userId,
+    },
+  });
+  const { user: me } = useMeQuery();
+
+  const user = data?.getUser;
 
   return (
     <header className="profile mt-18">
@@ -34,7 +44,7 @@ export default function HeaderUserProfile() {
             </div>
           </div>
 
-          <EditProfileDialog />
+          {me?.id === userId && <EditProfileDialog />}
         </div>
       </div>
     </header>

@@ -4,6 +4,7 @@ import {
   Ctx,
   FieldResolver,
   ID,
+  Int,
   Mutation,
   Query,
   Resolver,
@@ -29,7 +30,10 @@ export class ReactResolver {
 
   @Authorized(Roles.ADMIN)
   @Query(() => ReactPaginated)
-  async getAllReacts(@Arg("take") take: number, @Arg("skip") skip: number) {
+  async getAllReacts(
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
+  ) {
     return await this.reactService.getAllReacts(take, skip);
   }
 
@@ -42,8 +46,8 @@ export class ReactResolver {
   @Query(() => ReactPaginated)
   async getUserReacts(
     @Arg("userId") userId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.reactService.getUserReacts(userId, take, skip);
   }
@@ -51,8 +55,8 @@ export class ReactResolver {
   @Query(() => ReactPaginated)
   async getPostReacts(
     @Arg("postId") postId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.reactService.getPostReacts(postId, take, skip);
   }
@@ -60,8 +64,8 @@ export class ReactResolver {
   @Query(() => ReactPaginated)
   async getCommentReacts(
     @Arg("commentId") commentId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.reactService.getCommentReacts(commentId, take, skip);
   }

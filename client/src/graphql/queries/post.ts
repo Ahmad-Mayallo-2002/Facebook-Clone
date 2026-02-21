@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const GET_POSTS = gql`
-  query GetPosts($take: Float!, $skip: Float!) {
+  query GetPosts($take: Int!, $skip: Int!) {
     getPosts(take: $take, skip: $skip) {
       pagination {
         prev

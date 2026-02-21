@@ -52,7 +52,7 @@ export default function UpdatePost({
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="dialog panel fixed max-w-100 w-full top-1/2 left-1/2 translate-[-50%] z-[2]"
+        className="dialog panel fixed max-w-100 w-full top-1/2 left-1/2 translate-[-50%] z-2"
       >
         <header className="center-y mb-2 justify-between">
           <h3 className="text-xl text-gray-900">Update Post</h3>

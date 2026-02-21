@@ -3,6 +3,7 @@ import {
   Authorized,
   Ctx,
   FieldResolver,
+  Int,
   Mutation,
   Query,
   Resolver,
@@ -27,7 +28,10 @@ export class PostResolver {
   constructor(private readonly postService: PostService) {}
 
   @Query(() => PostPaginated)
-  async getPosts(@Arg("take") take: number, @Arg("skip") skip: number) {
+  async getPosts(
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
+  ) {
     return await this.postService.getPosts(take, skip);
   }
 
@@ -39,8 +43,8 @@ export class PostResolver {
   @Query(() => PostPaginated)
   async getUserPosts(
     @Arg("userId") userId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.postService.getUserPosts(userId, take, skip);
   }

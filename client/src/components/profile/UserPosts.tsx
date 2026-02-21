@@ -4,25 +4,48 @@ import type { PaginatedData } from "@/interface/pagination";
 import type { Post as IPost } from "@/interface/post";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import Post from "../feed/post/Post";
-import type { User } from "@/interface/user";
 
-export default function UserPosts({user}: {user: User | null}) {
-  const { data, error, loading } = useQuery<{
+export default function UserPosts({ userId }: { userId: string }) {
+  const TAKE = 10;
+  const { data, error, loading, fetchMore } = useQuery<{
     getUserPosts: PaginatedData<IPost>;
   }>(GET_USER_POSTS, {
     variables: {
-      take: 20,
+      take: TAKE,
       skip: 0,
-      userId: user?.id,
+      userId,
     },
   });
+
+  const handleNext = () => {
+    fetchMore({
+      variables: {
+        take: TAKE,
+        skip: data?.getUserPosts?.data.length ?? 0,
+        userId,
+      },
+    });
+  };
   return (
     <>
       <div className="user-posts">
-        {data &&
-          data.getUserPosts.data.map((post) => (
-            <Post key={post.id} post={post} user={user as User} />
-          ))}
+        {data && (
+          <>
+            <div className="posts space-y-4">
+              {data.getUserPosts.data.map((post) => (
+                <Post key={post.id} post={post} userId={userId} />
+              ))}
+            </div>
+            {data.getUserPosts.pagination.next && (
+              <button
+                onClick={handleNext}
+                className="my-4 font-bold block w-fit mx-auto cursor-pointer"
+              >
+                show more
+              </button>
+            )}
+          </>
+        )}
 
         {error && (
           <h2 className="text-2xl text-gray-400 font-bold">{error.message}</h2>

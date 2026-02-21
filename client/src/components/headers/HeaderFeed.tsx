@@ -62,7 +62,7 @@ export default function HeaderFeed() {
             </span>
             <FaBell className="text-gray-700 text-xl" />
           </Link>
-          <Link to="/profile">
+          <Link to={`/profile/${user?.id}`}>
             <img
               src={
                 user?.image.public_id

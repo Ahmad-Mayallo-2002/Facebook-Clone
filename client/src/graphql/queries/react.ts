@@ -24,6 +24,10 @@ export const GET_POST_REACTS = gql`
           }
         }
       }
+
+      pagination {
+        next
+      }
     }
   }
 `;
