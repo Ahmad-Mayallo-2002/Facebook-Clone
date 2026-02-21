@@ -37,7 +37,7 @@ export default function CommentActionsMenu({ id }: CommentActionsMenuProps) {
           <HiDotsVertical />
         </button>
         {open && (
-          <ul className="absolute bg-red-500 rounded-lg right-0 bg-white min-w-25 shadow-md">
+          <ul className="absolute rounded-lg right-0 bg-white min-w-25 shadow-md">
             <li>
               <button
                 onClick={handleDelete}

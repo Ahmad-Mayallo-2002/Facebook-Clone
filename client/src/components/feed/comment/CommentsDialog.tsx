@@ -6,6 +6,7 @@ import type { GetPostComments } from "@/interface/response";
 import { GET_POST_COMMENTS } from "@/graphql/queries/comment";
 import { useDispatch } from "react-redux";
 import { setOpenUpdateDialog } from "@/redux/slices/commentSlice";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 interface CommentsDialogProps {
   postId: string;
@@ -16,22 +17,33 @@ export default function CommentsDialog({
   postId,
   authorId,
 }: CommentsDialogProps) {
+  const TAKE = 10;
   const [show, setShow] = useState(false);
   const dispatch = useDispatch();
 
-  const [getComments, { data, error, loading }] =
+  const [getPostComments, { data, error, loading, fetchMore }] =
     useLazyQuery<GetPostComments>(GET_POST_COMMENTS);
 
   const handleOpen = () => {
     setShow(true);
 
-    getComments({
+    getPostComments({
       variables: {
         postId,
-        take: 20,
+        take: TAKE,
         skip: 0,
       },
     });
+  };
+
+  const handleShowMore = () => {
+    fetchMore({
+      variables: {
+        postId,
+        take: TAKE,
+        skip: data?.getPostComments.data.length ?? 0,
+      },
+    }).catch((e) => console.log(e));
   };
 
   return (
@@ -78,13 +90,29 @@ export default function CommentsDialog({
             )}
 
             {data && (
-              <ul className="p-3 space-y-4 max-h-75 h-full overflow-y-auto">
-                {data.getPostComments.data.map((comment) => (
-                  <li key={comment.id}>
-                    <CommentBox comment={comment} authorId={authorId} />
-                  </li>
-                ))}
-              </ul>
+              <>
+                <ul className="p-3 space-y-4 max-h-75 h-full overflow-y-auto">
+                  {data.getPostComments.data.map((comment) => (
+                    <li key={comment.id}>
+                      <CommentBox comment={comment} authorId={authorId} />
+                    </li>
+                  ))}
+                </ul>
+
+                {data?.getPostComments?.pagination.next &&
+                  (loading ? (
+                    <div className="mb-4">
+                      <AiOutlineLoading3Quarters className="text-blue-500 text-3xl mx-auto" />
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleShowMore}
+                      className="cursor-pointer mb-4 text-2xl font-bold block mx-auto w-fit"
+                    >
+                      Show More
+                    </button>
+                  ))}
+              </>
             )}
           </div>
         </>

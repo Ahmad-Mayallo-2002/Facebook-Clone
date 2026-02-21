@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
-import UpdateProfileForm from "./UpdateProfileForm";
+import EditProfileForm from "./EditProfileForm";
 
 export default function EditProfileDialog() {
   const [open, setOpen] = useState<boolean>(false);
@@ -21,10 +21,10 @@ export default function EditProfileDialog() {
       {open && (
         <>
           <div className="backdrop" onClick={handleOpen}></div>
-          <div className="dialog-content center-position rounded-lg">
+          <div className="dialog-content w-[90%] md:w-[75%] lg:w-[50%] center-position rounded-lg translate-y-[7.5%]">
             <header className="p-3 center-y justify-between">
               <h3 className="text-gray-900 text-xl font-semibold">
-                Update Profile
+                Edit Profile
               </h3>
               <button
                 onClick={handleOpen}
@@ -34,7 +34,7 @@ export default function EditProfileDialog() {
               </button>
             </header>
 
-            <UpdateProfileForm />
+            <EditProfileForm />
           </div>
         </>
       )}

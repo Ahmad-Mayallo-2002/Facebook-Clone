@@ -2,7 +2,7 @@ import Logo from "../logos/Logo";
 
 export default function HeaderLanding() {
   return (
-    <header className="header-landing fixed bg-white/65 backdrop-blur-sm h-fit z-[9999] inset-0 py-4 shadow-md">
+    <header className="header-landing fixed bg-white/65 backdrop-blur-sm h-fit z-9999 inset-0 py-4 shadow-md">
       <div className="container center-y justify-between">
         <Logo />
 

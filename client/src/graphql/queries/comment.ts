@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const GET_POST_COMMENTS = gql`
-  query GetPostComments($skip: Float!, $take: Float!, $postId: String!) {
+  query GetPostComments($skip: Int!, $take: Int!, $postId: String!) {
     getPostComments(skip: $skip, take: $take, postId: $postId) {
       data {
         id
@@ -20,6 +20,10 @@ export const GET_POST_COMMENTS = gql`
           }
         }
         userId
+      }
+
+      pagination {
+        next
       }
     }
   }

@@ -1,11 +1,31 @@
+import CreatePost from "@/components/feed/post/CreatePost";
 import HeaderFeed from "@/components/headers/HeaderFeed";
-import UserProfileHeader from "@/components/profile/UserProfileHeader";
+import HeaderUserProfile from "@/components/headers/HeaderUserProfile";
+import UserPosts from "@/components/profile/UserPosts";
+import UserFollowers from "@/components/profile/UserFollowers";
+import UserFollowings from "@/components/profile/UserFollowings";
+import { useParams } from "react-router-dom";
+import { useMeQuery } from "@/utils/user";
 
 export default function Profile() {
+  const { userId } = useParams();
+  const { user } = useMeQuery();
   return (
     <>
       <HeaderFeed />
-      <UserProfileHeader />
+      <HeaderUserProfile userId={userId || ""} />
+      <div className="profile-container">
+        <div className="container grid gap-4 md:grid-cols-[1fr_2fr] grid-cols-1">
+          <div className="left-side">
+            <UserFollowers userId={userId || ""} />
+            <UserFollowings userId={userId || ""} />
+          </div>
+          <div className="right-side space-y-4">
+            {user?.id === userId && <CreatePost />}
+            <UserPosts userId={userId || ""} />
+          </div>
+        </div>
+      </div>
     </>
   );
 }

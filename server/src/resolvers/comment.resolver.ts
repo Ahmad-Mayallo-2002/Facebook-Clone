@@ -3,6 +3,7 @@ import {
   Authorized,
   Ctx,
   FieldResolver,
+  Int,
   Mutation,
   Query,
   Resolver,
@@ -40,8 +41,8 @@ export class CommentResolver {
   @Query(() => CommentPaginated)
   async getPostComments(
     @Arg("postId") postId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.commentService.getPostComments(postId, take, skip);
   }
@@ -49,8 +50,8 @@ export class CommentResolver {
   @Query(() => CommentPaginated)
   async getUserComments(
     @Arg("userId") userId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.commentService.getUserComments(userId, take, skip);
   }

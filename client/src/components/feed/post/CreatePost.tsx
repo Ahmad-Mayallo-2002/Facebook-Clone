@@ -61,12 +61,12 @@ export default function CreatePost() {
         <>
           <span
             onClick={() => setShow(false)}
-            className="fixed bg-black opacity-25 w-screen h-screen top-0 left-0 z-[1]"
+            className="fixed bg-black opacity-25 w-screen h-screen top-0 left-0 z-1"
           ></span>
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="dialog panel fixed max-w-100 w-full top-1/2 left-1/2 translate-[-50%] z-[2]"
+            className="dialog panel fixed max-w-100 w-full top-1/2 left-1/2 translate-[-50%] z-2"
           >
             <header className="center-y mb-2 justify-between">
               <h3 className="text-xl text-gray-900">Create Post</h3>

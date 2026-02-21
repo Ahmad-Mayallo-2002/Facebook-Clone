@@ -7,23 +7,33 @@ import { useState } from "react";
 import { FaX } from "react-icons/fa6";
 
 export default function EmotionsDialog({ postId }: { postId: string }) {
+  const TAKE = 20;
   const [show, setShow] = useState(false);
+  const [getPostReacts, { data, error, loading, fetchMore }] =
+    useLazyQuery<GetPostReacts>(GET_POST_REACTS);
+
   const handleOpenClose = () => {
     setShow(!show);
-
     if (!show) {
-      getReacts({
+      getPostReacts({
         variables: {
           postId,
-          take: 20,
+          take: TAKE,
           skip: 0,
         },
       });
     }
   };
-  const [getReacts, { data, error, loading }] =
-    useLazyQuery<GetPostReacts>(GET_POST_REACTS);
 
+  const handleFetchMore = () => {
+    fetchMore({
+      variables: {
+        postId,
+        take: TAKE,
+        skip: data?.getPostReacts.data.length,
+      },
+    });
+  };
   return (
     <>
       <div className="emotions-dialog">
@@ -57,13 +67,13 @@ export default function EmotionsDialog({ postId }: { postId: string }) {
             </button>
           </header>
 
-          {error && (
+          {error && !data && (
             <div className="w-full h-50 center">
               <h4>{error.message}</h4>
             </div>
           )}
 
-          {loading && (
+          {loading && !data && (
             <>
               <div className="h-75 w-full center">
                 <div className="animate-spin border-4 border-t-transparent border-blue-500 w-16 h-16 rounded-full"></div>
@@ -72,36 +82,47 @@ export default function EmotionsDialog({ postId }: { postId: string }) {
           )}
 
           {data && (
-            <ul className="p-4 pt-0 space-y-6 max-h-[300px] overflow-y-auto">
-              {data?.getPostReacts.data.map((react) => (
-                <li key={react.id} className="center-y justify-between">
-                  <div className="user center-y gap-x-2">
-                    <div className="image">
-                      <img
-                        className="w-6 h-6 rounded-full"
-                        src={
-                          react.user?.image.public_id
-                            ? react.user?.image.url
-                            : mainEndPoint + react.user?.image.url
-                        }
-                        alt="asd"
-                      />
+            <>
+              <ul className="p-4 pt-0 space-y-6 max-h-[300px] overflow-y-auto">
+                {data?.getPostReacts.data.map((react) => (
+                  <li key={react.id} className="center-y justify-between">
+                    <div className="user center-y gap-x-2">
+                      <div className="image">
+                        <img
+                          className="w-6 h-6 rounded-full"
+                          src={
+                            react.user?.image.public_id
+                              ? react.user?.image.url
+                              : mainEndPoint + react.user?.image.url
+                          }
+                          alt="asd"
+                        />
+                      </div>
+                      <h4 className="font-semibold! text-sm">
+                        {react.user?.username}
+                      </h4>
                     </div>
-                    <h4 className="!font-semibold text-sm">
-                      {react.user?.username}
-                    </h4>
-                  </div>
-                  <span>
-                    {emotionList.map(
-                      ({ name, icon }, i) =>
-                        react.value === name && (
-                          <img key={i} className="w-6 h-6" src={icon} />
-                        ),
-                    )}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                    <span>
+                      {emotionList.map(
+                        ({ name, icon }, i) =>
+                          react.value === name && (
+                            <img key={i} className="w-6 h-6" src={icon} />
+                          ),
+                      )}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              {data?.getPostReacts.pagination.next && (
+                <button
+                  onClick={handleFetchMore}
+                  className="my-4 block font-bold cursor-pointer w-fit mx-auto"
+                >
+                  Show More
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>

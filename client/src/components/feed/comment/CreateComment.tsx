@@ -77,7 +77,7 @@ export default function CreateComment({
         <button type="button" disabled={loading}>
           <label
             htmlFor="media"
-            className="block main-button blue-button !p-3 !rounded-full cursor-pointer"
+            className="block main-button blue-button p-3! rounded-full! cursor-pointer"
           >
             <FaPlus />
           </label>
@@ -88,7 +88,7 @@ export default function CreateComment({
         <button
           type="submit"
           disabled={loading}
-          className="main-button blue-button !p-3 !rounded-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="main-button blue-button p-3! rounded-full! cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <IoSend />
         </button>
