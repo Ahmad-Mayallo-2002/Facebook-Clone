@@ -6,7 +6,12 @@ export const GET_USER_FOLLOWERS = gql`
       data {
         id
         follower {
+          id
           username
+          image {
+            url
+            public_id
+          }
         }
       }
     }
@@ -18,8 +23,13 @@ export const GET_USER_FOLLOWINGS = gql`
     getUserFollowings(skip: $skip, take: $take, userId: $userId) {
       data {
         id
-        follower {
+        followingUserId
+        followingUser {
           username
+          image {
+            url
+            public_id
+          }
         }
       }
     }

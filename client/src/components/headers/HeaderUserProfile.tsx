@@ -1,10 +1,15 @@
 import EditProfileDialog from "../profile/EditProfileDialog";
 import { getUrl } from "@/utils/getImageUrl";
-import { useQuery } from "@apollo/client/react";
+import { useQuery, useMutation } from "@apollo/client/react";
 import { GET_USER } from "@/graphql/queries/user";
 import type { User } from "@/interface/user";
 import { useMeQuery } from "@/utils/user";
 import CreatePageDialog from "../profile/CreatePageDialog";
+import {
+  ADD_USER_FOLLOWING,
+  CANCEL_FOLLOWING,
+} from "@/graphql/mutations/follow";
+import { toast } from "react-toastify";
 
 export default function HeaderUserProfile({ userId }: { userId: string }) {
   const { data } = useQuery<{ getUser: User }>(GET_USER, {
@@ -13,6 +18,42 @@ export default function HeaderUserProfile({ userId }: { userId: string }) {
     },
   });
   const { user } = useMeQuery();
+  const [
+    addUserFollowing,
+    { data: addData, error: addError, loading: addLoading },
+  ] = useMutation(ADD_USER_FOLLOWING);
+  const [
+    cancelFollowing,
+    { data: cancelData, error: cancelError, loading: cancelLoading },
+  ] = useMutation(CANCEL_FOLLOWING);
+
+  const handleFollow = () => {
+    if (user?.id !== userId) {
+      addUserFollowing({
+        variables: {
+          targetId: userId,
+          userId: user?.id,
+        },
+      });
+    }
+  };
+
+  const handleCancelFollowing = () => {
+    if (user?.id === userId) {
+      cancelFollowing({
+        variables: {
+          targetId: userId,
+          userId: user?.id,
+        },
+      });
+    }
+  };
+
+  if (addError) toast.error(addError.message);
+  if (cancelError) toast.error(cancelError.message);
+
+  if (addData) toast.success("Followed");
+  if (cancelData) toast.success("Unfollowed");
 
   return (
     <header className="profile mt-18">
@@ -43,11 +84,19 @@ export default function HeaderUserProfile({ userId }: { userId: string }) {
             </div>
           </div>
 
-          {user?.id === userId && (
+          {user?.id === userId ? (
             <div className="flex gap-x-4">
               <EditProfileDialog />
               <CreatePageDialog userId={userId} />
             </div>
+          ) : (
+            <button
+              disabled={addLoading}
+              onClick={handleFollow}
+              className="main-button blue-button py-2!"
+            >
+              Follow
+            </button>
           )}
         </div>
       </div>
