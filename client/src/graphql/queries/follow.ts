@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const GET_USER_FOLLOWERS = gql`
-  query ($skip: Float!, $take: Float!, $userId: String!) {
+  query ($skip: Int!, $take: Int!, $userId: String!) {
     getUserFollowers(skip: $skip, take: $take, userId: $userId) {
       data {
         id
@@ -14,7 +14,7 @@ export const GET_USER_FOLLOWERS = gql`
 `;
 
 export const GET_USER_FOLLOWINGS = gql`
-  query ($skip: Float!, $take: Float!, $userId: String!) {
+  query ($skip: Int!, $take: Int!, $userId: String!) {
     getUserFollowings(skip: $skip, take: $take, userId: $userId) {
       data {
         id

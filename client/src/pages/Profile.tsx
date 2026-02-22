@@ -4,6 +4,7 @@ import HeaderUserProfile from "@/components/headers/HeaderUserProfile";
 import UserPosts from "@/components/profile/UserPosts";
 import UserFollowers from "@/components/profile/UserFollowers";
 import UserFollowings from "@/components/profile/UserFollowings";
+import UserPages from "@/components/profile/UserPages";
 import { useParams } from "react-router-dom";
 import { useMeQuery } from "@/utils/user";
 
@@ -17,6 +18,7 @@ export default function Profile() {
       <div className="profile-container">
         <div className="container grid gap-4 md:grid-cols-[1fr_2fr] grid-cols-1">
           <div className="left-side">
+            {user?.id === userId && <UserPages userId={userId || ""} />}
             <UserFollowers userId={userId || ""} />
             <UserFollowings userId={userId || ""} />
           </div>
