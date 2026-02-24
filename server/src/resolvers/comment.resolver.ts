@@ -20,6 +20,7 @@ import { User } from "../entities/user.entity";
 import { Context } from "../interfaces/context.interface";
 import { React } from "../entities/react.entity";
 import { CommentPaginated } from "../graphql/objectTypes/commentPaginated";
+import { NotificationType } from "../enums/notification-type.enum";
 
 @Service()
 @Resolver(() => Comment)
@@ -60,13 +61,23 @@ export class CommentResolver {
   async createComment(
     @Arg("postId") postId: string,
     @Arg("input", () => CommentInput) input: CommentInput,
-    @Ctx() { session }: Context,
+    @Ctx() { session, io }: Context,
   ) {
-    return await this.commentService.createComment(
+    const { comment, post } = await this.commentService.createComment(
       session.user.id,
       postId,
       input,
     );
+
+    if (post.userId !== session.userId) {
+      io.to(post.userId).emit("newComment", comment, {
+        type: NotificationType.COMMENT,
+        referenceId: postId,
+        receiverId: post.userId,
+      });
+    }
+
+    return comment;
   }
 
   @Mutation(() => Comment)

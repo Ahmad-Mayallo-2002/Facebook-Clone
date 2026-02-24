@@ -15,6 +15,7 @@ import { sessionStore } from "./redis/session.redis";
 import { graphqlUploadExpress } from "graphql-upload-ts";
 import { Container } from "typedi";
 import { AuthChecker } from "./graphql/authChecker/authChecker";
+import { Server } from "socket.io";
 import "reflect-metadata";
 import "./bullmq/worker/email.worker";
 import {
@@ -22,6 +23,7 @@ import {
   postLoader,
   userLoader,
 } from "./interfaces/loader.interface";
+import { createServer } from "http";
 
 async function bootstrap() {
   config();
@@ -32,6 +34,13 @@ async function bootstrap() {
   await connect();
 
   const app = express();
+  const httpServer = createServer(app);
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "http://localhost:5173",
+      credentials: true,
+    },
+  });
   const schema = buildSchemaSync({
     resolvers,
     authChecker: AuthChecker,
@@ -41,7 +50,7 @@ async function bootstrap() {
   });
 
   app.use(express.static(join(__dirname, "./public")));
-  app.use(graphqlUploadExpress({ maxFileSize: 1000_000_000, maxFiles: 20 }));
+  app.use(graphqlUploadExpress({ maxFileSize: 1_000_000_000, maxFiles: 20 }));
   app.use(bodyParser.json());
   app.use(
     cors({
@@ -50,25 +59,26 @@ async function bootstrap() {
       origin: "http://localhost:5173",
     }),
   );
-  app.use(
-    session({
-      store: sessionStore,
-      secret: `${SESSION_SECRET}`,
-      resave: false,
-      saveUninitialized: false,
-      name: "session",
-      cookie: {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false,
-        maxAge: 1000 * 60 * 60 * 24,
-      },
-    }),
-  );
+  const sessionMiddleware = session({
+    store: sessionStore,
+    secret: `${SESSION_SECRET}`,
+    resave: false,
+    saveUninitialized: false,
+    name: "session",
+    cookie: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false,
+      maxAge: 1000 * 60 * 60 * 24,
+    },
+  });
+
+  app.use(sessionMiddleware);
+  io.engine.use(sessionMiddleware as any);
 
   const server = new ApolloServer({
     schema,
-    formatError(formattedError, error) {
+    formatError(formattedError) {
       const validationErrors = formattedError?.extensions
         ?.validationErrors as ValidationError[];
       const errors = validationErrors
@@ -93,6 +103,7 @@ async function bootstrap() {
         res,
         session: req.session,
         cookies: req.cookies,
+        io,
         // User Loader
         ...userLoader,
         // Post Loader
@@ -103,7 +114,19 @@ async function bootstrap() {
     }),
   );
 
-  app.listen(port, () => {
+  io.on("connection", (socket) => {
+    const req = socket.request as any;
+    if (req.session && req.session.userId) {
+      socket.join(req.session.userId);
+    }
+
+    log("User Connected: ", socket.id);
+    socket.on("disconnect", () => {
+      log("User Disconnected: ", socket.id);
+    });
+  });
+
+  httpServer.listen(port, () => {
     log(`http://localhost:${port}/graphql`);
   });
 }

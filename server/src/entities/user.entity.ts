@@ -68,10 +68,6 @@ export class User extends IdDate {
   @OneToMany(() => Page, page => page.user)
   pages!: Relation<Page[]>;
 
-  @Field(() => [Notification])
-  @OneToMany(() => Notification, (notifications) => notifications.user)
-  notifications!: Relation<Notification[]>;
-
   @Field(() => [Follow])
   @OneToMany(() => Follow, follow => follow.followingUser)
   followers!: Relation<Follow[]>;
@@ -79,6 +75,12 @@ export class User extends IdDate {
   @Field(() => [Follow])
   @OneToMany(() => Follow, (follow) => follow.follower)
   followings!: Relation<Follow[]>;
+
+  @OneToMany(() => Notification, notification => notification.sender)
+  sentNotifications!: Relation<Notification[]>;
+
+  @OneToMany(() => Notification, notification => notification.receiver)
+  receivedNotifications!: Relation<Notification[]>;
 
   // Before Insert
   @BeforeInsert()

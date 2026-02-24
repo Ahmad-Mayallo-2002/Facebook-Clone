@@ -11,12 +11,20 @@ import { UploadApiResponse } from "cloudinary";
 import { PaginatedData } from "../interfaces/pagination.interface";
 import { paginationCalculation } from "../utils/paginationCalculation";
 import { v2 } from "cloudinary";
+import { NotificationService } from "./notification.service";
+import { UserService } from "./user.service";
+import { NotificationType } from "../enums/notification-type.enum";
+import { Post } from "../entities/post.entity";
 
 @Service()
 export class CommentService {
   private commentRepo = getRepo<Comment>(Comment);
 
-  constructor(private readonly postService: PostService) {}
+  constructor(
+    private readonly postService: PostService,
+    private readonly notificationService: NotificationService,
+    private readonly userService: UserService,
+  ) {}
 
   async getAllComments(
     take: number,
@@ -77,8 +85,8 @@ export class CommentService {
     userId: string,
     postId: string,
     input: CommentInput,
-  ): Promise<Comment> {
-    await this.postService.getById(postId);
+  ): Promise<{comment: Comment, post: Post}> {
+    const post = await this.postService.getById(postId);
 
     if (!input.content && (!input.media || !input.media?.length))
       throw new Error("Comment must contain text content or media");
@@ -105,7 +113,22 @@ export class CommentService {
       media,
     });
 
-    return await this.commentRepo.save(comment);
+    const savedComment = await this.commentRepo.save(comment);
+
+    if (post.userId !== userId) {
+      const commenter = await this.userService.getById(userId);
+      await this.notificationService.createNotification(
+        {
+          content: `${commenter.username} commented on your post`,
+          type: NotificationType.COMMENT,
+          receiverId: post.userId,
+          referenceId: postId,
+        },
+        userId,
+      );
+    }
+
+    return {comment: savedComment, post};
   }
 
   async updateComment(id: string, input: CommentInput): Promise<Comment> {
@@ -142,7 +165,10 @@ export class CommentService {
 
   async deleteComment(id: string): Promise<boolean> {
     const comment = await this.getById(id);
-    if (comment.media.length) comment.media.forEach(async (m) => await v2.uploader.destroy(m.public_id));
+    if (comment.media.length)
+      comment.media.forEach(
+        async (m) => await v2.uploader.destroy(m.public_id),
+      );
     await this.commentRepo.remove(comment);
     return true;
   }
