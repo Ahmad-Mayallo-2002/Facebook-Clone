@@ -1,10 +1,13 @@
 import {
   Arg,
   Authorized,
+  Ctx,
+  FieldResolver,
   Int,
   Mutation,
   Query,
   Resolver,
+  Root,
   UseMiddleware,
 } from "type-graphql";
 import { Service } from "typedi";
@@ -13,10 +16,12 @@ import { FollowService } from "../services/follow.service";
 import { CheckToken } from "../middlewares/checkToken.middleware";
 import { Roles } from "../enums/roles.enum";
 import { FollowPaginated } from "../graphql/objectTypes/followPaginated";
+import { User } from "../entities/user.entity";
+import { Context } from "../interfaces/context.interface";
 
 @UseMiddleware(CheckToken)
 @Service()
-@Resolver()
+@Resolver(() => Follow)
 export class FollowResolver {
   constructor(private readonly followService: FollowService) {}
 
@@ -90,5 +95,16 @@ export class FollowResolver {
     @Arg("targetId") targetId: string,
   ) {
     return await this.followService.cancelFollowing(userId, targetId);
+  }
+
+  // Field Resolver for Followings and Followers
+  @FieldResolver(() => User)
+  async user(@Root() follow: Follow, @Ctx() { idByUserLoader }: Context) {
+    return await idByUserLoader.load(follow.followerId);
+  }
+
+  @FieldResolver(() => User)
+  async followingUser(@Root() follow: Follow, @Ctx() { idByUserLoader }: Context) {
+    return await idByUserLoader.load(follow.followingUserId);
   }
 }

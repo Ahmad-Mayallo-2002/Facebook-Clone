@@ -10,7 +10,7 @@ export const GET_USER_REACT_ON_POST = gql`
 `;
 
 export const GET_POST_REACTS = gql`
-  query GetPostReacts($skip: Float!, $take: Float!, $postId: String!) {
+  query GetPostReacts($skip: Int!, $take: Int!, $postId: String!) {
     getPostReacts(skip: $skip, take: $take, postId: $postId) {
       data {
         id

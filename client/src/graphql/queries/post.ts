@@ -34,7 +34,7 @@ export const GET_POSTS = gql`
 `;
 
 export const GET_USER_POSTS = gql`
-  query GetUserPosts($take: Float!, $skip: Float!, $userId: String!) {
+  query GetUserPosts($take: Int!, $skip: Int!, $userId: String!) {
     getUserPosts(take: $take, skip: $skip, userId: $userId) {
       pagination {
         prev
