@@ -16,6 +16,7 @@ import { UserService } from "./user.service";
 import { NotificationType } from "../enums/notification-type.enum";
 import { Post } from "../entities/post.entity";
 import { Notification } from "../entities/notification.entity";
+import { notificationQueue } from "../bullmq/queues/notification.queue";
 
 @Service()
 export class CommentService {
@@ -86,7 +87,7 @@ export class CommentService {
     userId: string,
     postId: string,
     input: CommentInput,
-  ): Promise<{ comment: Comment; notification?: Notification }> {
+  ): Promise<Comment> {
     const post = await this.postService.getById(postId);
 
     if (!input.content && (!input.media || !input.media?.length))
@@ -115,22 +116,15 @@ export class CommentService {
     });
 
     const savedComment = await this.commentRepo.save(comment);
-    let notification: Notification | undefined = undefined;
 
-    if (post.userId !== userId) {
-      const commenter = await this.userService.getById(userId);
-      notification = await this.notificationService.createNotification(
-        {
-          content: `${commenter.username} commented on your post`,
-          type: NotificationType.COMMENT,
-          receiverId: post.userId,
-          referenceId: postId,
-        },
+    if (post.userId !== userId)
+      this.notificationService.dispatch(NotificationType.COMMENT, {
         userId,
-      );
-    }
+        postId,
+        receiverId: post.userId,
+      });
 
-    return { comment: savedComment, notification };
+    return savedComment;
   }
 
   async updateComment(id: string, input: CommentInput): Promise<Comment> {

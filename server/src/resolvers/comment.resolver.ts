@@ -60,15 +60,13 @@ export class CommentResolver {
   async createComment(
     @Arg("postId") postId: string,
     @Arg("input", () => CommentInput) input: CommentInput,
-    @Ctx() { session, io }: Context,
+    @Ctx() { session }: Context,
   ) {
-    const { comment, notification } = await this.commentService.createComment(
+    const comment = await this.commentService.createComment(
       session.user.id,
       postId,
       input,
     );
-
-    if (notification) io.emit("notify_post_owner", notification);
 
     return comment;
   }

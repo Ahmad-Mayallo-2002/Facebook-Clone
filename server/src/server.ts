@@ -1,6 +1,7 @@
 import { config } from "dotenv";
 import "reflect-metadata";
 import "./bullmq/worker/email.worker";
+import "./bullmq/worker/notification.worker";
 import { startServer } from "./graphql";
 import { connect } from "./dataSource";
 

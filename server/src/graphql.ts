@@ -48,7 +48,6 @@ export async function startServer(port: number) {
         req,
         res,
         session: req.session,
-        io,
         ...userLoader,
         ...postLoader,
         ...commentLoader,
