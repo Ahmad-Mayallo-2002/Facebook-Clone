@@ -4,6 +4,8 @@ import { Notification } from "../entities/notification.entity";
 import { NotificationInput } from "../graphql/inputs/notification.input";
 import { paginationCalculation } from "../utils/paginationCalculation";
 import { PaginatedData } from "../interfaces/pagination.interface";
+import { NotificationType } from "../enums/notification-type.enum";
+import { notificationQueue } from "../bullmq/queues/notification.queue";
 
 @Service()
 export class NotificationService {
@@ -53,8 +55,8 @@ export class NotificationService {
       take,
       skip,
     });
-    const pagination = paginationCalculation({ counts, take, skip });
     if (!data.length) throw new Error("No Notifications found");
+    const pagination = paginationCalculation({ counts, take, skip });
     return { data, pagination };
   }
 
@@ -67,5 +69,12 @@ export class NotificationService {
   async markAsRead(id: string): Promise<boolean> {
     await this.notificationRepo.update(id, { isRead: true });
     return true;
+  }
+
+  async dispatch(event: NotificationType, payload: any) {
+    await notificationQueue.add("notification-job", {
+      event,
+      payload,
+    });
   }
 }
