@@ -115,10 +115,8 @@ async function bootstrap() {
   );
 
   io.on("connection", (socket) => {
-    const req = socket.request as any;
-    if (req.session && req.session.userId) {
-      socket.join(req.session.userId);
-    }
+    const req = socket?.request as any;
+    if (req.session && req.session.id) socket.join(req.session.id);
 
     log("User Connected: ", socket.id);
     socket.on("disconnect", () => {

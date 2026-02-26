@@ -54,7 +54,7 @@ export default function HeaderFeed() {
             <FaFacebookMessenger className="text-gray-700 text-xl" />
           </Link>
           <Link
-            to="/feed/notifications"
+            to="/notifications"
             className="relative bg-gray-100 hover:bg-gray-200 p-3 rounded-full"
           >
             <span className="absolute bg-red-500 text-white w-4 h-4 center rounded-full text-sm -top-1 -right-1">

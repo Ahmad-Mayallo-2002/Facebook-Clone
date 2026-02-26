@@ -53,8 +53,8 @@ export class NotificationService {
       take,
       skip,
     });
-    const pagination = paginationCalculation({ counts, take, skip });
     if (!data.length) throw new Error("No Notifications found");
+    const pagination = paginationCalculation({ counts, take, skip });
     return { data, pagination };
   }
 

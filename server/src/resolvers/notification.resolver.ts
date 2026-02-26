@@ -1,18 +1,29 @@
-import { Arg, Ctx, ID, Int, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  ID,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+  FieldResolver,
+  Root,
+} from "type-graphql";
 import { Service } from "typedi";
 import { NotificationService } from "../services/notification.service";
 import { PaginatedData } from "../interfaces/pagination.interface";
 import { Notification } from "../entities/notification.entity";
-import { PaginatedResponse } from "../utils/paginatedResponse";
 import { NotificationInput } from "../graphql/inputs/notification.input";
 import { Context } from "../interfaces/context.interface";
+import { User } from "../entities/user.entity";
+import { NotificationPaginated } from "../graphql/objectTypes/notificationPaginated";
 
 @Service()
 @Resolver(() => Notification)
 export class NotificationResolver {
   constructor(private readonly notificationService: NotificationService) {}
 
-  @Query(() => PaginatedResponse(Notification))
+  @Query(() => NotificationPaginated)
   async getNotifications(
     @Arg("take", () => Int)
     take: number,
@@ -22,7 +33,7 @@ export class NotificationResolver {
     return this.notificationService.getNotifications(take, skip);
   }
 
-  @Query(() => PaginatedResponse(Notification))
+  @Query(() => NotificationPaginated)
   async getReceiverNotifications(
     @Arg("take", () => Int)
     take: number,
@@ -64,5 +75,22 @@ export class NotificationResolver {
   @Mutation(() => Boolean)
   async markNotificationAsRead(@Arg("id", () => ID) id: string) {
     return this.notificationService.markAsRead(id);
+  }
+
+  // Field Resolvers for Data Loader
+  @FieldResolver(() => User)
+  async sender(
+    @Root() notification: Notification,
+    @Ctx() { session, idByUserLoader }: Context,
+  ) {
+    return await idByUserLoader.load(notification.senderId);
+  }
+
+  @FieldResolver(() => User)
+  async receiver(
+    @Root() notification: Notification,
+    @Ctx() { session, idByUserLoader }: Context,
+  ) {
+    return await idByUserLoader.load(notification.receiverId);
   }
 }

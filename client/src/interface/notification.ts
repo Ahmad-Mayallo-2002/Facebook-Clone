@@ -5,5 +5,8 @@ export interface Notification {
   createdAt: Date;
   updatedAt: Date;
   content: string;
-  user?: User;
+  receiverId: string;
+  receiver: string;
+  senderId: string;
+  sender: User;
 }
