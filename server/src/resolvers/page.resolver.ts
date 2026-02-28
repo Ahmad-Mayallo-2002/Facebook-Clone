@@ -1,6 +1,7 @@
 import {
   Arg,
   Authorized,
+  Ctx,
   Int,
   Mutation,
   Query,
@@ -11,6 +12,7 @@ import { Service } from "typedi";
 import { Page } from "../entities/page.entity";
 import { PageService } from "../services/page.service";
 import { PageInput } from "../graphql/inputs/page.input";
+import { Context } from "../interfaces/context.interface";
 import { CheckToken } from "../middlewares/checkToken.middleware";
 import { PagePaginated } from "../graphql/objectTypes/pagePaginated";
 
@@ -54,12 +56,21 @@ export class PageResolver {
   async updatePage(
     @Arg("id") id: string,
     @Arg("input", () => PageInput) input: Partial<PageInput>,
+    @Ctx() { session }: Context,
   ) {
+    const page = await this.pageService.getById(id);
+    if (page.userId !== session.user.id) {
+      throw new Error("Not authorized");
+    }
     return await this.pageService.updatePage(id, input);
   }
 
   @Mutation(() => Boolean)
-  async deletePage(@Arg("id") id: string) {
+  async deletePage(@Arg("id") id: string, @Ctx() { session }: Context) {
+    const page = await this.pageService.getById(id);
+    if (page.userId !== session.user.id) {
+      throw new Error("Not authorized");
+    }
     return await this.pageService.deletePage(id);
   }
 }

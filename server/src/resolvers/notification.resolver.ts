@@ -72,16 +72,11 @@ export class NotificationResolver {
     return notification;
   }
 
-  @Mutation(() => Boolean)
-  async markNotificationAsRead(@Arg("id", () => ID) id: string) {
-    return this.notificationService.markAsRead(id);
-  }
-
   // Field Resolvers for Data Loader
   @FieldResolver(() => User)
   async sender(
     @Root() notification: Notification,
-    @Ctx() { session, idByUserLoader }: Context,
+    @Ctx() { idByUserLoader }: Context,
   ) {
     return await idByUserLoader.load(notification.senderId);
   }
@@ -89,7 +84,7 @@ export class NotificationResolver {
   @FieldResolver(() => User)
   async receiver(
     @Root() notification: Notification,
-    @Ctx() { session, idByUserLoader }: Context,
+    @Ctx() { idByUserLoader }: Context,
   ) {
     return await idByUserLoader.load(notification.receiverId);
   }

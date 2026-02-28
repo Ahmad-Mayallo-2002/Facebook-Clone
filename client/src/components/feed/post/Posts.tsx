@@ -24,6 +24,7 @@ export default function Posts() {
       .then((e) => console.log(e))
       .catch((err) => console.log(err));
   };
+
   return (
     <>
       {data?.getPosts.data.map((post) => (

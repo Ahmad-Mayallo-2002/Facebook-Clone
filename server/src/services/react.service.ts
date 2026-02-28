@@ -8,7 +8,6 @@ import { CommentService } from "./comment.service";
 import { UserService } from "./user.service";
 import { PaginatedData } from "../interfaces/pagination.interface";
 import { paginationCalculation } from "../utils/paginationCalculation";
-import { notificationQueue } from "../bullmq/queues/notification.queue";
 import { NotificationType } from "../enums/notification-type.enum";
 import { NotificationService } from "./notification.service";
 
@@ -116,6 +115,9 @@ export class ReactService {
     type: ReactType,
     postId: string,
   ): Promise<string> {
+    const currentReact = await this.reactRepo.findOne({ where: { postId, userId } });
+    if (currentReact) throw new Error('You already reacted to this post');
+
     const newReact = this.reactRepo.create({
       type,
       value,

@@ -15,9 +15,11 @@ interface FormProps {
 export default function UpdatePost({
   setOpen,
   postId,
+  pageId,
 }: {
   setOpen: Dispatch<SetStateAction<boolean>>;
   postId: string;
+  pageId?: string;
 }) {
   const { register, handleSubmit } = useForm<FormProps>();
 
@@ -40,7 +42,7 @@ export default function UpdatePost({
         },
         id: postId,
       },
-      refetchQueries: ["GetPosts"],
+      refetchQueries: pageId ? ["GetPagePosts"] : ["GetPosts"],
     });
   };
 

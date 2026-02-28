@@ -8,7 +8,7 @@ import UserPages from "@/components/profile/UserPages";
 import { useParams } from "react-router-dom";
 import { useMeQuery } from "@/utils/user";
 
-export default function Profile() {
+export default function UserProfile() {
   const { userId } = useParams();
   const { user } = useMeQuery();
   return (

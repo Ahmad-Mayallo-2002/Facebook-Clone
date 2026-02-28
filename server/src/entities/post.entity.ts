@@ -11,6 +11,7 @@ import { IdDate } from "../graphql/interfaceTypes/IdDate";
 import { MediaObject } from "../interfaces/mediaObject.interface";
 import { MediaObjectType } from "../graphql/objectTypes/mediaObject";
 import { User } from "./user.entity";
+import { Page } from "./page.entity";
 import { Comment } from "./comment.entity";
 import { React } from "./react.entity";
 
@@ -33,11 +34,21 @@ export class Post extends IdDate {
   @Column({ type: "varchar", length: 100, name: "user_id" })
   userId!: string;
 
+  // optional page reference
+  @Field(() => String, { nullable: true })
+  @Column({ type: "varchar", length: 100, name: "page_id", nullable: true })
+  pageId?: string;
+
   // Relationships
   @Field(() => User)
   @JoinColumn({ name: "user" })
   @ManyToOne(() => User, (user) => user.posts)
   user!: Relation<User>;
+
+  @Field(() => Page, { nullable: true })
+  @JoinColumn({ name: "page" })
+  @ManyToOne(() => Page, (page) => page.posts, { nullable: true })
+  page?: Relation<Page>;
 
   @Field(() => [Comment])
   @OneToMany(() => Comment, (comment) => comment.post)

@@ -1,71 +1,74 @@
-import EditProfileDialog from "../profile/EditProfileDialog";
 import { getUrl } from "@/utils/getImageUrl";
 import { useQuery, useMutation } from "@apollo/client/react";
-import { GET_USER } from "@/graphql/queries/user";
-import type { User } from "@/interface/user";
+import { GET_PAGE } from "@/graphql/queries/page";
+import type { Page } from "@/interface/page";
 import { useMeQuery } from "@/utils/user";
-import CreatePageDialog from "../profile/CreatePageDialog";
 import {
-  ADD_USER_FOLLOWING,
   CANCEL_FOLLOWING,
+  ADD_PAGE_FOLLOWING,
 } from "@/graphql/mutations/follow";
-import { toast } from "react-toastify";
+import { DELETE_PAGE } from "@/graphql/mutations/page";
 import { FOLLOWER_OR_NOT } from "@/graphql/queries/follow";
+import { toast } from "react-toastify";
+import EditPageDialog from "@/components/profile/EditPageDialog";
+import { useNavigate } from "react-router-dom";
 
-export default function HeaderUserProfile({ userId }: { userId: string }) {
-  const { data } = useQuery<{ getUser: User }>(GET_USER, {
-    variables: {
-      id: userId,
-    },
+export default function HeaderPageProfile({ pageId }: { pageId: string }) {
+  const { data } = useQuery<{ getPage: Page }>(GET_PAGE, {
+    variables: { id: pageId },
   });
   const { user } = useMeQuery();
-  const [addUserFollowing, { loading: addLoading }] =
-    useMutation(ADD_USER_FOLLOWING);
+  const [addPageFollowing, { loading: addLoading }] =
+    useMutation(ADD_PAGE_FOLLOWING);
   const [cancelFollowing, { loading: cancelLoading }] =
     useMutation(CANCEL_FOLLOWING);
 
   const { data: followerOrNotData, refetch } = useQuery<{
     followerOrNot: boolean;
   }>(FOLLOWER_OR_NOT, {
-    variables: {
-      targetId: userId,
-    },
+    variables: { targetId: pageId },
   });
 
   const handleFollow = () => {
-    if (user?.id !== userId) {
-      addUserFollowing({
-        variables: {
-          targetId: userId,
-          userId: user?.id,
-        },
+    if (user?.id) {
+      addPageFollowing({
+        variables: { userId: user.id, pageId },
       })
         .then(() => {
           toast.success("Followed");
-          refetch({
-            targetId: userId,
-          });
+          refetch({ targetId: pageId });
         })
         .catch((error) => toast.error(error.message));
     }
   };
 
-  const handleCancelFollowing = () => {
-    if (user?.id !== userId) {
+  const handleCancel = () => {
+    if (user?.id) {
       cancelFollowing({
-        variables: {
-          targetId: userId,
-          userId: user?.id,
-        },
+        variables: { userId: user.id, targetId: pageId },
       })
         .then(() => {
           toast.success("Unfollowed");
-          refetch({
-            targetId: userId,
-          });
+          refetch({ targetId: pageId });
         })
         .catch((error) => toast.error(error.message));
     }
+  };
+
+  const isOwner = user?.id === data?.getPage.userId;
+  const navigate = useNavigate();
+  const [deletePage] = useMutation(DELETE_PAGE);
+
+  const handleDelete = () => {
+    if (!data?.getPage?.id) return;
+    deletePage({
+      variables: { id: data.getPage.id },
+    })
+      .then(() => {
+        toast.success("Page deleted");
+        navigate("/feed");
+      })
+      .catch((err) => toast.error(err.message));
   };
 
   return (
@@ -74,9 +77,9 @@ export default function HeaderUserProfile({ userId }: { userId: string }) {
         <div className="profile-banner">
           <img
             src={
-              data?.getUser?.banner ? getUrl(data?.getUser?.banner) : undefined
+              data?.getPage?.banner ? getUrl(data?.getPage?.banner) : undefined
             }
-            alt="User Banner"
+            alt="Page Banner"
             className="profile-banner-image w-full h-90"
           />
         </div>
@@ -85,34 +88,34 @@ export default function HeaderUserProfile({ userId }: { userId: string }) {
           <div className="profile-identity flex items-center md:items-start gap-x-4 flex-col md:flex-row">
             <img
               src={
-                data?.getUser?.image ? getUrl(data?.getUser?.image) : undefined
+                data?.getPage?.image ? getUrl(data.getPage.image) : undefined
               }
               className="profile-details w-40 h-40 rounded-full -translate-y-16 border-2 border-white"
-              alt={data?.getUser?.username}
+              alt={data?.getPage?.description}
             />
 
             <div className="profile-details -mt-12 md:mt-0 mb-4 md:mb-0 text-center md:text-start">
               <h3 className="profile-username text-3xl text-gray-900 mb-2">
-                {data?.getUser?.username}
+                {data?.getPage?.description || "Untitled Page"}
               </h3>
-              <p className="profile-description text-gray-400">
-                {data?.getUser?.description}
-              </p>
             </div>
           </div>
 
-          {user?.id === userId ? (
+          {isOwner ? (
             <div className="flex gap-x-4">
-              <EditProfileDialog />
-              <CreatePageDialog userId={userId} />
+              <EditPageDialog page={data?.getPage} />
+              <button
+                onClick={handleDelete}
+                className="main-button red-button py-2 cursor-pointer"
+              >
+                Delete Page
+              </button>
             </div>
           ) : (
             <button
               disabled={addLoading || cancelLoading}
               onClick={
-                followerOrNotData?.followerOrNot
-                  ? handleCancelFollowing
-                  : handleFollow
+                followerOrNotData?.followerOrNot ? handleCancel : handleFollow
               }
               className="main-button blue-button py-2! cursor-pointer"
             >

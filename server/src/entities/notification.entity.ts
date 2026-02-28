@@ -15,10 +15,6 @@ export class Notification extends IdDate {
   @Column({ type: "enum", enum: NotificationType })
   type!: NotificationType;
 
-  @Field(() => Boolean)
-  @Column({ type: "boolean", default: false })
-  isRead!: boolean;
-
   @Field(() => ID, { nullable: true })
   @Column({ nullable: true })
   referenceId?: string;

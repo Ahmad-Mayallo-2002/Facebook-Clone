@@ -20,3 +20,23 @@ export const GET_USER_PAGES = gql`
     }
   }
 `;
+
+export const GET_PAGE = gql`
+  query ($id: String!) {
+    getPage(id: $id) {
+      id
+      createdAt
+      updatedAt
+      image {
+        url
+        public_id
+      }
+      banner {
+        url
+        public_id
+      }
+      description
+      userId
+    }
+  }
+`;

@@ -13,12 +13,14 @@ interface FormProps {
   media?: FileList;
 }
 
-export default function CreatePost() {
-  const [show, setShow] = useState(false);
-  const { user, error } = useMeQuery();
-  const { register, handleSubmit } = useForm<FormProps>();
+interface CreatePostProps {
+  pageId?: string;
+}
 
-  if (error) toast(error.message, { type: "error" });
+export default function CreatePost({ pageId }: CreatePostProps = {}) {
+  const [show, setShow] = useState(false);
+  const { user } = useMeQuery();
+  const { register, handleSubmit } = useForm<FormProps>();
 
   const [createPost, { loading, error: errPost }] =
     useMutation<CreatePostRes>(CREATE_POST);
@@ -36,10 +38,11 @@ export default function CreatePost() {
         input: {
           content: input.content ?? undefined,
           media,
+          ...(pageId ? { pageId } : {}),
         },
         userId: user?.id,
       },
-      refetchQueries: ["GetPosts"],
+      refetchQueries: [pageId ? "GetPagePosts" : "GetPosts"],
     });
   };
 

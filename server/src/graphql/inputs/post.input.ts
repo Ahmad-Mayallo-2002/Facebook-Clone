@@ -10,4 +10,8 @@ export class CreatePostInput {
 
   @Field(() => [GraphQLUpload], { nullable: true })
   media?: Promise<FileUpload>[];
+
+  // when creating a post on a page, include its id
+  @Field(() => String, { nullable: true })
+  pageId?: string;
 }

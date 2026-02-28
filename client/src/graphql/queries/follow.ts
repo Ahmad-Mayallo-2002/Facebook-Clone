@@ -35,3 +35,27 @@ export const GET_USER_FOLLOWINGS = gql`
     }
   }
 `;
+
+export const FOLLOWER_OR_NOT = gql`
+  query ($targetId: String!) {
+    followerOrNot(targetId: $targetId)
+  }
+`;
+
+export const GET_PAGE_FOLLOWERS = gql`
+  query ($skip: Int!, $take: Int!, $pageId: String!) {
+    getPageFollowers(skip: $skip, take: $take, pageId: $pageId) {
+      data {
+        id
+        follower {
+          id
+          username
+          image {
+            url
+            public_id
+          }
+        }
+      }
+    }
+  }
+`;

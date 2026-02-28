@@ -56,8 +56,8 @@ export default function Notifications() {
                       <img
                         className="w-16 h-16 rounded-full"
                         src={
-                          notification?.sender.image &&
-                          getUrl(notification?.sender?.image)
+                          notification?.sender.image ?
+                          getUrl(notification?.sender?.image) : undefined
                         }
                         alt={notification?.sender.username}
                       />

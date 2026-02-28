@@ -17,7 +17,7 @@ export default function LeftSidebar() {
         <li className="hover:bg-gray-100 p-2 rounded-md">
           <Link to={`/profile/${user?.id}`} className="center-y gap-x-3">
             <img
-              src={user ? getUrl(user.image) : ""}
+              src={user ? getUrl(user.image) : undefined}
               className="w-10 h-10 rounded-full"
             />
             <span className="text-gray-600 text-sm font-bold">

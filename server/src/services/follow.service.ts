@@ -106,9 +106,24 @@ export class FollowService {
     return { data: follows, pagination };
   }
 
+  async followerOrNot(userId: string, targetId: string) {
+    const currentFollowing = await this.followRepo.findOne({
+      where: [
+        { followerId: userId, followingPageId: targetId },
+        { followerId: userId, followingUserId: targetId },
+      ],
+    });
+    if (!currentFollowing) return false;
+    return true;
+  }
+
   async addUserFollowing(userId: string, targetId: string): Promise<Follow> {
     await this.userService.getById(targetId);
     if (userId === targetId) throw new Error("You cannot follow yourself");
+    const currentFollowing = await this.followRepo.findOne({
+      where: { followerId: userId, followingUserId: targetId },
+    });
+    if (currentFollowing) throw new Error("You already follow this user");
     const newFollowing = this.followRepo.create({
       followerId: userId,
       follower: { id: userId },
@@ -121,6 +136,10 @@ export class FollowService {
   async addPageFollowing(userId: string, pageId: string): Promise<Follow> {
     const page = await this.pageService.getById(pageId);
     if (page.userId === userId) throw new Error("You cannot follow your page");
+    const currentFollowing = await this.followRepo.findOne({
+      where: { followerId: userId, followingPageId: pageId },
+    });
+    if (currentFollowing) throw new Error("You already follow this page");
     const newFollowing = this.followRepo.create({
       followerId: userId,
       follower: { id: userId },

@@ -17,6 +17,7 @@ import { NotificationType } from "../enums/notification-type.enum";
 import { Post } from "../entities/post.entity";
 import { Notification } from "../entities/notification.entity";
 import { notificationQueue } from "../bullmq/queues/notification.queue";
+import { removeResourceQueue } from "../bullmq/queues/removeResource.queue";
 
 @Service()
 export class CommentService {
@@ -134,6 +135,8 @@ export class CommentService {
     const media: MediaObject[] = [];
 
     if (files?.length) {
+      const public_ids = comment.media.map((m) => m.public_id);
+      removeResourceQueue.add("remove-comment-media", { public_ids });
       const uploader = new UploaderContext(new CloudinaryUploader());
       for (const file of files) {
         const { public_id, secure_url: url } = (await uploader.performStrategy(
@@ -161,10 +164,10 @@ export class CommentService {
 
   async deleteComment(id: string): Promise<boolean> {
     const comment = await this.getById(id);
-    if (comment.media.length)
-      comment.media.forEach(
-        async (m) => await v2.uploader.destroy(m.public_id),
-      );
+    if (comment.media.length) {
+      const public_ids = comment.media.map((m) => m.public_id);
+      removeResourceQueue.add("remove-comment-media", { public_ids });
+    }
     await this.commentRepo.remove(comment);
     return true;
   }

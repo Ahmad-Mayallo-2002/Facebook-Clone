@@ -73,6 +73,14 @@ export class FollowResolver {
     return await this.followService.getPageFollowings(userId, take, skip);
   }
 
+  @Query(() => Boolean)
+  async followerOrNot(
+    @Ctx() { session }: Context,
+    @Arg("targetId") targetId: string,
+  ) {
+    return await this.followService.followerOrNot(session.user.id, targetId);
+  }
+
   @Mutation(() => Follow)
   async addUserFollowing(
     @Arg("userId") userId: string,
@@ -99,7 +107,7 @@ export class FollowResolver {
 
   // Field Resolver for Followings and Followers
   @FieldResolver(() => User)
-  async user(@Root() follow: Follow, @Ctx() { idByUserLoader }: Context) {
+  async follower(@Root() follow: Follow, @Ctx() { idByUserLoader }: Context) {
     return await idByUserLoader.load(follow.followerId);
   }
 

@@ -11,7 +11,14 @@ export interface Post {
   media: MediaObject[];
   isVisible: boolean;
   userId: string;
+  pageId?: string;
   user: User;
+  page?: {
+    id: string;
+    description: string;
+    image: MediaObject;
+    userId: string;
+  };
   comments: Comment[];
   reacts: React[];
 }

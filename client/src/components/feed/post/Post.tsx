@@ -30,30 +30,41 @@ export default function Post({ post, userId }: PostProps) {
       variables: {
         id: post.id,
       },
-      refetchQueries: ["GetPosts"],
+      refetchQueries: post.pageId ? ["GetPagePosts"] : ["GetPosts"],
     });
   };
 
   if (error) toast.error(error.message);
+  const isPagePost = !!post.page;
+  const author = isPagePost ? post.page! : post.user;
+  const authorLink = isPagePost
+    ? `/page/${post.pageId}`
+    : `/profile/${post.userId}`;
+  const authorImg = isPagePost
+    ? post.page!.image.url
+    : post.user.image.public_id
+      ? post.user.image.url
+      : mainEndPoint + post.user.image.url;
+  const authorName = isPagePost
+    ? post.page!.description || "Untitled Page"
+    : post.user.username;
+  const canEdit =
+    post.userId === userId || (post.page && post.page.userId === userId);
 
   return (
     <div className="post bg-white rounded-lg shadow-sm">
       <header className="p-3 sm:p-4 post-author center-y justify-between">
         <div className="user center-y gap-x-2">
-          <Link to={`/profile/${post.userId}`}>
+          <Link to={authorLink}>
             <img
-              src={
-                post.user.image.public_id
-                  ? post.user.image.url
-                  : mainEndPoint + post.user.image.url
-              }
-              alt={post.user.username}
+              src={authorImg}
+              alt={authorName}
               className="w-10 h-10 rounded-full"
             />
           </Link>
           <div className="username-date">
-            <Link to={`/profile/${post.userId}`}>
-              <h4 className="text-gray-900 text-sm">{post.user.username}</h4>
+            <Link to={authorLink}>
+              <h4 className="text-gray-900 text-sm">{authorName}</h4>
             </Link>
             <small className="text-gray-500 text-xs">
               {timeAgo(post.createdAt)}
@@ -61,7 +72,7 @@ export default function Post({ post, userId }: PostProps) {
           </div>
         </div>
 
-        {post.userId === userId && (
+        {canEdit && (
           <div className="menu-actions relative w-10 h-10">
             <Menu
               menuButton={
@@ -88,7 +99,9 @@ export default function Post({ post, userId }: PostProps) {
         )}
       </header>
 
-      {open && <UpdatePost setOpen={setOpen} postId={post.id} />}
+      {open && (
+        <UpdatePost setOpen={setOpen} postId={post.id} pageId={post.pageId} />
+      )}
 
       <section className="post-content">
         {post.content ? <p className="p-3 pt-0">{post.content}</p> : ""}

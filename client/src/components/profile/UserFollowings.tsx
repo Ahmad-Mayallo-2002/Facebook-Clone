@@ -41,7 +41,7 @@ export default function UserFollowings({ userId }: { userId: string }) {
                 to={`/profile/${follow.followingUserId}`}
               >
                 <img
-                  src={getUrl(follow.followingUser.image)}
+                  src={getUrl(follow.followingUser.image) || undefined}
                   alt={follow.followingUser.username}
                   className="h-12 w-12 rounded-full"
                 />

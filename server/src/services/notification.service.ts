@@ -66,11 +66,6 @@ export class NotificationService {
     return true;
   }
 
-  async markAsRead(id: string): Promise<boolean> {
-    await this.notificationRepo.update(id, { isRead: true });
-    return true;
-  }
-
   async dispatch(event: NotificationType, payload: any) {
     await notificationQueue.add("notification-job", {
       event,

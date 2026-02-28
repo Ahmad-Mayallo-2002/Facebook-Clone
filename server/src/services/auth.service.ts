@@ -9,7 +9,7 @@ import { Service } from "typedi";
 import { sign } from "jsonwebtoken";
 import { queueRedis } from "../redis/queue.redis";
 import { getRepo } from "../utils/getRepo";
-import { LoginResponse, Payload } from "../interfaces/payload.interface";
+import { Payload } from "../interfaces/payload.interface";
 
 config();
 

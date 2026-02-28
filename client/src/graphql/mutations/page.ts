@@ -7,3 +7,17 @@ export const CREATE_PAGE = gql`
     }
   }
 `;
+
+export const UPDATE_PAGE = gql`
+  mutation ($id: String!, $input: PageInput!) {
+    updatePage(id: $id, input: $input) {
+      id
+    }
+  }
+`;
+
+export const DELETE_PAGE = gql`
+  mutation ($id: String!) {
+    deletePage(id: $id)
+  }
+`;
