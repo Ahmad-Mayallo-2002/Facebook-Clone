@@ -12,7 +12,7 @@ import { Notification } from "./notification.entity";
 import { Follow } from "./follow.entity";
 import { Gender } from "../enums/gender.enum";
 
-let defaultValue = { url: '', public_id: '' }
+let defaultValue = { url: "", public_id: "" };
 
 @ObjectType({ implements: IdDate })
 @Entity({ name: "users" })
@@ -26,7 +26,11 @@ export class User extends IdDate {
   email!: string;
 
   @Field({ defaultValue: "Hello, I am Facebook User" })
-  @Column({ type: "varchar", length: 255, default: "Hello, I am Facebook User" })
+  @Column({
+    type: "varchar",
+    length: 255,
+    default: "Hello, I am Facebook User",
+  })
   description!: string;
 
   @Column({ type: "varchar", length: 100 })
@@ -48,7 +52,7 @@ export class User extends IdDate {
   banner!: MediaObject;
 
   @Field(() => Gender)
-  @Column({ type: 'enum', enum: Gender })
+  @Column({ type: "enum", enum: Gender })
   gender!: Gender;
 
   // Relationships
@@ -65,21 +69,21 @@ export class User extends IdDate {
   reacts!: Relation<React[]>;
 
   @Field(() => [Page])
-  @OneToMany(() => Page, page => page.user)
+  @OneToMany(() => Page, (page) => page.user)
   pages!: Relation<Page[]>;
 
   @Field(() => [Follow])
-  @OneToMany(() => Follow, follow => follow.followingUser)
+  @OneToMany(() => Follow, (follow) => follow.followingUser)
   followers!: Relation<Follow[]>;
 
   @Field(() => [Follow])
   @OneToMany(() => Follow, (follow) => follow.follower)
   followings!: Relation<Follow[]>;
 
-  @OneToMany(() => Notification, notification => notification.sender)
+  @OneToMany(() => Notification, (notification) => notification.sender)
   sentNotifications!: Relation<Notification[]>;
 
-  @OneToMany(() => Notification, notification => notification.receiver)
+  @OneToMany(() => Notification, (notification) => notification.receiver)
   receivedNotifications!: Relation<Notification[]>;
 
   // Before Insert

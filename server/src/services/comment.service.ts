@@ -118,12 +118,14 @@ export class CommentService {
 
     const savedComment = await this.commentRepo.save(comment);
 
-    if (post.userId !== userId)
+    if (post.userId !== userId) {
+      // push a job that will look up the receiver's current token
       this.notificationService.dispatch(NotificationType.COMMENT, {
         userId,
         postId,
         receiverId: post.userId,
       });
+    }
 
     return savedComment;
   }

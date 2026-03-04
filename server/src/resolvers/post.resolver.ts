@@ -118,6 +118,7 @@ export class PostResolver {
   // Field Resolver for Data Loader
   @FieldResolver(() => User)
   async user(@Root() post: Post, @Ctx() { idByUserLoader }: Context) {
+    if (!post.userId) return null;
     return await idByUserLoader.load(post.userId);
   }
 

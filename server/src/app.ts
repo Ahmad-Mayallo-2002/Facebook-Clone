@@ -1,5 +1,5 @@
 // app.ts
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import session from "express-session";
 import { join } from "path";

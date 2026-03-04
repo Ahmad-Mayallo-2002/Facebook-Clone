@@ -36,7 +36,6 @@ export default function Post({ post, userId }: PostProps) {
 
   if (error) toast.error(error.message);
   const isPagePost = !!post.page;
-  const author = isPagePost ? post.page! : post.user;
   const authorLink = isPagePost
     ? `/page/${post.pageId}`
     : `/profile/${post.userId}`;

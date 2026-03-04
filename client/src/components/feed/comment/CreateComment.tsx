@@ -49,6 +49,7 @@ export default function CreateComment({
       },
       refetchQueries: ["GetPostComments"],
     });
+
     reset();
     setShowComment(true);
   };

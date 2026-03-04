@@ -30,9 +30,9 @@ export class Post extends IdDate {
   @Column({ type: "boolean", default: true })
   isVisible!: boolean;
 
-  @Field(() => ID)
-  @Column({ type: "varchar", length: 100, name: "user_id" })
-  userId!: string;
+  @Field(() => ID, { nullable: true })
+  @Column({ type: "varchar", length: 100, name: "user_id", nullable: true })
+  userId?: string;
 
   // optional page reference
   @Field(() => String, { nullable: true })
@@ -40,10 +40,10 @@ export class Post extends IdDate {
   pageId?: string;
 
   // Relationships
-  @Field(() => User)
+  @Field(() => User, { nullable: true })
   @JoinColumn({ name: "user" })
-  @ManyToOne(() => User, (user) => user.posts)
-  user!: Relation<User>;
+  @ManyToOne(() => User, (user) => user.posts, { nullable: true })
+  user?: Relation<User>;
 
   @Field(() => Page, { nullable: true })
   @JoinColumn({ name: "page" })

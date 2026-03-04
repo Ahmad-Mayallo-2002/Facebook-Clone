@@ -16,7 +16,7 @@ export const createPostsByUserLoader = () =>
 
     userIds.forEach((id) => (postMap[id] = []));
 
-    posts.forEach((post) => postMap[post.userId].push(post));
+    posts.forEach((post) => postMap[`${post.userId}`].push(post));
 
     return userIds.map((id) => postMap[id]);
   });

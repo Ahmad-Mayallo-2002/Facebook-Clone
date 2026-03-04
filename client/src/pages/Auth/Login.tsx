@@ -27,9 +27,7 @@ export default function Login() {
 
   const onSubmit = async (input: ILogin) =>
     await login({ variables: { input } })
-      .then(() => {
-        navigate("/feed");
-      })
+      .then(() => navigate("/feed"))
       .catch((reason) => {
         toast(reason.message, { type: "error" });
         console.log(reason);

@@ -4,7 +4,10 @@ import { getRepo } from "../../utils/getRepo";
 import { User } from "../../entities/user.entity";
 import { Notification } from "../../entities/notification.entity";
 import { NotificationType } from "../../enums/notification-type.enum";
-import { handleCommentNotification, handleReactNotification } from "../../utils/notificationsHandles";
+import {
+  handleCommentNotification,
+  handleReactNotification,
+} from "../../utils/notificationsHandles";
 
 export const notificationWorker = new Worker(
   "notification-queue",
@@ -12,6 +15,7 @@ export const notificationWorker = new Worker(
     const userRepo = getRepo(User);
     const notificationRepo = getRepo(Notification);
     const { event, payload } = job.data;
+
     switch (event) {
       case NotificationType.COMMENT:
         await handleCommentNotification(payload, notificationRepo, userRepo);
