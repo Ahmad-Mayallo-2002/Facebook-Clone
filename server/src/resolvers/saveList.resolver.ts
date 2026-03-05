@@ -13,6 +13,7 @@ import { SaveList } from "../entities/saveList.entity";
 import { SaveListService } from "../services/saveList.service";
 import { CheckToken } from "../middlewares/checkToken.middleware";
 import { Roles } from "../enums/roles.enum";
+import { SaveListPaginated } from "../graphql/objectTypes/saveListPaginated";
 
 @UseMiddleware(CheckToken)
 @Service()
@@ -21,7 +22,7 @@ export class SaveListResolver {
   constructor(private saveListService: SaveListService) {}
 
   @Authorized(Roles.ADMIN)
-  @Query(() => [SaveList])
+  @Query(() => SaveListPaginated)
   async getSaveLists(
     @Arg("take", () => Int) take: number,
     @Arg("skip", () => Int) skip: number,

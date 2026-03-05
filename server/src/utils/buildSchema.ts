@@ -8,6 +8,8 @@ import { PageResolver } from "../resolvers/page.resolver";
 import { FollowResolver } from "../resolvers/follow.resolver";
 import { ResolveTime } from "../middlewares/resolveTime.middleware";
 import { NotificationResolver } from "../resolvers/notification.resolver";
+import { SaveListResolver } from "../resolvers/saveList.resolver";
+import { FriendsResolver } from "../resolvers/friends.resolver";
 
 export const resolvers: NonEmptyArray<Function> = [
   UserResolver,
@@ -18,6 +20,8 @@ export const resolvers: NonEmptyArray<Function> = [
   PageResolver,
   FollowResolver,
   NotificationResolver,
+  SaveListResolver,
+  FriendsResolver
 ];
 
 export const globalMiddlewares = [ResolveTime];

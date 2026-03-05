@@ -19,7 +19,7 @@ import { Notification } from "./notification.entity";
 import { Follow } from "./follow.entity";
 import { Gender } from "../enums/gender.enum";
 import { SaveList } from "./saveList.entity";
-import { Friends } from "./friend.entity";
+import { Friends } from "./friends.entity";
 
 let defaultValue = { url: "", public_id: "" };
 
