@@ -1,5 +1,12 @@
 import { Field, ObjectType } from "type-graphql";
-import { BeforeInsert, Column, Entity, OneToMany, Relation } from "typeorm";
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  Relation,
+} from "typeorm";
 import { IdDate } from "../graphql/interfaceTypes/IdDate";
 import { Roles } from "../enums/roles.enum";
 import { MediaObject } from "../interfaces/mediaObject.interface";
@@ -11,6 +18,8 @@ import { Page } from "./page.entity";
 import { Notification } from "./notification.entity";
 import { Follow } from "./follow.entity";
 import { Gender } from "../enums/gender.enum";
+import { SaveList } from "./saveList.entity";
+import { Friends } from "./friend.entity";
 
 let defaultValue = { url: "", public_id: "" };
 
@@ -79,6 +88,18 @@ export class User extends IdDate {
   @Field(() => [Follow])
   @OneToMany(() => Follow, (follow) => follow.follower)
   followings!: Relation<Follow[]>;
+
+  @Field(() => SaveList)
+  @OneToOne(() => SaveList, (save) => save.user)
+  save!: Relation<SaveList>;
+
+  @Field(() => [Friends])
+  @OneToMany(() => Friends, (user) => user.sender)
+  sender!: Relation<Friends[]>;
+
+  @Field(() => [Friends])
+  @OneToMany(() => Friends, (user) => user.receiver)
+  receiver!: Relation<Friends[]>;
 
   @OneToMany(() => Notification, (notification) => notification.sender)
   sentNotifications!: Relation<Notification[]>;

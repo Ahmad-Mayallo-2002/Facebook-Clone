@@ -14,6 +14,7 @@ import { User } from "./user.entity";
 import { Page } from "./page.entity";
 import { Comment } from "./comment.entity";
 import { React } from "./react.entity";
+import { SaveItem } from "./saveItem.entity";
 
 @ObjectType({ implements: IdDate })
 @Entity({ name: "posts" })
@@ -57,4 +58,8 @@ export class Post extends IdDate {
   @Field(() => [React])
   @OneToMany(() => React, (react) => react.post)
   reacts!: Relation<React[]>;
+
+  @Field(() => [SaveItem])
+  @OneToMany(() => SaveItem, saveItem => saveItem.post)
+  saveItems!: Relation<SaveItem[]>;
 }
