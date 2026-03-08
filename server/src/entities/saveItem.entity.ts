@@ -15,6 +15,10 @@ export class SaveItem extends IdDate {
   @Column({ type: "varchar", length: 100, name: "save_list_id" })
   saveListId!: string;
 
+  @Field(() => ID)
+  @Column({ type: "varchar", length: 100, name: "user_id" })
+  userId!: string;
+
   // Relationships
   @Field(() => Post)
   @JoinColumn({ name: "post" })

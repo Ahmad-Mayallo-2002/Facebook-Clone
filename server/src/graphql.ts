@@ -1,18 +1,20 @@
 // graphql.ts
 import { ApolloServer } from "@apollo/server";
 import { buildSchemaSync } from "type-graphql";
-import { Container } from "typedi";
 import { AuthChecker } from "./graphql/authChecker/authChecker";
 import { globalMiddlewares, resolvers } from "./utils/buildSchema";
 import { app } from "./app";
 import { expressMiddleware } from "@as-integrations/express5";
-import { httpServer, io } from "./socket";
+import { httpServer } from "./socket";
 import {
   commentLoader,
   postLoader,
+  saveItemLoader,
+  saveListLoader,
   userLoader,
 } from "./interfaces/loader.interface";
 import { ValidationError } from "class-validator";
+import Container from "typedi";
 
 export const schema = buildSchemaSync({
   resolvers,
@@ -51,6 +53,8 @@ export async function startServer(port: number) {
         ...userLoader,
         ...postLoader,
         ...commentLoader,
+        ...saveItemLoader,
+        ...saveListLoader,
       }),
     }),
   );

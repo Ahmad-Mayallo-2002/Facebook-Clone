@@ -1,6 +1,11 @@
 import { mainEndPoint, timeAgo } from "@/assets/assets";
 import { useState } from "react";
-import { FaRegComment, FaShare } from "react-icons/fa";
+import {
+  FaRegBookmark,
+  FaRegComment,
+  FaShare,
+  FaBookmark,
+} from "react-icons/fa";
 import EmotionsDialog from "../react/EmotionsDialog";
 import type { Post } from "@/interface/post";
 import CommentsDialog from "../comment/CommentsDialog";
@@ -8,11 +13,16 @@ import CreateComment from "../comment/CreateComment";
 import EmotionsBox from "../react/EmotionsBox";
 import { Menu, MenuItem } from "@szhsin/react-menu";
 import { HiDotsVertical } from "react-icons/hi";
-import { useMutation } from "@apollo/client/react";
+import { useMutation, useQuery } from "@apollo/client/react";
 import { toast } from "react-toastify";
 import UpdatePost from "./UpdatePost";
 import { DELETE_POST } from "@/graphql/mutations/post";
 import { Link } from "react-router-dom";
+import { IS_SAVED } from "@/graphql/queries/saveList";
+import {
+  ADD_TO_SAVE_LIST,
+  DELETE_SAVE_ITEM,
+} from "@/graphql/mutations/saveList";
 
 interface PostProps {
   post: Post;
@@ -23,18 +33,39 @@ export default function Post({ post, userId }: PostProps) {
   const [showComment, setShowComment] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const [deletePost, { error }] = useMutation(DELETE_POST);
+  const [deletePost, { error: deletePostError }] = useMutation(DELETE_POST);
+  const [addToSaveList, { error: addError }] = useMutation(ADD_TO_SAVE_LIST);
+  const [deleteSaveItem, { error: deleteError }] =
+    useMutation(DELETE_SAVE_ITEM);
 
-  const handleDeletePost = () => {
+  const { data } = useQuery<{ isSaved: boolean }>(IS_SAVED, {
+    variables: {
+      userId,
+      postId: post.id,
+    },
+  });
+
+  const handleSaveOrUnSave = () => {
+    if (!data?.isSaved)
+      addToSaveList({
+        variables: { userId, postId: post.id },
+        refetchQueries: ["IsSaved"],
+      });
+    else
+      deleteSaveItem({
+        variables: { userId, postId: post.id },
+        refetchQueries: ["IsSaved"],
+      });
+  };
+
+  const handleDeletePost = () =>
     deletePost({
       variables: {
         id: post.id,
       },
       refetchQueries: post.pageId ? ["GetPagePosts"] : ["GetPosts"],
     });
-  };
 
-  if (error) toast.error(error.message);
   const isPagePost = !!post.page;
   const authorLink = isPagePost
     ? `/page/${post.pageId}`
@@ -44,11 +75,15 @@ export default function Post({ post, userId }: PostProps) {
     : post.user.image.public_id
       ? post.user.image.url
       : mainEndPoint + post.user.image.url;
-  const authorName = isPagePost
-    ? post.page!.description || "Untitled Page"
-    : post.user.username;
+  const authorName = isPagePost ? post.page!.description : post.user.username;
   const canEdit =
     post.userId === userId || (post.page && post.page.userId === userId);
+
+  const BookMark = data?.isSaved ? FaBookmark : FaRegBookmark;
+
+  if (deletePostError) toast.error(deletePostError.message);
+  if (addError) toast.error(addError.message);
+  if (deleteError) toast.error(deleteError.message);
 
   return (
     <div className="post bg-white rounded-lg shadow-sm">
@@ -71,31 +106,39 @@ export default function Post({ post, userId }: PostProps) {
           </div>
         </div>
 
-        {canEdit && (
-          <div className="menu-actions relative w-10 h-10">
-            <Menu
-              menuButton={
-                <button className="cursor-pointer rounded-full w-full h-full center hover:bg-gray-100">
-                  <HiDotsVertical className="text-xl" />
-                </button>
-              }
-              menuClassName="bg-white rounded-lg min-w-40 z-1 !left-[-120px]"
-            >
-              <MenuItem
-                onClick={handleDeletePost}
-                className="p-3 text-red-500 cursor-pointer hover:bg-gray-100 rounded-t-lg"
+        <div className="actions center-y gap-x-2">
+          <button
+            onClick={handleSaveOrUnSave}
+            className="save-post hover:bg-gray-100 rounded-full w-9 h-9 center cursor-pointer"
+          >
+            <BookMark className="text-blue-500 text-xl" />
+          </button>
+          {canEdit && (
+            <div className="menu-actions relative w-9 h-9">
+              <Menu
+                menuButton={
+                  <button className="cursor-pointer rounded-full w-full h-full center hover:bg-gray-100">
+                    <HiDotsVertical className="text-xl" />
+                  </button>
+                }
+                menuClassName="bg-white rounded-lg min-w-40 z-1 !left-[-120px] shadow"
               >
-                Delete
-              </MenuItem>
-              <MenuItem
-                onClick={() => setOpen(true)}
-                className="p-3 cursor-pointer hover:bg-gray-100 rounded-b-lg"
-              >
-                Update
-              </MenuItem>
-            </Menu>
-          </div>
-        )}
+                <MenuItem
+                  onClick={handleDeletePost}
+                  className="p-3 text-red-500 cursor-pointer hover:bg-gray-100 rounded-t-lg"
+                >
+                  Delete
+                </MenuItem>
+                <MenuItem
+                  onClick={() => setOpen(true)}
+                  className="p-3 cursor-pointer hover:bg-gray-100 rounded-b-lg"
+                >
+                  Update
+                </MenuItem>
+              </Menu>
+            </div>
+          )}
+        </div>
       </header>
 
       {open && (

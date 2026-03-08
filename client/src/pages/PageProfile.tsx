@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import HeaderPageProfile from "@/components/headers/HeaderPageProfile";
 import PageFollowers from "@/components/profile/PageFollowers";
 import PagePosts from "@/components/profile/PagePosts";
-import CreatePost from "@/components/feed/post/CreatePost";
+import CreatePost from "@/components/post/CreatePost";
 import { useMeQuery } from "@/utils/user";
 import { useQuery } from "@apollo/client/react";
 import { GET_PAGE } from "@/graphql/queries/page";

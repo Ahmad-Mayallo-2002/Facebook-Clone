@@ -1,9 +1,11 @@
 import { createReactsByCommentLoader } from "../loader/commentLoader/react.loader";
 import { createCommentsByPostLoader } from "../loader/postLoader/comment.loader";
 import { createReactsByPostLoader } from "../loader/postLoader/react.loader";
+import { createSaveItemsBySaveListLoader } from "../loader/saveLoader/saveItem.loader";
 import { createCommentByUserLoader } from "../loader/userLoader/comment.loader";
 import { createIdsByUserLoader } from "../loader/userLoader/id.loader";
 import { createPostsByUserLoader } from "../loader/userLoader/post.loader";
+import { createSaveListByUserLoader } from "../loader/userLoader/saveList.loader";
 
 export interface UserLoader {
   postsByUserLoader: ReturnType<typeof createPostsByUserLoader>;
@@ -33,4 +35,20 @@ export interface CommentLoader {
 
 export const commentLoader: CommentLoader = {
   reactsByCommentLoader: createReactsByCommentLoader(),
+};
+
+export interface SaveListLoader {
+  saveListByUserLoader: ReturnType<typeof createSaveListByUserLoader>;
+}
+
+export const saveListLoader: SaveListLoader = {
+  saveListByUserLoader: createSaveListByUserLoader(),
+};
+
+export interface SaveItemLoader {
+  saveItemsBySaveListLoader: ReturnType<typeof createSaveItemsBySaveListLoader>;
+}
+
+export const saveItemLoader: SaveItemLoader = {
+  saveItemsBySaveListLoader: createSaveItemsBySaveListLoader(),
 };

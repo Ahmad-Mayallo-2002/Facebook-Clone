@@ -48,7 +48,7 @@ export default function HeaderFeed() {
         </div>
         <div className="user-actions center-y gap-x-3">
           <Link
-            to="/feed/messenger"
+            to="/messenger"
             className="bg-gray-100 hover:bg-gray-200 p-3 rounded-full"
           >
             <FaFacebookMessenger className="text-gray-700 text-xl" />

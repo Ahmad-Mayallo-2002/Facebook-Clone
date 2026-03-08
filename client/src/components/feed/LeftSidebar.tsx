@@ -5,8 +5,8 @@ import { HiOutlineUsers } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 
 const links = [
-  { icon: HiOutlineUsers, path: "/feed/friends", title: "Friends" },
-  { icon: FaBookmark, path: "/feed/saved", title: "Saved" },
+  { icon: HiOutlineUsers, path: "/friends", title: "Friends" },
+  { icon: FaBookmark, path: "/saved", title: "Saved" },
 ];
 
 export default function LeftSidebar() {
@@ -28,7 +28,7 @@ export default function LeftSidebar() {
         {links.map((link) => (
           <li key={link.path}>
             <Link
-              to={link.path}
+              to={link.path + `/${user?.id}`}
               className="center-y hover:bg-gray-100 p-2 rounded-md"
             >
               <div className="p-3 rounded-full mr-2 bg-gray-200">

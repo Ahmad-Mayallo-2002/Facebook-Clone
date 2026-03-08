@@ -6,7 +6,7 @@ import { User } from "./user.entity";
 
 @ObjectType({ implements: IdDate })
 @Entity({ name: "friends" })
-export class Friends {
+export class Friends extends IdDate {
   @Field(() => ID)
   @Column({ type: "varchar", length: 100, name: "sender_id" })
   senderId!: string;

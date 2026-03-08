@@ -3,7 +3,7 @@ import { GET_PAGE_POSTS } from "@/graphql/queries/post";
 import type { PaginatedData } from "@/interface/pagination";
 import type { Post as IPost } from "@/interface/post";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import Post from "../feed/post/Post";
+import Post from "../post/Post";
 import { useMeQuery } from "@/utils/user";
 
 export default function PagePosts({ pageId }: { pageId: string }) {

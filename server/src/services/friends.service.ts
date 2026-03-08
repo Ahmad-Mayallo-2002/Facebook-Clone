@@ -1,14 +1,13 @@
 import { Service } from "typedi";
-import { Repository } from "typeorm";
-import { InjectRepository } from "typeorm-typedi-extensions";
 import { Friends } from "../entities/friends.entity";
 import { PaginatedData } from "../interfaces/pagination.interface";
 import { paginationCalculation } from "../utils/paginationCalculation";
 import { FriendRequest } from "../enums/friendRequest.enum";
+import { getRepo } from "../utils/getRepo";
 
 @Service()
 export class FriendService {
-  constructor(@InjectRepository() private friendsRepo: Repository<Friends>) {}
+  private friendsRepo = getRepo(Friends);
 
   async getAllFriends(
     take: number,
@@ -91,14 +90,6 @@ export class FriendService {
   ): Promise<string> {
     const request = await this.friendsRepo.findOne({
       where: { senderId, receiverId },
-      relations: {
-        receiver: true,
-      },
-      select: {
-        receiver: {
-          username: true,
-        },
-      },
     });
 
     if (!request) throw new Error("No Friendship Request Found");

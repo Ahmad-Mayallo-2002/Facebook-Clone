@@ -51,7 +51,7 @@ const routes: RouteObject[] = [
     element: <Notifications />,
   },
   {
-    path: "/saved",
+    path: "/saved/:userId",
     element: <Saved />,
   },
   {

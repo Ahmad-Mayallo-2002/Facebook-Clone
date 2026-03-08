@@ -1,4 +1,4 @@
-import CreatePost from "@/components/feed/post/CreatePost";
+import CreatePost from "@/components/post/CreatePost";
 import HeaderFeed from "@/components/headers/HeaderFeed";
 import HeaderUserProfile from "@/components/headers/HeaderUserProfile";
 import UserPosts from "@/components/profile/UserPosts";

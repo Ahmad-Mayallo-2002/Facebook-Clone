@@ -10,7 +10,7 @@ import { getRepo } from "../utils/getRepo";
 import { PaginatedData } from "../interfaces/pagination.interface";
 import { paginationCalculation } from "../utils/paginationCalculation";
 import { removeResourceQueue } from "../bullmq/queues/removeResource.queue";
-import { PageService } from './page.service';
+import { PageService } from "./page.service";
 
 @Service()
 export class PostService {
@@ -36,11 +36,8 @@ export class PostService {
       }
     }
 
-    // if posting on a page, validate the page exists
     const pageId = input.pageId;
-    if (pageId) {
-      await this.pageService.getById(pageId);
-    }
+    if (pageId) await this.pageService.getById(pageId);
 
     const postData: DeepPartial<Post> = {
       userId,
@@ -61,7 +58,6 @@ export class PostService {
   async getPosts(take: number, skip: number): Promise<PaginatedData<Post>> {
     const [posts, counts] = await this.postRepo.findAndCount({
       where: { isVisible: true },
-      relations: { user: true, page: true },
       order: { createdAt: "DESC" },
       take,
       skip,
@@ -74,11 +70,6 @@ export class PostService {
   async getById(id: string): Promise<Post> {
     const post = await this.postRepo.findOne({
       where: { id },
-      relations: {
-        reacts: true,
-        page: true,
-        user: true,
-      },
     });
     if (!post) throw new Error("Post not found");
     return post;
@@ -91,7 +82,7 @@ export class PostService {
   ): Promise<PaginatedData<Post>> {
     const [posts, counts] = await this.postRepo.findAndCount({
       where: { userId, isVisible: true },
-      relations: { user: true, page: true },
+      relations: { saveItems: true },
       order: { createdAt: "DESC" },
       take,
       skip,
@@ -153,7 +144,6 @@ export class PostService {
     await this.pageService.getById(pageId);
     const [posts, counts] = await this.postRepo.findAndCount({
       where: { pageId, isVisible: true },
-      relations: { user: true, page: true },
       order: { createdAt: "DESC" },
       take,
       skip,

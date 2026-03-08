@@ -1,9 +1,7 @@
+import type { IdDate } from "./IdDate";
 import { type User } from "./user";
 
-export interface Notification {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
+export interface Notification extends IdDate {
   content: string;
   receiverId: string;
   receiver: string;

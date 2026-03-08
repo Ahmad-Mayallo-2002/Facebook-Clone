@@ -1,11 +1,14 @@
 import {
   Arg,
   Authorized,
+  Ctx,
+  FieldResolver,
   ID,
   Int,
   Mutation,
   Query,
   Resolver,
+  Root,
   UseMiddleware,
 } from "type-graphql";
 import { Service } from "typedi";
@@ -14,6 +17,9 @@ import { SaveListService } from "../services/saveList.service";
 import { CheckToken } from "../middlewares/checkToken.middleware";
 import { Roles } from "../enums/roles.enum";
 import { SaveListPaginated } from "../graphql/objectTypes/saveListPaginated";
+import { SaveItem } from "../entities/saveItem.entity";
+import { Context } from "../interfaces/context.interface";
+import { Post } from "../entities/post.entity";
 
 @UseMiddleware(CheckToken)
 @Service()
@@ -31,25 +37,45 @@ export class SaveListResolver {
   }
 
   @Query(() => SaveList)
-  async getSaveListByUserId(@Arg("userId", () => ID) userId: string) {
-    return await this.saveListService.getSaveListByUserId(userId);
+  async getUserSaveList(@Arg("userId", () => ID) userId: string) {
+    return await this.saveListService.getUserSaveList(userId);
   }
 
-  @Mutation(() => Boolean)
+  @Query(() => Boolean)
+  async isSaved(
+    @Arg("userId", () => ID) userId: string,
+    @Arg("postId", () => ID) postId: string,
+  ) {
+    return await this.saveListService.isSavedPost(postId, userId);
+  }
+
+  @Mutation(() => String)
   async clearSaveList(@Arg("userId", () => ID) userId: string) {
     return await this.saveListService.clearSaveList(userId);
   }
 
-  @Mutation(() => Boolean)
-  async deleteSaveItem(@Arg("id", () => ID) id: string) {
-    return await this.saveListService.deleteSaveItem(id);
-  }
-
   @Mutation(() => String)
-  async addToSaveItem(
+  async deleteSaveItem(
     @Arg("userId", () => ID) userId: string,
     @Arg("postId", () => ID) postId: string,
   ) {
-    return await this.saveListService.addToSaveItem(userId, postId);
+    return await this.saveListService.deleteSaveItem(postId, userId);
+  }
+
+  @Mutation(() => String)
+  async addToSaveList(
+    @Arg("userId", () => ID) userId: string,
+    @Arg("postId", () => ID) postId: string,
+  ) {
+    return await this.saveListService.addToSaveList(userId, postId);
+  }
+
+  // FieldResolver for Data Loader
+  @FieldResolver(() => SaveItem)
+  async saveItems(
+    @Root() saveList: SaveList,
+    @Ctx() { saveItemsBySaveListLoader }: Context,
+  ) {
+    return await saveItemsBySaveListLoader.load(saveList.id);
   }
 }
