@@ -27,9 +27,6 @@ export class SaveListService {
   async getUserSaveList(userId: string): Promise<SaveList> {
     const saveList = await this.saveListRepo.findOne({
       where: { userId },
-      relations: {
-        saveItems: true
-      },
     });
     if (!saveList) throw new Error("No Save List Found");
     return saveList;
@@ -52,7 +49,7 @@ export class SaveListService {
   async deleteSaveItem(postId: string, userId: string): Promise<string> {
     const saveItem = await this.saveItemRepo.findOneBy({ userId, postId });
     if (!saveItem) throw new Error("This Item Not Found");
-    await this.saveItemRepo.remove(saveItem);
+    const res = await this.saveItemRepo.delete(saveItem);
     return "This Post is unsaved";
   }
 

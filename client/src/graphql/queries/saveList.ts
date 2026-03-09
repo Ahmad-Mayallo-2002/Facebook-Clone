@@ -11,9 +11,29 @@ export const GET_SAVE_LISTS = gql`
 `;
 
 export const GET_USER_SAVE_LIST = gql`
-  query GetSaveLists($userId: ID!) {
+  query GetUserSaveList($userId: ID!) {
     getUserSaveList(userId: $userId) {
       id
+      saveItems {
+        id
+        post {
+          id
+          media {
+            public_id
+            url
+          }
+          content
+          createdAt
+          user {
+            username
+            id
+            image {
+              public_id
+              url
+            }
+          }
+        }
+      }
     }
   }
 `;

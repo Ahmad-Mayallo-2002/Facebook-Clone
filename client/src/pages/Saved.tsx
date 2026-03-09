@@ -16,11 +16,12 @@ export default function Saved() {
       },
     },
   );
+  console.log(data, error);
   return (
     <>
       <HeaderFeed />
-      <section className="saved">
-        <div className="container">
+      <section className="saved mt-36">
+        <div className="container space-y-4">
           {!data && (
             <div className="center h-screen">
               {loading && (
@@ -34,8 +35,16 @@ export default function Saved() {
             </div>
           )}
           {data &&
-            data.getUserSaveList.saveItems.map((v) => (
-              <Post post={v.post} userId={`${userId}`} key={v.postId} />
+            (!data.getUserSaveList.saveItems.length ? (
+              <div className="center h-[calc(100vh-36px*6)]">
+                <h3 className="text-gray-900 text-center text-4xl">
+                  Your Save List is Empty
+                </h3>
+              </div>
+            ) : (
+              data.getUserSaveList.saveItems.map(({ post }, i) => (
+                <Post post={post} userId={`${userId}`} key={i} />
+              ))
             ))}
         </div>
       </section>

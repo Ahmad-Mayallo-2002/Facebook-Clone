@@ -49,12 +49,12 @@ export default function Post({ post, userId }: PostProps) {
     if (!data?.isSaved)
       addToSaveList({
         variables: { userId, postId: post.id },
-        refetchQueries: ["IsSaved"],
+        refetchQueries: ["IsSaved", "GetUserSaveList"],
       });
     else
       deleteSaveItem({
         variables: { userId, postId: post.id },
-        refetchQueries: ["IsSaved"],
+        refetchQueries: ["IsSaved", "GetUserSaveList"],
       });
   };
 

@@ -19,7 +19,6 @@ import { CreatePostInput } from "../graphql/inputs/post.input";
 import { CheckToken } from "../middlewares/checkToken.middleware";
 import { Roles } from "../enums/roles.enum";
 import { Context } from "../interfaces/context.interface";
-import { React } from "../entities/react.entity";
 import { User } from "../entities/user.entity";
 import { PostPaginated } from "../graphql/objectTypes/postPaginated";
 

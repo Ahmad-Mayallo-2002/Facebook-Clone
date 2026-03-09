@@ -78,4 +78,9 @@ export class SaveListResolver {
   ) {
     return await saveItemsBySaveListLoader.load(saveList.id);
   }
+
+  @FieldResolver(() => Post)
+  async post(@Root() saveItem: SaveItem, @Ctx() { savedPostLoader }: Context) {
+    return await savedPostLoader.load(saveItem.postId);
+  }
 }
