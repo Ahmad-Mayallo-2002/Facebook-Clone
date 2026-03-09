@@ -12,9 +12,10 @@ export const GET_ALL_FRIENDS = gql`
 
 export const GET_USER_FRIENDS = gql`
   query GetUserFriends($userId: ID!, $take: Int!) {
-    getUserSaveList(userId: $userId, take: $take) {
+    getUserFriends(userId: $userId, take: $take) {
       data {
         id
+        
       }
     }
   }

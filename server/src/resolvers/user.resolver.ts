@@ -20,7 +20,6 @@ import { Post } from "../entities/post.entity";
 import { Context } from "../interfaces/context.interface";
 import { Comment } from "../entities/comment.entity";
 import { UserPaginated } from "../graphql/objectTypes/userPaginated";
-import { SaveList } from "../entities/saveList.entity";
 
 @UseMiddleware(CheckToken)
 @Service()
@@ -76,7 +75,4 @@ export class UserResolver {
   async comments(@Root() user: User, @Ctx() { commentsByUserLoader }: Context) {
     return commentsByUserLoader.load(user.id);
   }
-
-  @FieldResolver(() => SaveList)
-  async saveList(@Root() user: User, @Ctx() {  }: Context) {}
 }

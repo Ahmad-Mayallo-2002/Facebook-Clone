@@ -6,8 +6,9 @@ import { Notification } from "../../entities/notification.entity";
 import { NotificationType } from "../../enums/notification-type.enum";
 import {
   handleCommentNotification,
-  handleReactNotification,
-} from "../../utils/notificationsHandles";
+} from "../../utils/notificationHandlers/commentNotificationHandler";
+import { handleReactNotification } from "../../utils/notificationHandlers/reactNotificationHandler";
+import { handleFriendshipAcceptNotification, handleFriendshipRequestNotification, handleFrienshipRejectNotification } from "../../utils/notificationHandlers/friendshipRequestNotificationHandler";
 
 export const notificationWorker = new Worker(
   "notification-queue",
@@ -22,6 +23,15 @@ export const notificationWorker = new Worker(
         break;
       case NotificationType.REACT:
         await handleReactNotification(payload, notificationRepo, userRepo);
+        break;
+      case NotificationType.FRIENDSHIP_REQUEST:
+        await handleFriendshipRequestNotification(payload, notificationRepo, userRepo);
+        break;
+      case NotificationType.FRIENDSHIP_ACCEPT:
+        await handleFriendshipAcceptNotification(payload, notificationRepo, userRepo);
+        break;
+      case NotificationType.FRIENDSHIP_REJECT:
+        await handleFrienshipRejectNotification(payload, notificationRepo, userRepo);
         break;
       default:
         console.log("Error Choice");

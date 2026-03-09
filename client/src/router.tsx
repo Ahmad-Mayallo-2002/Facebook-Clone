@@ -19,6 +19,7 @@ const Saved = lazy(() => import("@/pages/Saved"));
 const ForgotPassword = lazy(() => import("@/pages/Auth/ForgotPassword"));
 const UpdatePassword = lazy(() => import("@/pages/Auth/UpdatePassword"));
 const VerifyCode = lazy(() => import("@/pages/Auth/VerifyCode"));
+const Friends = lazy(() => import("@/pages/Friends"));
 
 // Routes configuration
 const routes: RouteObject[] = [
@@ -53,6 +54,10 @@ const routes: RouteObject[] = [
   {
     path: "/saved/:userId",
     element: <Saved />,
+  },
+  {
+    path: "/friends/:userId",
+    element: <Friends />,
   },
   {
     path: "/forgot-password",

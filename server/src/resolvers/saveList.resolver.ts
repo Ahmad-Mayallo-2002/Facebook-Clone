@@ -1,14 +1,11 @@
 import {
   Arg,
   Authorized,
-  Ctx,
-  FieldResolver,
   ID,
   Int,
   Mutation,
   Query,
   Resolver,
-  Root,
   UseMiddleware,
 } from "type-graphql";
 import { Service } from "typedi";
@@ -17,15 +14,12 @@ import { SaveListService } from "../services/saveList.service";
 import { CheckToken } from "../middlewares/checkToken.middleware";
 import { Roles } from "../enums/roles.enum";
 import { SaveListPaginated } from "../graphql/objectTypes/saveListPaginated";
-import { SaveItem } from "../entities/saveItem.entity";
-import { Context } from "../interfaces/context.interface";
-import { Post } from "../entities/post.entity";
 
 @UseMiddleware(CheckToken)
 @Service()
 @Resolver(() => SaveList)
 export class SaveListResolver {
-  constructor(private saveListService: SaveListService) {}
+  constructor(private saveListService: SaveListService) { }
 
   @Authorized(Roles.ADMIN)
   @Query(() => SaveListPaginated)
@@ -58,7 +52,7 @@ export class SaveListResolver {
   async deleteSaveItem(
     @Arg("userId", () => ID) userId: string,
     @Arg("postId", () => ID) postId: string,
-  ) {
+  ): Promise<string> {
     return await this.saveListService.deleteSaveItem(postId, userId);
   }
 
@@ -68,19 +62,5 @@ export class SaveListResolver {
     @Arg("postId", () => ID) postId: string,
   ) {
     return await this.saveListService.addToSaveList(userId, postId);
-  }
-
-  // FieldResolver for Data Loader
-  @FieldResolver(() => SaveItem)
-  async saveItems(
-    @Root() saveList: SaveList,
-    @Ctx() { saveItemsBySaveListLoader }: Context,
-  ) {
-    return await saveItemsBySaveListLoader.load(saveList.id);
-  }
-
-  @FieldResolver(() => Post)
-  async post(@Root() saveItem: SaveItem, @Ctx() { savedPostLoader }: Context) {
-    return await savedPostLoader.load(saveItem.postId);
   }
 }

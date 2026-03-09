@@ -10,7 +10,6 @@ import { ResolveTime } from "../middlewares/resolveTime.middleware";
 import { NotificationResolver } from "../resolvers/notification.resolver";
 import { SaveListResolver } from "../resolvers/saveList.resolver";
 import { FriendsResolver } from "../resolvers/friends.resolver";
-import { SaveItemResolver } from "../resolvers/saveItem.resolver";
 
 export const resolvers: NonEmptyArray<Function> = [
   UserResolver,
@@ -23,7 +22,6 @@ export const resolvers: NonEmptyArray<Function> = [
   NotificationResolver,
   SaveListResolver,
   FriendsResolver,
-  SaveItemResolver
 ];
 
 export const globalMiddlewares = [ResolveTime];

@@ -27,8 +27,9 @@ export class SaveListService {
   async getUserSaveList(userId: string): Promise<SaveList> {
     const saveList = await this.saveListRepo.findOne({
       where: { userId },
+      relations: ["saveItems", "saveItems.post"],
     });
-    if (!saveList) throw new Error("No Save List Found");
+    if (!saveList || !saveList.saveItems.length) throw new Error("Your Save List is Empty");
     return saveList;
   }
 
@@ -41,7 +42,6 @@ export class SaveListService {
   }
 
   async clearSaveList(userId: string): Promise<string> {
-    await this.getUserSaveList(userId);
     this.saveItemRepo.delete(userId);
     return "This Save List is Empty Now";
   }
@@ -49,7 +49,7 @@ export class SaveListService {
   async deleteSaveItem(postId: string, userId: string): Promise<string> {
     const saveItem = await this.saveItemRepo.findOneBy({ userId, postId });
     if (!saveItem) throw new Error("This Item Not Found");
-    const res = await this.saveItemRepo.delete(saveItem);
+    await this.saveItemRepo.remove(saveItem);
     return "This Post is unsaved";
   }
 
@@ -61,8 +61,8 @@ export class SaveListService {
       await this.saveListRepo.save(saveList);
     }
 
-    const currentItem = await this.saveItemRepo.findOneBy({ postId });
-    if (currentItem) throw new Error("This Post is already saved");
+    const existingItem = await this.saveItemRepo.findOneBy({ postId });
+    if (existingItem) throw new Error("This Post is already saved");
 
     const newItem = this.saveItemRepo.create({
       postId,

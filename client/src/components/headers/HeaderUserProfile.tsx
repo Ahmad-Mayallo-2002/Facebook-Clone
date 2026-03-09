@@ -11,6 +11,7 @@ import {
 } from "@/graphql/mutations/follow";
 import { toast } from "react-toastify";
 import { FOLLOWER_OR_NOT } from "@/graphql/queries/follow";
+import { SEND_FRIENDSHIP_REQUEST } from "@/graphql/mutations/friends";
 
 export default function HeaderUserProfile({ userId }: { userId: string }) {
   const { data } = useQuery<{ getUser: User }>(GET_USER, {
@@ -23,6 +24,9 @@ export default function HeaderUserProfile({ userId }: { userId: string }) {
     useMutation(ADD_USER_FOLLOWING);
   const [cancelFollowing, { loading: cancelLoading }] =
     useMutation(CANCEL_FOLLOWING);
+  const [sendFriendshipRequest, { loading: sendLoading }] = useMutation(
+    SEND_FRIENDSHIP_REQUEST,
+  );
 
   const { data: followerOrNotData, refetch } = useQuery<{
     followerOrNot: boolean;
@@ -68,6 +72,19 @@ export default function HeaderUserProfile({ userId }: { userId: string }) {
     }
   };
 
+  const handleSendFriendshipRequest = () => {
+    sendFriendshipRequest({
+      variables: {
+        receiverId: userId,
+        senderId: user?.id,
+      },
+    })
+      .then(() => {
+        toast.success("Friend request sent");
+      })
+      .catch((error) => toast.error(error.message));
+  };
+
   return (
     <header className="profile mt-18">
       <div className="container">
@@ -107,17 +124,28 @@ export default function HeaderUserProfile({ userId }: { userId: string }) {
               <CreatePageDialog userId={userId} />
             </div>
           ) : (
-            <button
-              disabled={addLoading || cancelLoading}
-              onClick={
-                followerOrNotData?.followerOrNot
-                  ? handleCancelFollowing
-                  : handleFollow
-              }
-              className="main-button blue-button py-2! cursor-pointer"
-            >
-              {followerOrNotData?.followerOrNot ? "Unfollow" : "Follow"}
-            </button>
+            <>
+              <div className="flex gap-x-4">
+                <button
+                  disabled={addLoading || cancelLoading}
+                  onClick={
+                    followerOrNotData?.followerOrNot
+                      ? handleCancelFollowing
+                      : handleFollow
+                  }
+                  className="main-button blue-button py-2! cursor-pointer"
+                >
+                  {followerOrNotData?.followerOrNot ? "Unfollow" : "Follow"}
+                </button>
+                <button
+                  onClick={handleSendFriendshipRequest}
+                  disabled={sendLoading}
+                  className="main-button blue-button cursor-pointer"
+                >
+                  Add Friend
+                </button>
+              </div>
+            </>
           )}
         </div>
       </div>
