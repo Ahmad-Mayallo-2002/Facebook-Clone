@@ -10,13 +10,15 @@ export async function handleFriendshipRequestNotification(
   notificationRepo: Repository<Notification>,
   userRepo: Repository<User>,
 ) {
-  const { senderId, receiverId } = payload;
+    const { senderId, receiverId } = payload;
+    
+    console.log('Friendship Request Running');
 
   console.log("Starting Creating Notification");
   const sender = await userRepo.findOne({ where: { id: senderId } });
   const createNotification = notificationRepo.create({
     content: `${sender?.username} sent you a friend request`,
-    receiverId,
+      receiverId,
     referenceId: senderId,
     receiver: { id: receiverId },
     sender: { id: senderId, image: sender?.image },
@@ -28,7 +30,12 @@ export async function handleFriendshipRequestNotification(
   const notification = await notificationRepo.save(createNotification);
 
   console.log("Send Notification By WebSocket");
-  io.to(receiverId).emit("notify_post_owner", notification);
+    io.to(receiverId).emit("notify_post_owner", notification);
+    
+    console.log("receiverId: " + receiverId);
+    console.log("senderId: " + senderId);
+    
+    
 }
 
 export async function handleFriendshipAcceptNotification(

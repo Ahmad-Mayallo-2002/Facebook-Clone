@@ -27,5 +27,5 @@ export async function handleReactNotification(
     const notification = await notificationRepo.save(createNotification);
 
     console.log("Send Notification By WebSocket");
-    io.emit("notify_post_owner", notification);
+    io.to(receiverId).emit("notify_post_owner", notification);
 }

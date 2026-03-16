@@ -4,11 +4,14 @@ import { getRepo } from "../../utils/getRepo";
 import { User } from "../../entities/user.entity";
 import { Notification } from "../../entities/notification.entity";
 import { NotificationType } from "../../enums/notification-type.enum";
-import {
-  handleCommentNotification,
-} from "../../utils/notificationHandlers/commentNotificationHandler";
+import { handleCommentNotification } from "../../utils/notificationHandlers/commentNotificationHandler";
 import { handleReactNotification } from "../../utils/notificationHandlers/reactNotificationHandler";
-import { handleFriendshipAcceptNotification, handleFriendshipRequestNotification, handleFrienshipRejectNotification, handleFriendshipCancelNotification } from "../../utils/notificationHandlers/friendshipRequestNotificationHandler";
+import {
+  handleFriendshipAcceptNotification,
+  handleFriendshipCancelNotification,
+  handleFriendshipRequestNotification,
+  handleFrienshipRejectNotification,
+} from "../../utils/notificationHandlers/friendshipRequestNotificationHandler";
 
 export const notificationWorker = new Worker(
   "notification-queue",
@@ -25,16 +28,32 @@ export const notificationWorker = new Worker(
         await handleReactNotification(payload, notificationRepo, userRepo);
         break;
       case NotificationType.FRIENDSHIP_REQUEST:
-        await handleFriendshipRequestNotification(payload, notificationRepo, userRepo);
+        await handleFriendshipRequestNotification(
+          payload,
+          notificationRepo,
+          userRepo,
+        );
         break;
       case NotificationType.FRIENDSHIP_ACCEPT:
-        await handleFriendshipAcceptNotification(payload, notificationRepo, userRepo);
+        await handleFriendshipAcceptNotification(
+          payload,
+          notificationRepo,
+          userRepo,
+        );
         break;
       case NotificationType.FRIENDSHIP_REJECT:
-        await handleFrienshipRejectNotification(payload, notificationRepo, userRepo);
+        await handleFrienshipRejectNotification(
+          payload,
+          notificationRepo,
+          userRepo,
+        );
         break;
       case NotificationType.FRIENDSHIP_CANCEL:
-        await handleFriendshipCancelNotification(payload, notificationRepo, userRepo);
+        await handleFriendshipCancelNotification(
+          payload,
+          notificationRepo,
+          userRepo,
+        );
         break;
       default:
         console.log("Error Choice");
