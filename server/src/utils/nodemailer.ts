@@ -4,7 +4,7 @@ import { createTransport } from 'nodemailer';
 import { generate } from 'randomstring';
 import { getVerificationEmailTemplate } from '../mjml/verificationCode';
 
-config();
+config({ quiet: true });;
 
 const { NODEMAILER_USER, NODEMAILER_PASS } = process.env;
 

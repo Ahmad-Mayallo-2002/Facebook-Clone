@@ -9,12 +9,17 @@ import { Service } from "typedi";
 import { sign } from "jsonwebtoken";
 import { queueRedis } from "../redis/queue.redis";
 import { getRepo } from "../utils/getRepo";
-import { LoginResponse, Payload } from "../interfaces/payload.interface";
+import { Payload } from "../interfaces/payload.interface";
 
-config();
+config({ quiet: true });
 
-const { ACCESS_TOKEN_SECRET, ADMIN_USERNAME, ADMIN_EMAIL, ADMIN_PASSWORD } =
-  process.env;
+const {
+  ACCESS_TOKEN_SECRET,
+  ADMIN_USERNAME,
+  ADMIN_EMAIL,
+  ADMIN_PASSWORD,
+  REFRESH_TOKEN_SECRET,
+} = process.env;
 
 @Service()
 export class AuthService {
@@ -54,11 +59,21 @@ export class AuthService {
     };
 
     const accessToken = sign(payload, `${ACCESS_TOKEN_SECRET}`, {
-      expiresIn: "1h",
+      expiresIn: "20s",
     });
+
+    const refreshToken = sign(
+      { ...payload, username: user.username },
+      `${REFRESH_TOKEN_SECRET}`,
+      {
+        expiresIn: "1d",
+      },
+    );
+
     return {
-      token: accessToken,
-      ...payload
+      accessToken,
+      ...payload,
+      refreshToken,
     };
   }
 

@@ -5,11 +5,11 @@ import { connectionOptions } from "../../redis/queue.redis";
 export const removeResourceWorker = new Worker(
   "remove-resource-queue",
   async (job) => {
-    const { public_id } = job.data;
+    const { public_ids } = job.data;
 
     console.log("Starting Removing Source");
 
-    await v2.uploader.destroy(public_id);
+    await v2.api.delete_resources(public_ids);
 
     console.log("Ending Removing Source");
   },

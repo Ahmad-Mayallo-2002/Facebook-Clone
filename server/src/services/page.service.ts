@@ -53,7 +53,6 @@ export class PageService {
 
   async getAllPages(take: number, skip: number): Promise<PaginatedData<Page>> {
     const [pages, counts] = await this.pageRepo.findAndCount({
-      relations: ["user"],
       order: { createdAt: "DESC" },
       take,
       skip,
@@ -83,7 +82,6 @@ export class PageService {
   async getById(id: string): Promise<Page> {
     const page = await this.pageRepo.findOne({
       where: { id },
-      relations: ["user"],
     });
     if (!page) throw new Error("Page not found");
     return page;

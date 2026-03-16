@@ -7,11 +7,9 @@ import { type React } from "./react";
 import { type Page } from "./page";
 import { type Notification } from "./notification";
 import { type Follow } from "./follow";
+import type { IdDate } from "./IdDate";
 
-export interface User {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
+export interface User extends IdDate {
   username: string;
   email: string;
   description: string;

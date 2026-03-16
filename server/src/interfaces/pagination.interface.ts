@@ -3,6 +3,7 @@ export interface Pagination {
   next: boolean;
   currentPage: number;
   totalPages: number;
+  counts: number;
 }
 
 export interface PaginatedData<T> {

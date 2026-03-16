@@ -2,11 +2,9 @@ import { type MediaObject } from "./mediaObject";
 import { type User } from "./user";
 import { type Post } from "./post";
 import { type React } from "./react";
+import type { IdDate } from "./IdDate";
 
-export interface Comment {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
+export interface Comment extends IdDate {
   content: string;
   media: MediaObject[];
   isVisible: boolean;

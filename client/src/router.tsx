@@ -12,12 +12,14 @@ const Landing = lazy(() => import("@/pages/Landing"));
 const Login = lazy(() => import("@/pages/Auth/Login"));
 const Signup = lazy(() => import("@/pages/Auth/Signup"));
 const Feed = lazy(() => import("@/pages/Feed"));
-const Profile = lazy(() => import("@/pages/Profile"));
+const UserProfile = lazy(() => import("@/pages/UserProfile"));
+const PageProfile = lazy(() => import("@/pages/PageProfile"));
 const Notifications = lazy(() => import("@/pages/Notifications"));
 const Saved = lazy(() => import("@/pages/Saved"));
 const ForgotPassword = lazy(() => import("@/pages/Auth/ForgotPassword"));
 const UpdatePassword = lazy(() => import("@/pages/Auth/UpdatePassword"));
 const VerifyCode = lazy(() => import("@/pages/Auth/VerifyCode"));
+const Friends = lazy(() => import("@/pages/Friends"));
 
 // Routes configuration
 const routes: RouteObject[] = [
@@ -38,16 +40,24 @@ const routes: RouteObject[] = [
     element: <Feed />,
   },
   {
-    path: "/profile/:id",
-    element: <Profile />,
+    path: "/profile/:userId",
+    element: <UserProfile />,
+  },
+  {
+    path: "/page/:pageId",
+    element: <PageProfile />,
   },
   {
     path: "/notifications",
     element: <Notifications />,
   },
   {
-    path: "/saved",
+    path: "/saved/:userId",
     element: <Saved />,
+  },
+  {
+    path: "/friends/:userId",
+    element: <Friends />,
   },
   {
     path: "/forgot-password",

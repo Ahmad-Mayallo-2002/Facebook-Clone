@@ -3,13 +3,13 @@ import "@/styles/authStyle.css";
 import { MdMail } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client/react";
-import { LOGIN } from "@/graphql/mutations";
 import { toast } from "react-toastify";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import type { LoginRes } from "@/interface/response";
 import Password from "@/components/ui/Password";
 import InputIcon from "@/components/ui/InputIcon";
 import { Link, useNavigate } from "react-router-dom";
+import { LOGIN } from "@/graphql/mutations/auth";
 
 interface ILogin {
   email: string;
@@ -27,9 +27,7 @@ export default function Login() {
 
   const onSubmit = async (input: ILogin) =>
     await login({ variables: { input } })
-      .then(() => {
-        navigate("/feed");
-      })
+      .then(() => navigate("/feed"))
       .catch((reason) => {
         toast(reason.message, { type: "error" });
         console.log(reason);

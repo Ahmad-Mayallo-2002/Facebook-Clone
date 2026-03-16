@@ -8,6 +8,8 @@ import { CommentService } from "./comment.service";
 import { UserService } from "./user.service";
 import { PaginatedData } from "../interfaces/pagination.interface";
 import { paginationCalculation } from "../utils/paginationCalculation";
+import { NotificationType } from "../enums/notification-type.enum";
+import { NotificationService } from "./notification.service";
 
 @Service()
 export class ReactService {
@@ -17,6 +19,7 @@ export class ReactService {
     private readonly postService: PostService,
     private readonly commentService: CommentService,
     private readonly userService: UserService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async getAllReacts(
@@ -112,6 +115,9 @@ export class ReactService {
     type: ReactType,
     postId: string,
   ): Promise<string> {
+    const currentReact = await this.reactRepo.findOne({ where: { postId, userId } });
+    if (currentReact) throw new Error('You already reacted to this post');
+
     const newReact = this.reactRepo.create({
       type,
       value,
@@ -120,7 +126,16 @@ export class ReactService {
       post: { id: postId },
       user: { id: userId },
     });
-    await this.reactRepo.save(newReact);
+    const react = await this.reactRepo.save(newReact);
+
+    const post = await this.postService.getById(postId);
+    if (post.userId !== userId)
+      this.notificationService.dispatch(NotificationType.REACT, {
+        userId,
+        reactId: react.id,
+        receiverId: post.userId,
+      });
+
     return "New react added";
   }
 

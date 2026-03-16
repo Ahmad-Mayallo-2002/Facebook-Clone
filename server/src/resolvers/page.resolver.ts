@@ -1,6 +1,8 @@
 import {
   Arg,
   Authorized,
+  Ctx,
+  Int,
   Mutation,
   Query,
   Resolver,
@@ -10,8 +12,8 @@ import { Service } from "typedi";
 import { Page } from "../entities/page.entity";
 import { PageService } from "../services/page.service";
 import { PageInput } from "../graphql/inputs/page.input";
+import { Context } from "../interfaces/context.interface";
 import { CheckToken } from "../middlewares/checkToken.middleware";
-import { Roles } from "../enums/roles.enum";
 import { PagePaginated } from "../graphql/objectTypes/pagePaginated";
 
 @UseMiddleware(CheckToken)
@@ -21,7 +23,10 @@ export class PageResolver {
   constructor(private readonly pageService: PageService) {}
 
   @Query(() => PagePaginated)
-  async getAllPages(@Arg("take") take: number, @Arg("skip") skip: number) {
+  async getAllPages(
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
+  ) {
     return await this.pageService.getAllPages(take, skip);
   }
 
@@ -33,8 +38,8 @@ export class PageResolver {
   @Query(() => PagePaginated)
   async getUserPages(
     @Arg("userId") userId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.pageService.getUserPages(userId, take, skip);
   }
@@ -51,12 +56,21 @@ export class PageResolver {
   async updatePage(
     @Arg("id") id: string,
     @Arg("input", () => PageInput) input: Partial<PageInput>,
+    @Ctx() { session }: Context,
   ) {
+    const page = await this.pageService.getById(id);
+    if (page.userId !== session.user.id) {
+      throw new Error("Not authorized");
+    }
     return await this.pageService.updatePage(id, input);
   }
 
   @Mutation(() => Boolean)
-  async deletePage(@Arg("id") id: string) {
+  async deletePage(@Arg("id") id: string, @Ctx() { session }: Context) {
+    const page = await this.pageService.getById(id);
+    if (page.userId !== session.user.id) {
+      throw new Error("Not authorized");
+    }
     return await this.pageService.deletePage(id);
   }
 }

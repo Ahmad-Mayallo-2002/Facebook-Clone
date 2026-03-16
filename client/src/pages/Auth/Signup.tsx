@@ -6,10 +6,10 @@ import { useForm } from "react-hook-form";
 import InputIcon from "@/components/ui/InputIcon";
 import { MdMail } from "react-icons/md";
 import { useMutation } from "@apollo/client/react";
-import { SIGNUP } from "@/graphql/mutations";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import { SIGNUP } from "@/graphql/mutations/auth";
 
 interface ISignUp {
   username: string;

@@ -75,6 +75,11 @@ export class UserService {
     return true;
   }
 
+  /**
+   * Update only the FCM token for a user.  Used by clients after
+   * obtaining the registration token from the browser.
+   */
+
   async activeUser(id: string, status: boolean): Promise<string> {
     const user = await this.userRepo.findOne({
       where: { id },

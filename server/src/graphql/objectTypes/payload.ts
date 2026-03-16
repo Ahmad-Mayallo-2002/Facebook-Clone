@@ -7,7 +7,7 @@ export class PayloadType {
   id!: string;
 
   @Field()
-  token!: string;
+  accessToken!: string;
 
   @Field(() => Roles)
   role!: Roles;

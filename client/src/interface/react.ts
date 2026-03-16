@@ -3,11 +3,9 @@ import { ReactType } from "../enums/reactType";
 import { type User } from "./user";
 import { type Post } from "./post";
 import { type Comment } from "./comment";
+import type { IdDate } from "./IdDate";
 
-export interface React {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
+export interface React extends IdDate {
   value: Emotions;
   type: ReactType;
   userId: string;

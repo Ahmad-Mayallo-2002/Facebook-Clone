@@ -2,7 +2,7 @@ import Logo from "@/components/logos/Logo";
 import Password from "@/components/ui/Password";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { RESET_PASSWORD } from "@/graphql/mutations";
+import { RESET_PASSWORD } from "@/graphql/mutations/auth";
 import { useMutation } from "@apollo/client/react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";

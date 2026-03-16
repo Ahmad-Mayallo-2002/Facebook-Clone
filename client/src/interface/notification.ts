@@ -1,9 +1,12 @@
+import type { NotificationType } from "@/enums/notificationType";
+import type { IdDate } from "./IdDate";
 import { type User } from "./user";
 
-export interface Notification {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
+export interface Notification extends IdDate {
   content: string;
-  user?: User;
+  receiverId: string;
+  receiver: string;
+  senderId: string;
+  sender: User;
+  type: NotificationType;
 }

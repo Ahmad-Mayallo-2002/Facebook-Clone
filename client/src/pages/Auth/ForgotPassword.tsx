@@ -1,6 +1,6 @@
 import Logo from "@/components/logos/Logo";
 import InputIcon from "@/components/ui/InputIcon";
-import { FORGOT_PASSWORD } from "@/graphql/mutations";
+import { FORGOT_PASSWORD } from "@/graphql/mutations/auth";
 import "@/styles/authStyle.css";
 import { useMutation } from "@apollo/client/react";
 import { useForm } from "react-hook-form";

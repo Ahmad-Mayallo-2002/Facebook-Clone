@@ -7,7 +7,21 @@ import { ReactResolver } from "../resolvers/react.resolver";
 import { PageResolver } from "../resolvers/page.resolver";
 import { FollowResolver } from "../resolvers/follow.resolver";
 import { ResolveTime } from "../middlewares/resolveTime.middleware";
+import { NotificationResolver } from "../resolvers/notification.resolver";
+import { SaveListResolver } from "../resolvers/saveList.resolver";
+import { FriendsResolver } from "../resolvers/friends.resolver";
 
-export const resolvers: NonEmptyArray<Function> = [UserResolver, AuthResolver, PostResolver, CommentResolver, ReactResolver, PageResolver, FollowResolver];
+export const resolvers: NonEmptyArray<Function> = [
+  UserResolver,
+  AuthResolver,
+  PostResolver,
+  CommentResolver,
+  ReactResolver,
+  PageResolver,
+  FollowResolver,
+  NotificationResolver,
+  SaveListResolver,
+  FriendsResolver,
+];
 
 export const globalMiddlewares = [ResolveTime];

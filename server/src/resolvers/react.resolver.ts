@@ -4,6 +4,7 @@ import {
   Ctx,
   FieldResolver,
   ID,
+  Int,
   Mutation,
   Query,
   Resolver,
@@ -29,7 +30,10 @@ export class ReactResolver {
 
   @Authorized(Roles.ADMIN)
   @Query(() => ReactPaginated)
-  async getAllReacts(@Arg("take") take: number, @Arg("skip") skip: number) {
+  async getAllReacts(
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
+  ) {
     return await this.reactService.getAllReacts(take, skip);
   }
 
@@ -41,27 +45,27 @@ export class ReactResolver {
 
   @Query(() => ReactPaginated)
   async getUserReacts(
-    @Arg("userId") userId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("userId", () => ID) userId: string,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.reactService.getUserReacts(userId, take, skip);
   }
 
   @Query(() => ReactPaginated)
   async getPostReacts(
-    @Arg("postId") postId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("postId", () => ID) postId: string,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.reactService.getPostReacts(postId, take, skip);
   }
 
   @Query(() => ReactPaginated)
   async getCommentReacts(
-    @Arg("commentId") commentId: string,
-    @Arg("take") take: number,
-    @Arg("skip") skip: number,
+    @Arg("commentId", () => ID) commentId: string,
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
   ) {
     return await this.reactService.getCommentReacts(commentId, take, skip);
   }
@@ -69,7 +73,7 @@ export class ReactResolver {
   @Query(() => React)
   async getUserReactOnPost(
     @Ctx() { session }: Context,
-    @Arg("postId") postId: string,
+    @Arg("postId", () => ID) postId: string,
   ) {
     return await this.reactService.getUserReactOnPost(session.user.id, postId);
   }
@@ -77,7 +81,7 @@ export class ReactResolver {
   @Query(() => React)
   async getUserReactOnComment(
     @Ctx() { session }: Context,
-    @Arg("commentId") commentId: string,
+    @Arg("commentId", () => ID) commentId: string,
   ) {
     return await this.reactService.getUserReactOnComment(
       session.user.id,
@@ -90,7 +94,7 @@ export class ReactResolver {
     @Ctx() { session }: Context,
     @Arg("value", () => Emotions) value: Emotions,
     @Arg("type", () => ReactType) type: ReactType,
-    @Arg("postId") postId: string,
+    @Arg("postId", () => ID) postId: string,
   ) {
     return await this.reactService.addRreact(
       session.user.id,
@@ -102,14 +106,14 @@ export class ReactResolver {
 
   @Mutation(() => React)
   async updateReact(
-    @Arg("id") id: string,
+    @Arg("id", () => ID) id: string,
     @Arg("value", () => Emotions) value: Emotions,
   ) {
     return await this.reactService.updateReact(id, value);
   }
 
   @Mutation(() => Boolean)
-  async deleteReact(@Arg("id") id: string) {
+  async deleteReact(@Arg("id", () => ID) id: string) {
     return await this.reactService.deleteReact(id);
   }
 

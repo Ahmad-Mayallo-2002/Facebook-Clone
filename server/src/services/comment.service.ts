@@ -10,12 +10,24 @@ import { CloudinaryUploader } from "../utils/cloudinaryUploader";
 import { UploadApiResponse } from "cloudinary";
 import { PaginatedData } from "../interfaces/pagination.interface";
 import { paginationCalculation } from "../utils/paginationCalculation";
+import { v2 } from "cloudinary";
+import { NotificationService } from "./notification.service";
+import { UserService } from "./user.service";
+import { NotificationType } from "../enums/notification-type.enum";
+import { Post } from "../entities/post.entity";
+import { Notification } from "../entities/notification.entity";
+import { notificationQueue } from "../bullmq/queues/notification.queue";
+import { removeResourceQueue } from "../bullmq/queues/removeResource.queue";
 
 @Service()
 export class CommentService {
   private commentRepo = getRepo<Comment>(Comment);
 
-  constructor(private readonly postService: PostService) {}
+  constructor(
+    private readonly postService: PostService,
+    private readonly notificationService: NotificationService,
+    private readonly userService: UserService,
+  ) {}
 
   async getAllComments(
     take: number,
@@ -77,7 +89,7 @@ export class CommentService {
     postId: string,
     input: CommentInput,
   ): Promise<Comment> {
-    await this.postService.getById(postId);
+    const post = await this.postService.getById(postId);
 
     if (!input.content && (!input.media || !input.media?.length))
       throw new Error("Comment must contain text content or media");
@@ -104,7 +116,18 @@ export class CommentService {
       media,
     });
 
-    return await this.commentRepo.save(comment);
+    const savedComment = await this.commentRepo.save(comment);
+
+    if (post.userId !== userId) {
+      // push a job that will look up the receiver's current token
+      this.notificationService.dispatch(NotificationType.COMMENT, {
+        userId,
+        postId,
+        receiverId: post.userId,
+      });
+    }
+
+    return savedComment;
   }
 
   async updateComment(id: string, input: CommentInput): Promise<Comment> {
@@ -114,6 +137,8 @@ export class CommentService {
     const media: MediaObject[] = [];
 
     if (files?.length) {
+      const public_ids = comment.media.map((m) => m.public_id);
+      removeResourceQueue.add("remove-comment-media", { public_ids });
       const uploader = new UploaderContext(new CloudinaryUploader());
       for (const file of files) {
         const { public_id, secure_url: url } = (await uploader.performStrategy(
@@ -123,10 +148,11 @@ export class CommentService {
       }
     }
 
-    const data: DeepPartial<Comment> = {
-      content: input.content,
-      media,
-    };
+    const data: DeepPartial<Comment> = {};
+
+    if (input.content) data.content = input.content;
+    if (media.length) data.media = media;
+
     Object.assign(comment, data);
     return await this.commentRepo.save(comment);
   }
@@ -140,6 +166,10 @@ export class CommentService {
 
   async deleteComment(id: string): Promise<boolean> {
     const comment = await this.getById(id);
+    if (comment.media.length) {
+      const public_ids = comment.media.map((m) => m.public_id);
+      removeResourceQueue.add("remove-comment-media", { public_ids });
+    }
     await this.commentRepo.remove(comment);
     return true;
   }

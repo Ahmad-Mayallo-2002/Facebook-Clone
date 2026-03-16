@@ -3,7 +3,7 @@ import { config } from "dotenv";
 import { DataSource } from "typeorm";
 import "reflect-metadata";
 
-config();
+config({ quiet: true });;
 
 const { DB_PASSWORD, DB_NAME, DB_USERNAME, DB_PORT } = process.env;
 

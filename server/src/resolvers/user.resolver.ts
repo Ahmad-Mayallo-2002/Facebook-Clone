@@ -3,6 +3,7 @@ import {
   Authorized,
   Ctx,
   FieldResolver,
+  Int,
   Mutation,
   Query,
   Resolver,
@@ -27,7 +28,10 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => UserPaginated)
-  async getAllUsers(@Arg("take") take: number, @Arg("skip") skip: number) {
+  async getAllUsers(
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
+  ) {
     return await this.userService.getAll(take, skip);
   }
 

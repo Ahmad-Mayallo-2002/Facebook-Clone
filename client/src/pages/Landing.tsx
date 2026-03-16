@@ -8,7 +8,7 @@ export default function Landing() {
       <HeaderLanding />
 
       <section className="hero py-28 relative">
-        <div className="overlay z-[-1] bg-gradient-to-b from-blue-600/5 via-transparent to-transparent inset-0 absolute"></div>
+        <div className="overlay z-[-1] bg-linear-to-b from-blue-600/5 via-transparent to-transparent inset-0 absolute"></div>
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="col md:flex md:flex-col md:justify-center flex-row md:text-start text-center">
@@ -81,7 +81,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="about py-16 bg-gradient-to-br from-blue-600 to-purple-600 text-white">
+      <section className="about py-16 bg-linear-to-br from-blue-600 to-purple-600 text-white">
         <div className="container grid gap-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1">
           {values.map((v) => (
             <div className="col text-center" key={v.title}>
