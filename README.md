@@ -1,4 +1,4 @@
-Got your details—formatting a polished README.md for your Facebook clone right now!
+Adding tech icons to make that stack section pop—here's your updated README.md!
 
 # Facebook Clone
 
@@ -35,35 +35,29 @@ Visit [http://localhost:3000](http://localhost:3000).
 ## 🛠 Tech Stack
 
 **Frontend:**
-- React.js
-- TypeScript
-- Apollo Client
-- Tailwind CSS
-- React Toaster
-- React Redux Toolkit
-- React Router DOM
-- React Hook Form
+- ⚛️ React.js
+- 🟦 TypeScript
+- 🚀 Apollo Client
+- 💨 Tailwind CSS
+- 🔔 React Toaster
+- 🔄 React Redux Toolkit
+- 🛣️ React Router DOM
+- 📝 React Hook Form
 
 **Backend:**
-- Node.js
-- Express.js
-- PostgreSQL
-- TypeORM
-- TypeGraphQL
-- GraphQL API
-- JWT
-- @apollo/server
-- BullMQ
-- Redis
-- Class Validator
-- Cloudinary
-- Socket.io
+- 🟢 Node.js
+- ⚡ Express.js
+- 🐘 PostgreSQL
+- 🔗 TypeORM
+- 📊 TypeGraphQL
+- 🌐 GraphQL API
+- 🔑 JWT
+- 🪐 @apollo/server
+- 🐂 BullMQ + Redis
+- ✅ Class Validator
+- ☁️ Cloudinary
+- 💬 Socket.io
 
 ## 🤝 Contributing
 
 Fork, branch, commit, and PR your improvements!
-
-## 📄 License
-
-MIT License.
-Perfect foundation—want to jump into MockFlow to sketch those news feed screens?
