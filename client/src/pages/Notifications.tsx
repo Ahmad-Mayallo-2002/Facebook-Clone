@@ -22,11 +22,20 @@ export default function Notifications() {
   });
   const { user } = useMeQuery();
   useEffect(() => {
-    const socket = connectSocket(user?.id as string);
-    socket.on("notify_post_owner", (data) => {
+    if (!user?.id) return;
+    const socket = connectSocket(user.id);
+
+    const handler = (data: Notification) => {
+      console.log(data);
       setNotification(data);
-    });
+    };
+
+    socket.on("notify_post_owner", handler);
+    return () => {
+      socket.off("notify_post_owner", handler);
+    };
   }, [user?.id]);
+
   return (
     <>
       <HeaderFeed />
@@ -53,14 +62,17 @@ export default function Notifications() {
                 <li className="bg-blue-50 p-2">
                   <div className="sender flex gap-x-3">
                     <div className="image">
-                      <img
-                        className="w-16 h-16 rounded-full"
-                        src={
-                          notification?.sender.image ?
-                          getUrl(notification?.sender?.image) : undefined
-                        }
-                        alt={notification?.sender.username}
-                      />
+                      <a href={`/profile/${notification?.senderId}`}>
+                        <img
+                          className="w-16 h-16 rounded-full"
+                          src={
+                            notification?.sender.image
+                              ? getUrl(notification?.sender?.image)
+                              : undefined
+                          }
+                          alt={notification?.sender.username}
+                        />
+                      </a>
                     </div>
                     <div>
                       <p className="text-gray-400">{notification?.content}</p>

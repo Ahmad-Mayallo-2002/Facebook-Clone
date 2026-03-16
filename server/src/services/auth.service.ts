@@ -11,7 +11,7 @@ import { queueRedis } from "../redis/queue.redis";
 import { getRepo } from "../utils/getRepo";
 import { Payload } from "../interfaces/payload.interface";
 
-config();
+config({ quiet: true });;
 
 const { ACCESS_TOKEN_SECRET, ADMIN_USERNAME, ADMIN_EMAIL, ADMIN_PASSWORD } =
   process.env;

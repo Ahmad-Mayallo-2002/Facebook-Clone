@@ -1,5 +1,6 @@
 import { CREATE_POST } from "@/graphql/mutations/post";
 import type { CreatePostRes } from "@/interface/response";
+import { getUrl } from "@/utils/getImageUrl";
 import { useMeQuery } from "@/utils/user";
 import { useMutation } from "@apollo/client/react";
 import { useState } from "react";
@@ -51,7 +52,10 @@ export default function CreatePost({ pageId }: CreatePostProps = {}) {
   return (
     <>
       <div className="panel center-y gap-x-3">
-        <img src={user?.image.url} className="w-10 h-10 rounded-full" />
+        <img
+          src={user ? getUrl(user.image) : undefined}
+          className="w-10 h-10 rounded-full"
+        />
         <button
           onClick={() => setShow(true)}
           className="trigger text-start text-gray-500 cursor-pointer bg-gray-100 hover:bg-gray-200 py-2 px-4 w-full rounded-full"

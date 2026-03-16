@@ -3,7 +3,7 @@ import { UploaderStrategy } from "../interfaces/uploaderStrategy.interface";
 import { config } from 'dotenv';
 import { FileUpload } from 'graphql-upload-ts';
 
-config();
+config({ quiet: true });;
 
 const {
     CLOUDINARY_NAME: cloud_name,

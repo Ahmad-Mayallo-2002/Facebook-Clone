@@ -11,6 +11,7 @@ import { useMeQuery } from "@/utils/user";
 export default function UserProfile() {
   const { userId } = useParams();
   const { user } = useMeQuery();
+
   return (
     <>
       <HeaderFeed />

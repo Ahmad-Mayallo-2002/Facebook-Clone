@@ -8,7 +8,7 @@ import {
   handleCommentNotification,
 } from "../../utils/notificationHandlers/commentNotificationHandler";
 import { handleReactNotification } from "../../utils/notificationHandlers/reactNotificationHandler";
-import { handleFriendshipAcceptNotification, handleFriendshipRequestNotification, handleFrienshipRejectNotification } from "../../utils/notificationHandlers/friendshipRequestNotificationHandler";
+import { handleFriendshipAcceptNotification, handleFriendshipRequestNotification, handleFrienshipRejectNotification, handleFriendshipCancelNotification } from "../../utils/notificationHandlers/friendshipRequestNotificationHandler";
 
 export const notificationWorker = new Worker(
   "notification-queue",
@@ -32,6 +32,9 @@ export const notificationWorker = new Worker(
         break;
       case NotificationType.FRIENDSHIP_REJECT:
         await handleFrienshipRejectNotification(payload, notificationRepo, userRepo);
+        break;
+      case NotificationType.FRIENDSHIP_CANCEL:
+        await handleFriendshipCancelNotification(payload, notificationRepo, userRepo);
         break;
       default:
         console.log("Error Choice");

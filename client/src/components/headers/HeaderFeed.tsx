@@ -1,15 +1,14 @@
 import logo from "@/assets/facebook.png";
-import { FaSearch, FaFacebookMessenger, FaBell } from "react-icons/fa";
-import { RiHome5Fill } from "react-icons/ri";
-import { HiOutlineUsers } from "react-icons/hi2";
+import {
+  FaSearch,
+  FaFacebookMessenger,
+  FaBell,
+  FaHome,
+  FaUsers,
+} from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useMeQuery } from "@/utils/user";
 import { mainEndPoint } from "@/assets/assets";
-
-const iconsLinks = [
-  { icon: RiHome5Fill, path: "/feed" },
-  { icon: HiOutlineUsers, path: "/friends" },
-];
 
 export default function HeaderFeed() {
   const { pathname } = useLocation();
@@ -34,17 +33,19 @@ export default function HeaderFeed() {
           </button>
         </div>
         <div className="icons grow center gap-x-2">
-          {iconsLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className="p-2 rounded-full hover:bg-gray-100"
-            >
-              <link.icon
-                className={`text-2xl ${pathname === link.path ? "text-blue-600" : "text-gray-600"}`}
-              />
-            </Link>
-          ))}
+          <Link to="/feed" className="p-2 rounded-full hover:bg-gray-100">
+            <FaHome
+              className={`text-2xl ${pathname.startsWith("/feed") ? "text-blue-600" : "text-gray-600"}`}
+            />
+          </Link>
+          <Link
+            to={"/friends/" + user?.id}
+            className="p-2 rounded-full hover:bg-gray-100"
+          >
+            <FaUsers
+              className={`text-2xl ${pathname.startsWith("/friends") ? "text-blue-600" : "text-gray-600"}`}
+            />
+          </Link>
         </div>
         <div className="user-actions center-y gap-x-3">
           <Link

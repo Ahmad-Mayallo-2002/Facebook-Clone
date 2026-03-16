@@ -11,23 +11,32 @@ import {
 } from "@/graphql/mutations/follow";
 import { toast } from "react-toastify";
 import { FOLLOWER_OR_NOT } from "@/graphql/queries/follow";
-import { SEND_FRIENDSHIP_REQUEST } from "@/graphql/mutations/friends";
+import {
+  ACCEPT_OR_REJECT_FRIENDSHIP_REQUEST,
+  SEND_FRIENDSHIP_REQUEST,
+} from "@/graphql/mutations/friends";
+import { GET_IS_FRIEND } from "@/graphql/queries/friends";
+import { FriendRequest } from "@/enums/friendRequest";
 
 export default function HeaderUserProfile({ userId }: { userId: string }) {
+  const { user } = useMeQuery();
+
+  // Get User Profile Owner Data
   const { data } = useQuery<{ getUser: User }>(GET_USER, {
     variables: {
       id: userId,
     },
   });
-  const { user } = useMeQuery();
-  const [addUserFollowing, { loading: addLoading }] =
-    useMutation(ADD_USER_FOLLOWING);
-  const [cancelFollowing, { loading: cancelLoading }] =
-    useMutation(CANCEL_FOLLOWING);
-  const [sendFriendshipRequest, { loading: sendLoading }] = useMutation(
-    SEND_FRIENDSHIP_REQUEST,
-  );
 
+  // Get This User Is My Friend Or Not
+  const { data: isFriend } = useQuery<{ isFriend: boolean }>(GET_IS_FRIEND, {
+    variables: {
+      userId: user?.id,
+      friendId: userId,
+    },
+  });
+
+  // Get I Follow This User Or Not
   const { data: followerOrNotData, refetch } = useQuery<{
     followerOrNot: boolean;
   }>(FOLLOWER_OR_NOT, {
@@ -35,6 +44,22 @@ export default function HeaderUserProfile({ userId }: { userId: string }) {
       targetId: userId,
     },
   });
+
+  // Add and Cancel User Following
+  const [addUserFollowing, { loading: addLoading }] =
+    useMutation(ADD_USER_FOLLOWING);
+  const [cancelFollowing, { loading: cancelLoading }] =
+    useMutation(CANCEL_FOLLOWING);
+
+  // Send Friendship Request
+  const [sendFriendshipRequest, { loading: sendLoading }] = useMutation(
+    SEND_FRIENDSHIP_REQUEST,
+  );
+
+  // Mutation to Reject Current Friendship
+  const [acceptOrReject, { loading: acceptOrRejectLoading }] = useMutation(
+    ACCEPT_OR_REJECT_FRIENDSHIP_REQUEST,
+  );
 
   const handleFollow = () => {
     if (user?.id !== userId) {
@@ -84,6 +109,26 @@ export default function HeaderUserProfile({ userId }: { userId: string }) {
       })
       .catch((error) => toast.error(error.message));
   };
+
+  const handleCancelFriendship = async () => {
+    acceptOrReject({
+      variables: {
+        status: FriendRequest.REJECTED,
+        receiverId: userId,
+        senderId: user?.id,
+      },
+      awaitRefetchQueries: true,
+      refetchQueries: ["IsFriend"],
+    })
+      .then((res) => toast.success(`${res.data}`))
+      .catch((err) => toast.error(err.message));
+  };
+
+  const handleFunction = isFriend?.isFriend
+    ? handleCancelFriendship
+    : handleSendFriendshipRequest;
+
+  const isLoading = isFriend?.isFriend ? acceptOrRejectLoading : sendLoading;
 
   return (
     <header className="profile mt-18">
@@ -138,11 +183,11 @@ export default function HeaderUserProfile({ userId }: { userId: string }) {
                   {followerOrNotData?.followerOrNot ? "Unfollow" : "Follow"}
                 </button>
                 <button
-                  onClick={handleSendFriendshipRequest}
-                  disabled={sendLoading}
+                  onClick={handleFunction}
+                  disabled={isLoading}
                   className="main-button blue-button cursor-pointer"
                 >
-                  Add Friend
+                  {isFriend?.isFriend ? "Cancel Friend" : "Add Friend"}
                 </button>
               </div>
             </>

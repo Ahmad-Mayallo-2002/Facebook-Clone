@@ -10,7 +10,7 @@ import { config } from "dotenv";
 import { Service } from "typedi";
 import { Payload } from "../interfaces/payload.interface";
 
-config();
+config({ quiet: true });;
 
 @Service()
 export class CheckToken implements MiddlewareInterface<Context> {

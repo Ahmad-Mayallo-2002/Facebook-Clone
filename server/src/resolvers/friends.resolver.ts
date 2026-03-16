@@ -75,4 +75,27 @@ export class FriendsResolver {
       status,
     );
   }
+
+  @Mutation(() => String)
+  async cancelFriendship(
+    @Arg("friendshipId", () => ID) friendshipId: string,
+  ): Promise<string> {
+    return await this.friendsService.cancelFriendship(friendshipId);
+  }
+
+  @Query(() => Boolean)
+  async isFriend(
+    @Arg("userId", () => ID) userId: string,
+    @Arg("friendId", () => ID) friendId: string,
+  ): Promise<boolean> {
+    return await this.friendsService.isFriend(userId, friendId);
+  }
+
+  @Mutation(() => String)
+  async cancelFriendshipByUsers(
+    @Arg("userId", () => ID) userId: string,
+    @Arg("friendId", () => ID) friendId: string,
+  ): Promise<string> {
+    return await this.friendsService.cancelFriendshipByUsers(userId, friendId);
+  }
 }

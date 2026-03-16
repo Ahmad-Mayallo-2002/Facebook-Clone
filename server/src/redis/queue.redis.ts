@@ -1,7 +1,7 @@
 import { config } from "dotenv";
 import Redis, { RedisOptions } from "ioredis";
 
-config();
+config({ quiet: true });;
 
 const { REDIS_HOST, REDIS_PORT } = process.env;
 

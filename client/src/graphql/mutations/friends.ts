@@ -19,3 +19,15 @@ export const ACCEPT_OR_REJECT_FRIENDSHIP_REQUEST = gql`
     )
   }
 `;
+
+export const CANCEL_FRIENDSHIP = gql`
+  mutation CancelFriendship($friendshipId: ID!) {
+    cancelFriendship(friendshipId: $friendshipId)
+  }
+`;
+
+export const CANCEL_FRIENDSHIP_BY_USERS = gql`
+  mutation CancelFriendshipByUsers($userId: ID!, $friendId: ID!) {
+    cancelFriendshipByUsers(userId: $userId, friendId: $friendId)
+  }
+`;

@@ -2,7 +2,7 @@ import { createClient } from "redis";
 import { RedisStore } from "connect-redis";
 import { config } from "dotenv";
 
-config();
+config({ quiet: true });;
 
 const { REDIS_HOST, REDIS_PORT } = process.env;
 

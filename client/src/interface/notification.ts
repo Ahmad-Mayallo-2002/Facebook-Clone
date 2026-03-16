@@ -1,3 +1,4 @@
+import type { NotificationType } from "@/enums/notificationType";
 import type { IdDate } from "./IdDate";
 import { type User } from "./user";
 
@@ -7,4 +8,5 @@ export interface Notification extends IdDate {
   receiver: string;
   senderId: string;
   sender: User;
+  type: NotificationType;
 }
