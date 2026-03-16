@@ -13,4 +13,7 @@ export class PaginationType {
 
   @Field()
   totalPages!: number;
+
+  @Field()
+  counts!: number;
 }

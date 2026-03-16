@@ -24,6 +24,7 @@ export const GET_POST_COMMENTS = gql`
 
       pagination {
         next
+        counts
       }
     }
   }

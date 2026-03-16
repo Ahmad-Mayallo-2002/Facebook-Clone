@@ -1,11 +1,5 @@
 import logo from "@/assets/facebook.png";
-import {
-  FaSearch,
-  FaFacebookMessenger,
-  FaBell,
-  FaHome,
-  FaUsers,
-} from "react-icons/fa";
+import { FaSearch, FaBell, FaHome, FaUsers } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useMeQuery } from "@/utils/user";
 import { mainEndPoint } from "@/assets/assets";
@@ -49,18 +43,9 @@ export default function HeaderFeed() {
         </div>
         <div className="user-actions center-y gap-x-3">
           <Link
-            to="/messenger"
+            to="/notifications"
             className="bg-gray-100 hover:bg-gray-200 p-3 rounded-full"
           >
-            <FaFacebookMessenger className="text-gray-700 text-xl" />
-          </Link>
-          <Link
-            to="/notifications"
-            className="relative bg-gray-100 hover:bg-gray-200 p-3 rounded-full"
-          >
-            <span className="absolute bg-red-500 text-white w-4 h-4 center rounded-full text-sm -top-1 -right-1">
-              0
-            </span>
             <FaBell className="text-gray-700 text-xl" />
           </Link>
           <Link to={`/profile/${user?.id}`}>

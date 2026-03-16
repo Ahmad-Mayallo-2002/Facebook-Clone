@@ -21,6 +21,7 @@ export function paginationCalculation({
     totalPages,
     next: currentPage < totalPages,
     prev: currentPage > 1,
+    counts
   };
 
   return pagination;

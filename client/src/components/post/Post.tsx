@@ -63,7 +63,7 @@ export default function Post({ post, userId }: PostProps) {
       variables: {
         id: post.id,
       },
-      refetchQueries: post.pageId ? ["GetPagePosts"] : ["GetPosts"],
+      refetchQueries: ["GetPosts", "GetPagePosts"],
     });
 
   const isPagePost = !!post.page;

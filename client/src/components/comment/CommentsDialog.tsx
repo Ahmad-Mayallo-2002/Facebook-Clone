@@ -53,7 +53,7 @@ export default function CommentsDialog({
         className="trigger cursor-pointer text-gray-400"
         onClick={handleOpen}
       >
-        45 Comments
+        {data?.getPostComments.pagination.counts} Comments
       </button>
       {show && (
         <>
