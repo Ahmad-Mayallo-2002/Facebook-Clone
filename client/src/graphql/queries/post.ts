@@ -127,3 +127,46 @@ export const GET_PAGE_POSTS = gql`
     }
   }
 `;
+
+export const SEARCH_POSTS = gql`
+  query SearchPosts($take: Int!, $skip: Int!, $search: String!) {
+    searchPosts(take: $take, skip: $skip, search: $search) {
+      pagination {
+        prev
+        next
+        totalPages
+        currentPage
+      }
+      data {
+        id
+        content
+        media {
+          url
+          public_id
+        }
+        userId
+        pageId
+        createdAt
+        updatedAt
+        # Author
+        user {
+          id
+          username
+          image {
+            url
+            public_id
+          }
+        }
+        page {
+          id
+          description
+          image {
+            url
+            public_id
+          }
+          userId
+        }
+      }
+    }
+  }
+`;

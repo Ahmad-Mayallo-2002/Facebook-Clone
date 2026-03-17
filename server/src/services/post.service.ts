@@ -1,6 +1,6 @@
 import { Service } from "typedi";
 import { Post } from "../entities/post.entity";
-import { DeepPartial } from "typeorm";
+import { DeepPartial, Raw } from "typeorm";
 import { CreatePostInput } from "../graphql/inputs/post.input";
 import { UploaderContext } from "../utils/uploaderContext";
 import { CloudinaryUploader } from "../utils/cloudinaryUploader";
@@ -90,6 +90,23 @@ export class PostService {
     if (!posts.length) throw new Error("No posts found for this user");
     const pagination = paginationCalculation({ counts, take, skip });
     return { data: posts, pagination };
+  }
+
+  async searchPosts(
+    take: number,
+    skip: number,
+    search: string,
+  ): Promise<PaginatedData<Post>> {
+    const [data, counts] = await this.postRepo.findAndCount({
+      where: {
+        content: Raw((alias) => `${alias} ~* :pattern`, { pattern: search }),
+      },
+      take,
+      skip,
+    });
+    if (!counts) throw new Error("No posts found");
+    const pagination = paginationCalculation({ counts, take, skip });
+    return { data, pagination };
   }
 
   async updatePost(id: string, input: Partial<CreatePostInput>): Promise<Post> {

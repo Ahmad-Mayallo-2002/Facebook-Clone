@@ -3,6 +3,7 @@ import {
   Authorized,
   Ctx,
   FieldResolver,
+  ID,
   Int,
   Mutation,
   Query,
@@ -41,7 +42,7 @@ export class PostResolver {
 
   @Query(() => PostPaginated)
   async getPagePosts(
-    @Arg("pageId") pageId: string,
+    @Arg("pageId", () => ID) pageId: string,
     @Arg("take", () => Int) take: number,
     @Arg("skip", () => Int) skip: number,
   ) {
@@ -49,22 +50,31 @@ export class PostResolver {
   }
 
   @Query(() => Post)
-  async getPost(@Arg("id") id: string) {
+  async getPost(@Arg("id", () => ID) id: string) {
     return await this.postService.getById(id);
   }
 
   @Query(() => PostPaginated)
   async getUserPosts(
-    @Arg("userId") userId: string,
+    @Arg("userId", () => ID) userId: string,
     @Arg("take", () => Int) take: number,
     @Arg("skip", () => Int) skip: number,
   ) {
     return await this.postService.getUserPosts(userId, take, skip);
   }
 
+  @Query(() => PostPaginated)
+  async searchPosts(
+    @Arg("take", () => Int) take: number,
+    @Arg("skip", () => Int) skip: number,
+    @Arg("search") search: string,
+  ) {
+    return await this.postService.searchPosts(take, skip, search);
+  }
+
   @Mutation(() => Post)
   async createPost(
-    @Arg("userId") userId: string,
+    @Arg("userId", () => ID) userId: string,
     @Arg("input", () => CreatePostInput) input: CreatePostInput,
   ) {
     return await this.postService.createPost(userId, input);
@@ -72,7 +82,7 @@ export class PostResolver {
 
   @Mutation(() => Post)
   async updatePost(
-    @Arg("id") id: string,
+    @Arg("id", () => ID) id: string,
     @Arg("input", () => CreatePostInput) input: Partial<CreatePostInput>,
     @Ctx() { session }: Context,
   ) {
@@ -93,14 +103,17 @@ export class PostResolver {
   @Authorized(Roles.ADMIN)
   @Mutation(() => Post)
   async hidePost(
-    @Arg("id") id: string,
+    @Arg("id", () => ID) id: string,
     @Arg("visibleStatus") visibleStatus: boolean,
   ) {
     return await this.postService.hidePost(id, visibleStatus);
   }
 
   @Mutation(() => Boolean)
-  async deletePost(@Arg("id") id: string, @Ctx() { session }: Context) {
+  async deletePost(
+    @Arg("id", () => ID) id: string,
+    @Ctx() { session }: Context,
+  ) {
     const post = await this.postService.getById(id);
     const userId = session.user.id;
     if (post.userId !== userId) {

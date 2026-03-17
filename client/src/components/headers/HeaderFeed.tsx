@@ -3,6 +3,7 @@ import { FaSearch, FaBell, FaHome, FaUsers } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useMeQuery } from "@/utils/user";
 import { mainEndPoint } from "@/assets/assets";
+import SearchPostsField from "./SearchPostsField";
 
 export default function HeaderFeed() {
   const { pathname } = useLocation();
@@ -13,14 +14,7 @@ export default function HeaderFeed() {
         <Link to="/feed" className="logo">
           <img src={logo} alt="Facebook Logo" className="w-10 h-10" />
         </Link>
-        <div className="ml-6 md:flex hidden search relative items-center justify-center">
-          <FaSearch className="absolute left-4 text-gray-500" />
-          <input
-            type="text"
-            placeholder="Search Facebook"
-            className="py-2 pr-6 pl-10 bg-gray-100 rounded-full"
-          />
-        </div>
+        <SearchPostsField />
         <div className="md:hidden flex ml-4">
           <button className="bg-gray-100 p-3 rounded-full text-gray-600 hover:bg-gray-200 cursor-pointer">
             <FaSearch />

@@ -42,6 +42,15 @@ export const client = new ApolloClient({
               };
             },
           },
+          searchPosts: {
+            keyArgs: ["search"],
+            merge(existing = { data: [], pagination: {} }, incoming) {
+              return {
+                ...incoming,
+                data: [...existing.data, ...(incoming.data || [])],
+              };
+            },
+          },
         },
       },
     },
