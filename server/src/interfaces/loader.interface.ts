@@ -1,4 +1,3 @@
-import { createReactsByCommentLoader } from "../loader/commentLoader/react.loader";
 import { createCommentsByPostLoader } from "../loader/postLoader/comment.loader";
 import { createReactsByPostLoader } from "../loader/postLoader/react.loader";
 import { createSavedPostLoader } from "../loader/saveLoader/savedPost.loader";
@@ -28,14 +27,6 @@ export interface PostLoader {
 export const postLoader: PostLoader = {
   commentsByPostLoader: createCommentsByPostLoader(),
   reactsByPostLoader: createReactsByPostLoader(),
-};
-
-export interface CommentLoader {
-  reactsByCommentLoader: ReturnType<typeof createReactsByCommentLoader>;
-}
-
-export const commentLoader: CommentLoader = {
-  reactsByCommentLoader: createReactsByCommentLoader(),
 };
 
 export interface SaveListLoader {

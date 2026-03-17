@@ -6,7 +6,11 @@ import { useLazyQuery } from "@apollo/client/react";
 import { useState } from "react";
 import { FaX } from "react-icons/fa6";
 
-export default function EmotionsDialog({ postId }: { postId: string }) {
+interface EmotionsDialogProps {
+  postId: string;
+}
+
+export default function EmotionsDialog({ postId }: EmotionsDialogProps) {
   const TAKE = 20;
   const [show, setShow] = useState(false);
   const [getPostReacts, { data, error, loading, fetchMore }] =
@@ -26,11 +30,13 @@ export default function EmotionsDialog({ postId }: { postId: string }) {
   };
 
   const handleFetchMore = () => {
+    const current = data?.getPostReacts;
+
     fetchMore({
       variables: {
         postId,
         take: TAKE,
-        skip: data?.getPostReacts.data.length,
+        skip: current?.data.length,
       },
     });
   };
@@ -84,7 +90,7 @@ export default function EmotionsDialog({ postId }: { postId: string }) {
           {data && (
             <>
               <ul className="p-4 pt-0 space-y-6 max-h-[300px] overflow-y-auto">
-                {data?.getPostReacts.data.map((react) => (
+                {data?.getPostReacts?.data.map((react) => (
                   <li key={react.id} className="center-y justify-between">
                     <div className="user center-y gap-x-2">
                       <div className="image">
@@ -114,7 +120,7 @@ export default function EmotionsDialog({ postId }: { postId: string }) {
                 ))}
               </ul>
 
-              {data?.getPostReacts.pagination.next && (
+              {data?.getPostReacts?.pagination.next && (
                 <button
                   onClick={handleFetchMore}
                   className="my-4 block font-bold cursor-pointer w-fit mx-auto"

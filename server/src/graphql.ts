@@ -7,7 +7,6 @@ import { app } from "./app";
 import { expressMiddleware } from "@as-integrations/express5";
 import { httpServer } from "./socket";
 import {
-  commentLoader,
   postLoader,
   saveItemLoader,
   saveListLoader,
@@ -52,7 +51,6 @@ export async function startServer(port: number) {
         session: req.session,
         ...userLoader,
         ...postLoader,
-        ...commentLoader,
         ...saveItemLoader,
         ...saveListLoader,
       }),

@@ -4,7 +4,6 @@ import { React } from "../entities/react.entity";
 import { Emotions } from "../enums/emotions.enum";
 import { ReactType } from "../enums/reactType.enum";
 import { PostService } from "./post.service";
-import { CommentService } from "./comment.service";
 import { UserService } from "./user.service";
 import { PaginatedData } from "../interfaces/pagination.interface";
 import { paginationCalculation } from "../utils/paginationCalculation";
@@ -17,7 +16,6 @@ export class ReactService {
 
   constructor(
     private readonly postService: PostService,
-    private readonly commentService: CommentService,
     private readonly userService: UserService,
     private readonly notificationService: NotificationService,
   ) {}
@@ -70,23 +68,6 @@ export class ReactService {
     return { data: reacts, pagination };
   }
 
-  async getCommentReacts(
-    commentId: string,
-    take: number,
-    skip: number,
-  ): Promise<PaginatedData<React>> {
-    await this.commentService.getById(commentId);
-    const [reacts, counts] = await this.reactRepo.findAndCount({
-      where: { commentId, type: ReactType.COMMENT },
-      order: { createdAt: "DESC" },
-      take,
-      skip,
-    });
-    if (!reacts.length) throw new Error("No reacts found for this comment");
-    const pagination = paginationCalculation({ counts, take, skip });
-    return { data: reacts, pagination };
-  }
-
   async getById(id: string): Promise<React> {
     const react = await this.reactRepo.findOne({
       where: { id },
@@ -101,22 +82,21 @@ export class ReactService {
     return react;
   }
 
-  async getUserReactOnComment(userId: string, commentId: string) {
-    const react = await this.reactRepo.findOne({
-      where: { commentId, userId },
-    });
-    if (!react) throw new Error("No user react on this post");
-    return react;
-  }
-
   async addRreact(
     userId: string,
     value: Emotions,
     type: ReactType,
-    postId: string,
+    postId?: string,
   ): Promise<string> {
-    const currentReact = await this.reactRepo.findOne({ where: { postId, userId } });
-    if (currentReact) throw new Error('You already reacted to this post');
+    if (type !== ReactType.POST)
+      throw new Error("Only POST react is supported");
+    if (!postId) throw new Error("postId is required for post reacts");
+
+    await this.postService.getById(postId);
+    const currentReact = await this.reactRepo.findOne({
+      where: { postId, userId },
+    });
+    if (currentReact) throw new Error("You already reacted to this post");
 
     const newReact = this.reactRepo.create({
       type,

@@ -7,40 +7,43 @@ import {
 } from "@/graphql/mutations/react";
 import { GET_USER_REACT_ON_POST } from "@/graphql/queries/react";
 import type { React } from "@/interface/react";
-import { useMeQuery } from "@/utils/user";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { useState } from "react";
 import { BiLike } from "react-icons/bi";
 
-export default function EmotionsBox({ postId }: { postId: string }) {
-  const { user } = useMeQuery();
+interface EmotionsBoxProps {
+  postId: string;
+}
+
+export default function EmotionsBox({ postId }: EmotionsBoxProps) {
   const { data } = useQuery<{ getUserReactOnPost: React }>(
     GET_USER_REACT_ON_POST,
     {
-      variables: {
-        postId,
-        userId: user?.id,
-      },
+      variables: { postId },
     },
   );
+
+  const reaction = data?.getUserReactOnPost;
 
   const [showEmotions, setShowEmotions] = useState(false);
 
   const [addReact] = useMutation<{ addReact: string }>(ADD_REACT, {
     refetchQueries: ["GetPostReacts", "GetUserReactOnPost"],
   });
+
   const [updateReact] = useMutation<{ updateReact: string }>(UPDATE_REACT, {
     refetchQueries: ["GetPostReacts", "GetUserReactOnPost"],
   });
+
   const [deleteReact] = useMutation<{ deleteReact: string }>(DELETE_REACT, {
     refetchQueries: ["GetPostReacts", "GetUserReactOnPost"],
   });
 
   const handleLikeClick = () => {
-    if (data?.getUserReactOnPost) {
+    if (reaction) {
       deleteReact({
         variables: {
-          reactId: data?.getUserReactOnPost.id,
+          reactId: reaction.id,
         },
       });
     } else {
@@ -50,31 +53,28 @@ export default function EmotionsBox({ postId }: { postId: string }) {
 
   const handleEmotionSelect = async (emotion: Emotions) => {
     setShowEmotions(false);
-    if (!data?.getUserReactOnPost) {
+    if (!reaction) {
       await addReact({
         variables: {
           value: emotion,
-          postId,
           type: ReactType.POST,
+          postId,
         },
       });
     } else {
       await updateReact({
         variables: {
           value: emotion,
-          reactId: data.getUserReactOnPost.id,
+          reactId: reaction.id,
         },
       });
     }
   };
 
-  const selectedEmotion = emotionList.find(
-    (e) => e.name === data?.getUserReactOnPost.value,
-  );
+  const selectedEmotion = emotionList.find((e) => e.name === reaction?.value);
 
   return (
     <div className="emotions-box relative">
-      {/* If No React Exist */}
       <button
         onClick={handleLikeClick}
         className={`center gap-x-1 p-3 w-full ${
@@ -83,16 +83,16 @@ export default function EmotionsBox({ postId }: { postId: string }) {
             : "cursor-pointer hover:bg-gray-100"
         }`}
       >
-        {data?.getUserReactOnPost ? (
+        {reaction ? (
           <img
             src={selectedEmotion?.icon}
-            alt={data?.getUserReactOnPost.value}
+            alt={reaction.value}
             className="w-5 h-5"
           />
         ) : (
           <BiLike />
         )}
-        <span>{data?.getUserReactOnPost.value || "Like"}</span>
+        <span>{reaction?.value || "Like"}</span>
       </button>
       {showEmotions && (
         <div className="flex w-fit h-fit gap-3 absolute bg-white p-3 rounded-full top-[-50%] translate-x-[20%]">

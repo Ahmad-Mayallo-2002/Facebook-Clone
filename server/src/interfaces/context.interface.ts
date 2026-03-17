@@ -2,14 +2,12 @@ import { Request, Response } from "express";
 import {
   UserLoader,
   PostLoader,
-  CommentLoader,
   SaveItemLoader,
   SaveListLoader,
 } from "./loader.interface";
 
 type Loaders = UserLoader &
   PostLoader &
-  CommentLoader &
   SaveItemLoader &
   SaveListLoader;
 

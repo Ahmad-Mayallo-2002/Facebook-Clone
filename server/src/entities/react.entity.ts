@@ -5,7 +5,6 @@ import { Column, Entity, JoinColumn, ManyToOne, Relation } from "typeorm";
 import { IdDate } from "../graphql/interfaceTypes/IdDate";
 import { User } from "./user.entity";
 import { Post } from "./post.entity";
-import { Comment } from "./comment.entity";
 
 @ObjectType({ implements: IdDate })
 @Entity({ name: "reacts" })
@@ -26,10 +25,6 @@ export class React extends IdDate {
   @Column({ type: "varchar", length: 100, name: "post_id", nullable: true })
   postId!: string;
 
-  @Field(() => ID, { nullable: true })
-  @Column({ type: "varchar", length: 100, name: "comment_id", nullable: true })
-  commentId!: string;
-
   // Relationships
   @Field(() => User)
   @JoinColumn({ name: "user" })
@@ -40,9 +35,4 @@ export class React extends IdDate {
   @JoinColumn({ name: "post" })
   @ManyToOne(() => Post, (post) => post.reacts)
   post!: Relation<Post>;
-
-  @Field(() => Comment)
-  @JoinColumn({ name: "comment" })
-  @ManyToOne(() => Comment, (comment) => comment.reacts)
-  comment!: Relation<Comment>;
 }

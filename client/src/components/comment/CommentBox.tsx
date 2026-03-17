@@ -50,6 +50,7 @@ export default function CommentBox({ comment, authorId }: CommentBoxProps) {
               ))
             : null}
         </div>
+
         {openUpdateDialog && <UpdateComment id={comment.id} />}
       </section>
     </div>

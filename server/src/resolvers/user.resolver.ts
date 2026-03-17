@@ -70,9 +70,4 @@ export class UserResolver {
   async posts(@Root() user: User, @Ctx() { postsByUserLoader }: Context) {
     return postsByUserLoader.load(user.id);
   }
-
-  @FieldResolver(() => [Comment])
-  async comments(@Root() user: User, @Ctx() { commentsByUserLoader }: Context) {
-    return commentsByUserLoader.load(user.id);
-  }
 }

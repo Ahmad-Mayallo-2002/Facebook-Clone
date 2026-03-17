@@ -61,32 +61,12 @@ export class ReactResolver {
     return await this.reactService.getPostReacts(postId, take, skip);
   }
 
-  @Query(() => ReactPaginated)
-  async getCommentReacts(
-    @Arg("commentId", () => ID) commentId: string,
-    @Arg("take", () => Int) take: number,
-    @Arg("skip", () => Int) skip: number,
-  ) {
-    return await this.reactService.getCommentReacts(commentId, take, skip);
-  }
-
   @Query(() => React)
   async getUserReactOnPost(
     @Ctx() { session }: Context,
     @Arg("postId", () => ID) postId: string,
   ) {
     return await this.reactService.getUserReactOnPost(session.user.id, postId);
-  }
-
-  @Query(() => React)
-  async getUserReactOnComment(
-    @Ctx() { session }: Context,
-    @Arg("commentId", () => ID) commentId: string,
-  ) {
-    return await this.reactService.getUserReactOnComment(
-      session.user.id,
-      commentId,
-    );
   }
 
   @Mutation(() => String)

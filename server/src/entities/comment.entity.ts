@@ -1,18 +1,10 @@
 import { Field, ID, ObjectType } from "type-graphql";
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  Relation,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Relation } from "typeorm";
 import { IdDate } from "../graphql/interfaceTypes/IdDate";
 import { MediaObjectType } from "../graphql/objectTypes/mediaObject";
 import { MediaObject } from "../interfaces/mediaObject.interface";
 import { User } from "./user.entity";
 import { Post } from "./post.entity";
-import { React } from "./react.entity";
 
 @ObjectType({ implements: IdDate })
 @Entity({ name: "comments" })
@@ -47,8 +39,4 @@ export class Comment extends IdDate {
   @JoinColumn({ name: "post" })
   @ManyToOne(() => Post, (post) => post.comments)
   post!: Relation<Post>;
-
-  @Field(() => [React])
-  @OneToMany(() => React, (react) => react.comment)
-  reacts!: Relation<React>;
 }

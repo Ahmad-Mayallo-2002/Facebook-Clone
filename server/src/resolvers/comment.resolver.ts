@@ -95,12 +95,4 @@ export class CommentResolver {
   async user(@Root() comment: Comment, @Ctx() { idByUserLoader }: Context) {
     return await idByUserLoader.load(comment.userId);
   }
-
-  @FieldResolver(() => [React])
-  async reacts(
-    @Root() comment: Comment,
-    @Ctx() { reactsByCommentLoader }: Context,
-  ) {
-    return await reactsByCommentLoader.load(comment.id);
-  }
 }
